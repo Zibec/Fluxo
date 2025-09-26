@@ -1,14 +1,15 @@
 #language: pt
+#Matias
 
 Funcionalidade: Gestão de Categorias
 
   Para organizar meus gastos, eu como usuário,
   quero poder criar e gerenciar uma lista de categorias.
 
-Cenário: Adicionar uma nova categoria com sucesso
-  Dado que o usuário está na tela de gerenciamento de categorias
-  Quando o usuário insere o nome "Lazer" e salva
-  Então a categoria "Lazer" deve aparecer na lista de categorias
+Cenário: Adicionar uma nova categoria que não existe
+  Dado que não existe uma categoria chamada "Saúde" no sistema
+  Quando o usuário insere o nome "Saúde" e salva
+  Então a categoria "Saúde" deve aparecer na lista de categorias
 
 Cenário: Tentar adicionar uma categoria que já existe
   Dado que a categoria "Moradia" já existe na lista
