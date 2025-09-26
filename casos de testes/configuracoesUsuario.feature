@@ -1,3 +1,5 @@
+#Lucas
+
 Feature: Configurações da Conta de Usuário
   Permite ao usuário personalizar sua experiência e gerenciar sua segurança.
 

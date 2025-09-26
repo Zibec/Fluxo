@@ -1,3 +1,5 @@
+#Lucas
+
 Feature: Gestão de Contas e Cartões
   Esta funcionalidade gerencia as diferentes fontes de dinheiro e crédito do usuário.
 
