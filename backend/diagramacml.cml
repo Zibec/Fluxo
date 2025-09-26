@@ -106,7 +106,7 @@ Relationship TransacaoContext.Transacao -> TransacaoContext.Categoria {
 
 Relationship TransacaoContext.Transacao -> ContaContext.Conta {
   implementationTechnology = "internal"
-  description = "afeta saldo da conta"
+  description = "afeta saldo da cartao"
 }
 
 Relationship TransacaoContext.Transacao -> PerfilContext.Perfil {
@@ -136,7 +136,7 @@ Relationship OrcamentoContext.Orcamento -> TransacaoContext.Categoria {
 
 Relationship MetaContext.Meta -> ContaContext.Conta {
   type = "USAGE"
-  description = "meta vinculada a conta"
+  description = "meta vinculada a cartao"
 }
 
 Relationship AgendamentoContext.Agendamento -> TransacaoContext.Transacao {
