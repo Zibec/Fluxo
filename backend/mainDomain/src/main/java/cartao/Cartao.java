@@ -3,6 +3,7 @@ package cartao;
 import fatura.Fatura;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.Date;
 
@@ -19,10 +20,10 @@ public class Cartao {
 
     private static int contador = 0;
     private Fatura fatura = null;
-    private Date dataFechamentoFatura;
-    private Date dataVencimentoFatura;
+    private LocalDate dataFechamentoFatura;
+    private LocalDate dataVencimentoFatura;
 
-    public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, Date dataFechamentoFatura, Date dataVencimentoFatura) {
+    public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura) {
         this.numero = numero;
         this.titular = titular;
         this.validade = validade;
@@ -33,7 +34,7 @@ public class Cartao {
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
 
-    public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite,Date dataFechamentoFatura, Date dataVencimentoFatura, BigDecimal saldo) {
+    public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo) {
         this.numero = numero;
         this.titular = titular;
         this.validade = validade;
@@ -68,11 +69,11 @@ public class Cartao {
         return saldo;
     }
 
-    public Date getDataFechamentoFatura() {
+    public LocalDate getDataFechamentoFatura() {
         return dataFechamentoFatura;
     }
 
-    public Date getDataVencimentoFatura() {
+    public LocalDate getDataVencimentoFatura() {
         return dataVencimentoFatura;
     }
 
@@ -96,11 +97,11 @@ public class Cartao {
         this.saldo = saldo;
     }
 
-    public void setDataFechamentoFatura(Date dataFechamentoFatura) {
+    public void setDataFechamentoFatura(LocalDate dataFechamentoFatura) {
         this.dataFechamentoFatura = dataFechamentoFatura;
     }
 
-    public void setDataVencimentoFatura(Date dataVencimentoFatura) {
+    public void setDataVencimentoFatura(LocalDate dataVencimentoFatura) {
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
 

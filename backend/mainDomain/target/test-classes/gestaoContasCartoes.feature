@@ -15,26 +15,32 @@ Feature: Gestão de Contas e Cartões
     When eu realizo uma nova compra de "300"
     Then o sistema deve recalcular o limite disponível como "3500"
 
+  Scenario: Fechamento automático da fatura
+    Given que tenho uma fatura em aberto com despesas
+    And a data de fechamento é hoje
+    When o processo de fechamento de fatura é executado
+    Then o sistema deve consolidar o valor a pagar
+
   # História 5.2: Cadastro de Contas Bancárias Correntes
-  #  Scenario: Cadastrar conta com sucesso
-  #    Given que estou logado no sistema
-  #    And acesso a página de gestão de contas
-  #    When eu cadastro uma conta no banco "001" agência "1234" número "56789" com saldo inicial "2000"
-  #    Then o sistema deve salvar os dados da conta
-  #   And exibir a mensagem "Conta cadastrada com sucesso."
+    Scenario: Cadastrar conta com sucesso
+      Given que estou logado no sistema
+      And acesso a página de gestão de contas
+      When eu cadastro uma conta com saldo inicial "2000"
+      Then o sistema deve salvar os dados da conta
+      And exibir a mensagem "Conta cadastrada com sucesso."
 
-  #  Scenario: Atualizar saldo da conta após depósito
-  #    Given que tenho uma conta com saldo "2000"
-   #   When eu registro um depósito de "500"
-   #   Then o saldo da conta deve ser atualizado para "2500"
+    Scenario: Atualizar saldo da conta após depósito
+      Given que tenho uma conta com saldo "2000"
+      When eu registro um depósito de "500"
+      Then o saldo da conta deve ser atualizado para "2500"
 
-  #  Scenario: Atualizar saldo da conta após retirada
-  #    Given que tenho uma conta com saldo "2000"
-  #    When eu registro uma retirada de "800"
-  #   Then o saldo da conta deve ser atualizado para "1200"
+    Scenario: Atualizar saldo da conta após retirada
+      Given que tenho uma conta com saldo "2000"
+      When eu registro uma retirada de "800"
+      Then o saldo da conta deve ser atualizado para "1200"
 
-  #  Scenario: Impedir retirada maior que o saldo
-  #    Given que tenho uma conta com saldo "500"
-   #   When eu tento registrar uma retirada de "800"
-   #   Then o sistema deve impedir a operação
-   #   And exibir a mensagem "Saldo insuficiente.
+    Scenario: Impedir retirada maior que o saldo
+      Given que tenho uma conta com saldo "500"
+      When eu tento registrar uma retirada de "800"
+      Then o sistema deve impedir a operação
+      And exibir a mensagem "Saldo insuficiente."
