@@ -1,0 +1,23 @@
+package conta;
+
+import java.util.Optional;
+import static org.apache.commons.lang3.Validate.notNull;
+
+public class ContaService {
+
+    private final ContaRepositorio contaRepositorio;
+
+    public ContaService(ContaRepositorio repositorio) {
+        this.contaRepositorio = repositorio;
+    }
+
+    public void salvar(Conta conta) {
+        notNull(conta, "A conta não pode ser nula");
+        contaRepositorio.salvar(conta);
+    }
+
+    public Optional<Conta> obter(String contaId) {
+        notNull(contaId, "O ID da conta não pode ser nulo");
+        return contaRepositorio.obter(contaId);
+    }
+}

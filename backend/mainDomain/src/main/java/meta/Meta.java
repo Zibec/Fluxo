@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class Meta {
 
-    private final String id; // ALTERAÇÃO 1: Tipo do ID mudou para String
+    private final String id;
     private TipoMeta tipo;
     private String descricao;
     private BigDecimal valorAlvo;
