@@ -21,4 +21,12 @@ public class MetaRepositorio {
         // Retorna um Optional para evitar retornos nulos (NullPointerException)
         return Optional.ofNullable(metas.get(metaId));
     }
+
+    public Optional<Meta> obterPorNome(String nomeMeta) {
+        notNull(nomeMeta, "O nome da meta não pode ser nulo");
+
+        return metas.values().stream()
+                .filter(meta -> meta.getDescricao().equalsIgnoreCase(nomeMeta))
+                .findFirst();
+    }
 }

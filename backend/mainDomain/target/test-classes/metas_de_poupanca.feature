@@ -19,3 +19,8 @@ Scenario: Tentar fazer um aporte com saldo insuficiente
   When eu tento fazer um aporte de R$ 100.00 para a meta "Celular Novo"
   Then o sistema deve exibir a mensagem de erro "Saldo insuficiente na conta principal"
   And o saldo da meta "Celular Novo" deve permanecer R$ 100.00
+
+Scenario: Criar uma nova meta de poupança com sucesso
+  Given que não existe uma meta de poupança chamada "Carro Novo"
+  When o usuário cria uma nova meta de poupança chamada "Carro Novo" com valor alvo de R$ 30000.00 e prazo de 24 meses
+  Then uma meta chamada "Carro Novo" deve existir no sistema

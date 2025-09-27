@@ -9,6 +9,8 @@ import io.cucumber.java.en.And;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MetaTest {
@@ -21,9 +23,12 @@ public class MetaTest {
     private Conta contaPrincipal;
     private Exception excecaoCapturada;
 
+    //cenario 1
     @Given("que eu tenho uma meta de poupança {string} com saldo atual de R$ {double}")
     public void queEuTenhoUmaMetaDePoupancaComSaldoAtualDe(String nomeMeta, Double saldoInicialMeta) {
-        this.meta = new Meta("1",TipoMeta.POUPANCA, nomeMeta, new BigDecimal("5000.00"), LocalDate.now().plusYears(1));
+        String id = UUID.randomUUID().toString();
+
+        this.meta = new Meta(id,TipoMeta.POUPANCA, nomeMeta, new BigDecimal("5000.00"), LocalDate.now().plusYears(1));
         this.meta.setSaldoAcumulado(new BigDecimal(saldoInicialMeta)); // Ajusta o saldo inicial para o teste
         metaService.salvar(this.meta);
     }
@@ -78,5 +83,32 @@ public class MetaTest {
 
         assertEquals(0, new BigDecimal(saldoMeta).compareTo(metaNaoAlterada.getSaldoAcumulado()),
                 "O saldo da meta não deveria ter mudado, mas mudou.");
+    }
+
+    //cenario 3
+    @Given("que não existe uma meta de poupança chamada {string}")
+    public void que_nao_existe_uma_meta_de_poupanca_chamada(String nomeMeta) {
+        assertTrue(metaRepositorio.obterPorNome(nomeMeta).isEmpty(), "Pré-condição falhou: Uma meta com este nome já existe.");
+    }
+
+    @When("o usuário cria uma nova meta de poupança chamada {string} com valor alvo de R$ {double} e prazo de {int} meses")
+    public void o_usuario_cria_uma_nova_meta_de_poupanca_chamada(String nomeMeta, Double valorAlvo, int prazoEmMeses) {
+        String id = UUID.randomUUID().toString();
+        this.meta = new Meta(
+                id,
+                TipoMeta.POUPANCA,
+                nomeMeta,
+                new BigDecimal(valorAlvo),
+                LocalDate.now().plusMonths(prazoEmMeses)
+        );
+        metaService.salvar(this.meta);
+    }
+
+    @Then("uma meta chamada {string} deve existir no sistema")
+    public void uma_meta_chamada_deve_existir_no_sistema(String nomeMeta) {
+        Meta metaSalva = metaRepositorio.obter(this.meta.getId())
+                .orElseThrow(() -> new AssertionError("A meta deveria ter sido salva, mas não foi encontrada."));
+
+        assertEquals(nomeMeta, metaSalva.getDescricao());
     }
 }
