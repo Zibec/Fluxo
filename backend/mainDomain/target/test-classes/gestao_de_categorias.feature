@@ -16,15 +16,12 @@ Feature: Gestão de Categorias
     Then o sistema deve exibir uma mensagem de erro "Categoria já existe"
     And a lista de categorias não deve ser alterada
 
-  Scenario: Deletar uma categoria que não está em uso
-    Given que o usuário tem uma categoria chamada "Extra"
-    And não existe nenhuma transação associada à categoria "Extra"
+  Scenario: Deletar uma categoria
+    Given que a categoria "Moradia" já existe na lista
     When o usuário escolhe deletar a categoria "Extra"
     Then a categoria "Extra" deve ser removida da lista
 
-  Scenario: Tentar deletar uma categoria que está em uso
-    Given que o usuário tem uma categoria chamada "Alimentação"
-    And existe pelo menos uma transação associada à categoria "Alimentação"
-    When o usuário tenta deletar a categoria "Alimentação"
-    Then o sistema deve exibir uma mensagem de erro "Categoria não pode ser excluída pois está em uso"
-    And a categoria "Alimentação" deve continuar na lista
+  Scenario: Tentar excluir uma categoria que não existe
+    Given que não existe uma categoria chamada "Investimentos" no sistema
+    When o usuário escolhe deletar a categoria "Investimentos"
+    Then o sistema deve exibir uma mensagem de erro "Categoria não encontrada"
