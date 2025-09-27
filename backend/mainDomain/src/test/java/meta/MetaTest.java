@@ -54,4 +54,29 @@ public class MetaTest {
     public void oSaldoDaMinhaContaPrincipalDeveSer(Double saldoFinalConta) {
         assertEquals(0, new BigDecimal(saldoFinalConta).compareTo(this.contaPrincipal.getSaldo()), "O saldo da conta principal não foi debitado corretamente.");
     }
+
+    //cenario 2
+    @When("eu tento fazer um aporte de R$ {double} para a meta {string}")
+    public void euTentoFazerUmAporteDeParaAMeta(Double valorAporte, String nomeMeta) {
+        try {
+            metaService.realizarAporte(this.meta.getId(), new BigDecimal(valorAporte), this.contaPrincipal);
+        } catch (Exception e) {
+            this.excecaoCapturada = e;
+        }
+    }
+
+    @Then("o sistema deve exibir a mensagem de erro {string}")
+    public void oSistemaDeveExibirAMensagemDeErro(String mensagemEsperada) {
+        assertNotNull(excecaoCapturada, "Uma exceção era esperada, mas não ocorreu.");
+
+        assertEquals(mensagemEsperada, excecaoCapturada.getMessage());
+    }
+
+    @And("o saldo da meta {string} deve permanecer R$ {double}")
+    public void oSaldoDaMetaDevePermanecer(String nomeMeta, Double saldoMeta) {
+        Meta metaNaoAlterada = metaRepositorio.obter(this.meta.getId()).get();
+
+        assertEquals(0, new BigDecimal(saldoMeta).compareTo(metaNaoAlterada.getSaldoAcumulado()),
+                "O saldo da meta não deveria ter mudado, mas mudou.");
+    }
 }
