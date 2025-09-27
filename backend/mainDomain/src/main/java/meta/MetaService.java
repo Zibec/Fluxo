@@ -1,14 +1,39 @@
 package meta;
 
+import conta.Conta;
+import conta.ContaRepositorio;
+
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class MetaService {
     private final MetaRepositorio metaRepositorio;
+    private final ContaRepositorio contaRepositorio; // Agora precisamos do repositório de conta
 
-    public MetaService(MetaRepositorio repositorio) {
-        this.metaRepositorio = repositorio;
+    public MetaService(MetaRepositorio metaRepositorio, ContaRepositorio contaRepositorio) {
+        this.metaRepositorio = metaRepositorio;
+        this.contaRepositorio = contaRepositorio;
+    }
+
+    public void realizarAporte(String metaId, BigDecimal valorDoAporte, Conta contaPrincipal) {
+        notNull(metaId, "O ID da meta não pode ser nulo");
+        notNull(valorDoAporte, "O valor do aporte não pode ser nulo");
+        notNull(contaPrincipal, "A conta principal não pode ser nula");
+
+        Meta meta = metaRepositorio.obter(metaId)
+                .orElseThrow(() -> new IllegalArgumentException("Meta não encontrada com o ID: " + metaId));
+
+        if (!contaPrincipal.temSaldoSuficiente(valorDoAporte)) {
+            throw new IllegalArgumentException("Saldo insuficiente na conta principal");
+        }
+
+        contaPrincipal.debitar(valorDoAporte);
+        meta.realizarAporte(valorDoAporte);
+
+        metaRepositorio.salvar(meta);
+        contaRepositorio.salvar(contaPrincipal);
     }
 
     public void salvar(Meta meta) {
