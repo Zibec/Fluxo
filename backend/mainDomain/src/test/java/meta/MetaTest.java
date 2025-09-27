@@ -111,4 +111,23 @@ public class MetaTest {
 
         assertEquals(nomeMeta, metaSalva.getDescricao());
     }
+
+    //cenario 4
+    @Given("que eu tenho uma meta de poupança {string} com valor alvo de R$ {double}")
+    public void que_eu_tenho_uma_meta_de_poupanca_com_valor_alvo_de(String nomeMeta, Double valorAlvo) {
+        this.meta = new Meta(UUID.randomUUID().toString(), TipoMeta.POUPANCA, nomeMeta, new BigDecimal(valorAlvo), LocalDate.now().plusYears(1));
+        this.metaService.salvar(this.meta);
+    }
+
+    @And("o saldo atual da meta é de R$ {double}")
+    public void o_saldo_atual_da_meta_e_de_r$(Double saldoAtual) {
+        this.meta.setSaldoAcumulado(new BigDecimal(saldoAtual));
+        this.metaService.salvar(this.meta);
+    }
+
+    @And("o status da meta {string} deve ser {string}")
+    public void o_status_da_meta_deve_ser(String nomeMeta, String statusEsperado) {
+        Meta metaAtualizada = metaService.obter(this.meta.getId()).get();
+        assertEquals(MetaStatus.valueOf(statusEsperado), metaAtualizada.getStatus(), "O status da meta não está correto.");
+    }
 }

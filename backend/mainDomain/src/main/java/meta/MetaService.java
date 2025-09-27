@@ -45,4 +45,9 @@ public class MetaService {
         notNull(id, "O número do cartão não pode ser nulo");
         return metaRepositorio.obter(id);
     }
+
+    public Optional<Meta> obterPorNome(String nomeMeta) {
+        notNull(nomeMeta, "O nome da meta não pode ser nulo");
+        return metaRepositorio.obterPorNome(nomeMeta);
+    }
 }

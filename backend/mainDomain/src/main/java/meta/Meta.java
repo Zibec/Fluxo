@@ -11,6 +11,7 @@ public class Meta {
     private BigDecimal valorAlvo;
     private BigDecimal saldoAcumulado;
     private LocalDate prazo;
+    private MetaStatus status;
 
     public Meta(String id, TipoMeta tipo, String descricao, BigDecimal valorAlvo, LocalDate prazo) {
         if (valorAlvo == null || valorAlvo.compareTo(BigDecimal.ZERO) <= 0) {
@@ -25,6 +26,7 @@ public class Meta {
         this.valorAlvo = valorAlvo;
         this.prazo = prazo;
         this.saldoAcumulado = BigDecimal.ZERO;
+        this.status = MetaStatus.ATIVA;
     }
 
     public void realizarAporte(BigDecimal valorDoAporte) {
@@ -35,6 +37,10 @@ public class Meta {
             throw new IllegalArgumentException("Valor do aporte deve ser positivo.");
         }
         this.saldoAcumulado = this.saldoAcumulado.add(valorDoAporte);
+
+        if (this.saldoAcumulado.compareTo(this.valorAlvo) >= 0) {
+            this.status = MetaStatus.CONCLUIDA;
+        }
     }
 
     public String getId() {
@@ -71,6 +77,14 @@ public class Meta {
 
     public void setPrazo(LocalDate prazo) {
         this.prazo = prazo;
+    }
+
+    public MetaStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(MetaStatus status) {
+        this.status = status;
     }
 
     // Só para fins de testes
