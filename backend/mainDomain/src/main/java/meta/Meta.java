@@ -72,4 +72,9 @@ public class Meta {
     public void setPrazo(LocalDate prazo) {
         this.prazo = prazo;
     }
+
+    // Só para fins de testes
+    public void setSaldoAcumulado(BigDecimal bigDecimal) {
+        saldoAcumulado = bigDecimal;
+    }
 }
