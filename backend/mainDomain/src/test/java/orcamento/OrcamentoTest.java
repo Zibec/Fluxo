@@ -1,9 +1,9 @@
-package Orcamento;
+package orcamento;
 
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
 
-import orcamento.*; // suas classes de domínio estão no pacote 'orcamento' (minúsculo)
+import orcamento.*;
 
 import java.math.BigDecimal;
 import java.text.Normalizer;
@@ -63,6 +63,11 @@ public class OrcamentoTest {
     public void defineOrcamento(String valorMoeda, String categoria, String mesAno) {
         var valor = parseMoedaBR(valorMoeda);
         var ym = parseAnoMes(mesAno);
+
+        this.categoria = categoria;
+        this.anoMes = ym;
+
+
         try {
             service.criarOrcamentoMensal(usuario, categoria, ym, valor);
             mensagemSistema = "Criado com sucesso";
@@ -115,6 +120,7 @@ public class OrcamentoTest {
 
     @Given("que existe um orçamento na categoria {string} para o mês {string} de {string}")
     public void existeUmOrcamentoNaCategoriaParaOMes(String categoria, String mesAno, String valorMoeda) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
         var chave = new OrcamentoChave(usuario,ym, categoria);
@@ -125,6 +131,7 @@ public class OrcamentoTest {
 
     @When("o usuário atualiza esse orçamento para {string}")
     public void usuarioAtualizaEsseOrcamentoPara(String novoValorMoeda) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         var novoValor = parseMoedaBR(novoValorMoeda);
         var chave = new OrcamentoChave(usuario,anoMes, categoria);
         try {
@@ -143,6 +150,7 @@ public class OrcamentoTest {
 
     @Then("o usuário deve ver o orçamento salvo com valor {string}")
     public void usuarioDeveVerOrcamentoSalvoComValor(String valorEsperado) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         var chave = new OrcamentoChave(usuario,anoMes ,categoria);
         var opt = repo.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não encontrado após atualizar");
@@ -155,8 +163,10 @@ public class OrcamentoTest {
 
     @Given("que existe uma categoria {string} com gasto limite de {string} para o mês {string}")
     public void existeCategoriaComLimiteParaOMes(String categoria, String valorMoeda, String mesAno) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         this.categoria = categoria;
         this.anoMes = parseAnoMes(mesAno);
+
         var valor = parseMoedaBR(valorMoeda);
         var chave = new OrcamentoChave(usuario,anoMes, categoria);
         repo.salvarNovo(chave, new Orcamento(valor));
@@ -165,6 +175,7 @@ public class OrcamentoTest {
 
     @And("o gasto acumulado do usuário para {string} em {string} é de {string}")
     public void gastoAcumuladoDoUsuarioEh(String categoria, String mesAno, String valorMoeda) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario,ym, categoria);
         sumario.set(chave, parseMoedaBR(valorMoeda));
@@ -172,6 +183,7 @@ public class OrcamentoTest {
 
     @When("o usuário registra uma despesa de {string} na categoria {string} em {string}")
     public void usuarioRegistraUmaDespesa(String valorDespesa, String categoria, String mesAno) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoria);
 
@@ -200,12 +212,14 @@ public class OrcamentoTest {
 
     @Then("o sistema deve enviar ao usuário uma notificação {string}")
     public void sistemaDeveEnviarNotificacao(String esperado) {
+        if (this.usuario == null) this.usuario = "Gabriel";
         var msg = notificador.ultima().orElse(null);
         Assertions.assertEquals(esperado, msg, "Mensagem de notificação diferente do esperado");
     }
 
     @Then("o sistema não deve notificar o usuário")
     public void sistemaNaoDeveNotificar() {
+        if (this.usuario == null) this.usuario = "Gabriel";
         Assertions.assertTrue(notificador.ultima().isEmpty(), "Não era para notificar");
     }
 
