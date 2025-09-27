@@ -15,13 +15,6 @@ Feature: Gestão de Contas e Cartões
     When eu realizo uma nova compra de "300"
     Then o sistema deve recalcular o limite disponível como "3500"
 
-  Scenario: Fechamento automático da fatura
-    Given que tenho uma fatura em aberto com despesas
-    And a data de fechamento é hoje
-    When o processo de fechamento de fatura é executado
-    Then o sistema deve consolidar o valor a pagar
-    And criar uma nova fatura para o próximo período
-
   # História 5.2: Cadastro de Contas Bancárias Correntes
   #  Scenario: Cadastrar conta com sucesso
   #    Given que estou logado no sistema
