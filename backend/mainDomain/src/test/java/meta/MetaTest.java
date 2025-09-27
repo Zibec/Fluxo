@@ -35,7 +35,7 @@ public class MetaTest {
         // Em um sistema real, buscaríamos a conta do usuário, aqui criamos para o teste
     }
 
-    @When("eu faco um aporte de R$ {double} para a meta {string}")
+    @When("eu faço um aporte de R$ {double} para a meta {string}")
     public void euFacoUmAporteDeParaAMeta(Double valorAporte, String nomeMeta) {
         try {
             metaService.realizarAporte(this.meta.getId(), new BigDecimal(valorAporte), this.contaPrincipal);
