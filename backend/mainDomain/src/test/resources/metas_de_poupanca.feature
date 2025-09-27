@@ -31,3 +31,8 @@ Scenario: Concluir uma meta de poupança ao fazer o último aporte
   When eu faço um aporte de R$ 100.00 para a meta "Playstation 6"
   Then o saldo da meta "Playstation 6" deve ser R$ 5000.00
   And o status da meta "Playstation 6" deve ser "CONCLUIDA"
+
+Scenario: Excluir uma meta de poupança existente
+  Given que eu tenho uma meta de poupança "Casa Nova" criada no sistema
+  When o usuário exclui a meta "Casa Nova"
+  Then a meta "Casa Nova" não deve mais existir no sistema

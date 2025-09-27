@@ -50,4 +50,14 @@ public class MetaService {
         notNull(nomeMeta, "O nome da meta não pode ser nulo");
         return metaRepositorio.obterPorNome(nomeMeta);
     }
+
+    public void deletar(String metaId) {
+        notNull(metaId, "O ID da meta não pode ser nulo");
+
+        if (metaRepositorio.obter(metaId).isEmpty()) {
+            throw new IllegalArgumentException("Meta não encontrada com o ID: " + metaId);
+        }
+
+        metaRepositorio.deletar(metaId);
+    }
 }

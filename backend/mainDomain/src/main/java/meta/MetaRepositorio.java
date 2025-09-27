@@ -29,4 +29,9 @@ public class MetaRepositorio {
                 .filter(meta -> meta.getDescricao().equalsIgnoreCase(nomeMeta))
                 .findFirst();
     }
+
+    public void deletar(String metaId) {
+        notNull(metaId, "O ID da meta não pode ser nulo");
+        metas.remove(metaId);
+    }
 }

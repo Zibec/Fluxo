@@ -9,6 +9,7 @@ import io.cucumber.java.en.And;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -129,5 +130,23 @@ public class MetaTest {
     public void o_status_da_meta_deve_ser(String nomeMeta, String statusEsperado) {
         Meta metaAtualizada = metaService.obter(this.meta.getId()).get();
         assertEquals(MetaStatus.valueOf(statusEsperado), metaAtualizada.getStatus(), "O status da meta não está correto.");
+    }
+
+    //cenario 5
+    @Given("que eu tenho uma meta de poupança {string} criada no sistema")
+    public void que_eu_tenho_uma_meta_de_poupanca_criada_no_sistema(String nomeMeta) {
+        this.meta = new Meta(UUID.randomUUID().toString(), TipoMeta.POUPANCA, nomeMeta, new BigDecimal("10000"), LocalDate.now().plusYears(2));
+        metaService.salvar(this.meta);
+    }
+
+    @When("o usuário exclui a meta {string}")
+    public void o_usuario_exclui_a_meta(String nomeMeta) {
+        metaService.deletar(this.meta.getId());
+    }
+
+    @Then("a meta {string} não deve mais existir no sistema")
+    public void a_meta_nao_deve_mais_existir_no_sistema(String nomeMeta) {
+        Optional<Meta> resultadoBusca = metaRepositorio.obter(this.meta.getId());
+        assertTrue(resultadoBusca.isEmpty(), "A meta não foi excluída corretamente e ainda foi encontrada no sistema.");
     }
 }
