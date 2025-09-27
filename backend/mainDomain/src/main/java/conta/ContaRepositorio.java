@@ -1,0 +1,21 @@
+package conta;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import static org.apache.commons.lang3.Validate.notNull;
+
+public class ContaRepositorio {
+
+    private final Map<String, Conta> contas = new HashMap<>();
+
+    public void salvar(Conta conta) {
+        notNull(conta, "A conta não pode ser nula");
+        contas.put(conta.getId(), conta);
+    }
+
+    public Optional<Conta> obter(String contaId) {
+        notNull(contaId, "O ID da conta não pode ser nulo");
+        return Optional.ofNullable(contas.get(contaId));
+    }
+}
