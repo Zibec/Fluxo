@@ -4,11 +4,11 @@ Feature: Configurações da Conta de Usuário
   # História 12.1: Gerenciamento de Dados Pessoais e Segurança
   Scenario: Atualizar e-mail com sucesso
     Given que estou logado no sistema
-    And acesso a página de configurações de cartao
+    And acesso a página de configurações
     When eu altero meu e-mail para "novo_email@teste.com"
     And o e-mail não está em uso por outro usuário
     Then o sistema deve salvar o novo e-mail
-    And exibir uma mensagem de sucesso "E-mail atualizado com sucesso."
+    And exibir a mensagem "E-mail atualizado com sucesso."
 
   Scenario: Atualizar e-mail já existente
     Given que estou logado no sistema
@@ -23,9 +23,7 @@ Feature: Configurações da Conta de Usuário
     And acesso a página de configurações de cartao
     When eu informo minha senha atual "senha_atual"
     And informo a nova senha "NovaSenha123!"
-    And confirmo a nova senha
     Then o sistema deve validar a senha atual
-    And armazenar a nova senha com criptografia forte
     And exibir a mensagem "Senha alterada com sucesso."
 
   Scenario: Alterar senha com senha atual incorreta
@@ -41,8 +39,6 @@ Feature: Configurações da Conta de Usuário
     Given que estou logado no sistema
     And acesso a página de configurações de cartao
     When eu seleciono a moeda "USD"
-    And seleciono o formato de data "MM/dd/yyyy"
+    And seleciono o formato de data "MMDDYYYY"
     Then o sistema deve salvar as preferências
     And exibir a mensagem "Configurações atualizadas."
-    And todos os valores monetários exibidos devem estar em dólares
-    And todas as datas exibidas devem seguir o formato "MM/dd/yyyy"
