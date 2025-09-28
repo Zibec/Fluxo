@@ -11,7 +11,7 @@ Scenario: Criação de transações bancárias
     Then o usuário verá que o sistema salvou como "agendada" para o dia "16/09/2025" uma transferência que será realizada
 
 Scenario: Cancelamento de transações bancárias
-    Given que existe uma transação para o usuário efetuar no dia "16/09/2025" np valor de "R$ 600,00"
+    Given que existe uma transação para o usuário efetuar no dia "16/09/2025" no valor de "R$ 600,00"
     When o usuário quer cancelar essa transação que iria ser paga no dia "16/09/2025"
     And não existe mais essa transação
     Then o sistema irá excluir esse pagamento
@@ -43,7 +43,7 @@ Scenario: Cancelamento de assinatura
     And não deve existir próxima data de execução
 
 Scenario: Evita duplicidade ao executar duas vezes
-    Given que o proximo dia de pagamento é "17/11/2025" 
-    And ja existe a transação desse pagamento agendada para o dia "17/11/2025"
+    Given que o próximo dia de pagamento é "17/11/2025"
+    And já existe a transação desse pagamento agendada para o dia "17/11/2025"
     When o agendamento tentar executar novamente em 17/11/2025
     Then nenhuma nova transação deve ser criada
