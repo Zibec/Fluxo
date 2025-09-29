@@ -8,9 +8,33 @@ public class Conta {
     private final String id;
     private BigDecimal saldo;
 
+    private String nome;
+    private String tipo;
+    private String banco;
+
     public Conta() {
         this.id = UUID.randomUUID().toString();
         this.saldo = BigDecimal.ZERO;
+    }
+
+    public Conta(String nome, String tipo, String banco) {
+        this.id = UUID.randomUUID().toString();
+        this.saldo = BigDecimal.ZERO;
+        this.nome = nome;
+        this.tipo = tipo;
+        this.banco = banco;
+
+    }
+
+    public Conta(String nome, String tipo, String banco, BigDecimal saldoInicial) {
+        this.id = UUID.randomUUID().toString();
+        this.nome = nome;
+        this.tipo = tipo;
+        this.banco = banco;
+        if (saldoInicial.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("O saldo inicial não pode ser negativo.");
+        }
+        this.saldo = saldoInicial;
     }
 
     public void debitar(BigDecimal valor) {
@@ -41,5 +65,21 @@ public class Conta {
 
     public void setSaldo(BigDecimal saldo) {
         this.saldo = saldo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

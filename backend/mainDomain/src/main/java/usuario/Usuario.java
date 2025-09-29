@@ -77,7 +77,7 @@ public class Usuario {
 
     public void changeEmail(String oldEmail, String newEmail, String password, UsuarioService service) {
         if (!this.verifyPassword(password)) {
-            throw new IllegalArgumentException("Senha incorreta");
+            throw new SecurityException("Senha incorreta");
         }
         if (service.emailExistente(newEmail)) {
             throw new IllegalArgumentException("Email já está em uso");
@@ -94,7 +94,7 @@ public class Usuario {
 
     public void changePassword(String oldPassword, String newPassword) {
         if (!this.password.verify(oldPassword)) {
-            throw new IllegalArgumentException("Senha atual incorreta");
+            throw new SecurityException("Senha atual incorreta");
         }
 
         if(Objects.equals(oldPassword, newPassword)) {

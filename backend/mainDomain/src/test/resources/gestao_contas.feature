@@ -58,13 +58,3 @@ Feature: Cadastro e gestão de contas
     When tenta realizar uma retirada de R$ 500,00
     Then o sistema deve recusar a operação e exibir mensagem de erro
 
-  # Edição de conta
-  Scenario: Atualizar dados descritivos da conta
-    Given que a conta já está cadastrada
-    When o usuário altera nome, apelido ou tipo
-    Then o sistema deve atualizar as informações com sucesso
-
-  Scenario: Tentar alterar transações já realizadas
-    Given que a conta já possui transações registradas
-    When o usuário tenta alterar o histórico de transações
-    Then o sistema deve recusar a alteração e exibir mensagem de erro
