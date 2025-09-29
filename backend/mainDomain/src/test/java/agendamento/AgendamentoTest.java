@@ -14,10 +14,13 @@ public class AgendamentoTest {
 
     private final DateTimeFormatter BR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private final InMemoryTransacaoRepositorio txRepo = new InMemoryTransacaoRepositorio();
-    private final TransacaoService txService = new TransacaoService(txRepo);
-    private final AgendamentoService agService = new AgendamentoService(txService);
+    private final TransacaoRepositorio txRepo = new TransacaoRepositorio();
 
+    private final TransacaoService txService = new TransacaoService(txRepo);
+
+    // seu AgendamentoService antigo (que só recebe TransacaoService)
+    private final AgendamentoRepositorio agRepo = new AgendamentoRepositorio();
+    private final AgendamentoService agService = new AgendamentoService(agRepo, txService);
     private String agendamentoId;
     private LocalDate hoje;
 

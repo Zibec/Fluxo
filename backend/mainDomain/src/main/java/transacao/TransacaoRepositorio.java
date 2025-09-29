@@ -1,11 +1,45 @@
 package transacao;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
-public interface TransacaoRepositorio {
-    void salvar(Transacao t);
-    Optional<Transacao> encontrarPorAgendamentoEData(String agendamentoId, LocalDate data);
-    List<Transacao> listarTodas();
+
+public class TransacaoRepositorio {
+
+    // Armazenamento principal
+    private final Map<String, Transacao> transacao = new ConcurrentHashMap<>();
+
+    // Índice auxiliar para idempotência: (agendamentoId#data) -> id da transação
+    private final Map<String, String> idxAgendamentoData = new ConcurrentHashMap<>();
+
+    /** Salva (insere/atualiza) uma transação. */
+    public void salvar(Transacao t) {
+        transacao.put(t.getId(), t);
+        if (t.getOrigemAgendamentoId() != null) {
+            idxAgendamentoData.put(chave(t.getOrigemAgendamentoId(), t.getData()), t.getId());
+        }
+    }
+
+    /** Busca idempotente por (agendamentoId, data). */
+    public Optional<Transacao> encontrarPorAgendamentoEData(String agendamentoId, LocalDate data) {
+        String id = idxAgendamentoData.get(chave(agendamentoId, data));
+        return Optional.ofNullable(id).map(transacao::get);
+    }
+
+    public boolean existePorCategoriaId(String categoriaId) {
+        Objects.requireNonNull(categoriaId, "ID da Categoria não pode ser nulo");
+        // Percorre a lista de transações e para no primeiro que encontrar com o ID
+        return transacao.values().stream()
+                .anyMatch(transacao -> categoriaId.equals(transacao.getCategoriaId()));
+    }
+
+    /** Lista todas. */
+    public List<Transacao> listarTodas() {
+        return List.copyOf(transacao.values());
+    }
+
+    private static String chave(String agendamentoId, LocalDate data) {
+        return agendamentoId + "#" + data;
+    }
 }
