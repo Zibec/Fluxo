@@ -14,10 +14,32 @@ public class AgendamentoTest {
 
     private final DateTimeFormatter BR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private final InMemoryTransacaoRepositorio txRepo = new InMemoryTransacaoRepositorio();
-    private final TransacaoService txService = new TransacaoService(txRepo);
-    private final AgendamentoService agService = new AgendamentoService(txService);
+    private final TransacaoRepositorio txRepo = new TransacaoRepositorio() {
+        private final java.util.Map<String, Transacao> store = new java.util.concurrent.ConcurrentHashMap<>();
+        // índice de idempotência (agendamentoId#data) -> id
+        private final java.util.Map<String, String> idx = new java.util.concurrent.ConcurrentHashMap<>();
 
+        @Override public void salvar(Transacao t) {
+            store.put(t.getId(), t);
+            if (t.getOrigemAgendamentoId() != null) {
+                idx.put(t.getOrigemAgendamentoId() + "#" + t.getData(), t.getId());
+            }
+        }
+
+        @Override public java.util.Optional<Transacao> encontrarPorAgendamentoEData(String agendamentoId, java.time.LocalDate data) {
+            String id = idx.get(agendamentoId + "#" + data);
+            return java.util.Optional.ofNullable(id).map(store::get);
+        }
+
+        @Override public java.util.List<Transacao> listarTodas() {
+            return java.util.List.copyOf(store.values());
+        }
+    };
+
+    private final TransacaoService txService = new TransacaoService(txRepo);
+
+    // seu AgendamentoService antigo (que só recebe TransacaoService)
+    private final AgendamentoService agService = new AgendamentoService(txService);
     private String agendamentoId;
     private LocalDate hoje;
 
