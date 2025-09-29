@@ -1,5 +1,6 @@
 package usuario;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.isTrue;
@@ -63,30 +64,42 @@ public class Usuario {
         this.moedaPreferida = Moeda.valueOf(moedaPreferida);
     }
 
-    public void setUsername(String newUsername) {
+    public void setUsername(String newUsername, String password, UsuarioService service) {
+        if (!this.verifyPassword(password)) {
+            throw new IllegalArgumentException("Senha incorreta");
+        }
+
+        if (service.usernameExistente(newUsername)) {
+            throw new IllegalArgumentException("Nome de usuário já está em uso");
+        }
         this.username = newUsername;
     }
 
-    public boolean changeEmail(String oldEmail, String newEmail, UsuarioService service) {
+    public void changeEmail(String oldEmail, String newEmail, String password, UsuarioService service) {
+        if (!this.verifyPassword(password)) {
+            throw new IllegalArgumentException("Senha incorreta");
+        }
         if (service.emailExistente(newEmail)) {
-            throw new IllegalArgumentException("Email already in use");
+            throw new IllegalArgumentException("Email já está em uso");
         }
         if (!this.email.equals(oldEmail)) {
-            throw new IllegalArgumentException("Old email does not match current email");
+            throw new IllegalArgumentException("O e-mail antual não corresponde ao e-mail atual");
         }
         if (verifyEmail(newEmail)) {
             this.email = newEmail;
         } else {
-            throw new IllegalArgumentException("Invalid email format");
+            throw new IllegalArgumentException("Formato de e-mail inválido");
         }
-        return true;
     }
 
-    public boolean changePassword(String oldPassword, String newPassword) {
+    public void changePassword(String oldPassword, String newPassword) {
         if (!this.password.verify(oldPassword)) {
-            throw new IllegalArgumentException("Old password does not match current password");
+            throw new IllegalArgumentException("Senha atual incorreta");
+        }
+
+        if(Objects.equals(oldPassword, newPassword)) {
+            throw new IllegalArgumentException("A nova senha deve ser diferente da senha atual");
         }
         this.password = new Password(newPassword);
-        return true;
     }
 }
