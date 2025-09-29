@@ -27,20 +27,9 @@ public class TransacaoRepositorio {
         return Optional.ofNullable(id).map(transacao::get);
     }
 
-    /** (Opcional) Busca por id. */
-    public Optional<Transacao> encontrarPorId(String id) {
-        return Optional.ofNullable(transacao.get(id));
-    }
-
-    /** Lista todas (cópia imutável). */
+    /** Lista todas. */
     public List<Transacao> listarTodas() {
         return List.copyOf(transacao.values());
-    }
-
-    /** Limpa tudo (útil em testes). */
-    public void limpar() {
-        transacao.clear();
-        idxAgendamentoData.clear();
     }
 
     private static String chave(String agendamentoId, LocalDate data) {
