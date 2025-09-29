@@ -13,6 +13,11 @@ public class Conta {
         this.saldo = BigDecimal.ZERO;
     }
 
+    public Conta(BigDecimal saldoInicial) {
+        this.id = UUID.randomUUID().toString();
+        this.saldo = saldoInicial;
+    }
+
     public void debitar(BigDecimal valor) {
         if (!temSaldoSuficiente(valor)) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar o débito.");
