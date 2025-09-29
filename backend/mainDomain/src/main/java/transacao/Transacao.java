@@ -14,7 +14,20 @@ public class Transacao {
     private BigDecimal valor;
     private LocalDate data;
     private StatusTransacao status;
+    private String categoriaId;
 
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId) {
+        this.id = Objects.requireNonNull(id);
+        this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
+        this.descricao = notBlank(descricao, "Descrição obrigatória");
+        isTrue(valor != null && valor.signum() >= 0, "Valor deve ser positivo");
+        this.valor = valor;
+        this.data = Objects.requireNonNull(data);
+        this.status = Objects.requireNonNull(status);
+        this.categoriaId = categoriaId;
+    }
+
+    //Construtor sem categoria
     public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
@@ -31,6 +44,10 @@ public class Transacao {
     public BigDecimal getValor() { return valor; }
     public LocalDate getData() { return data; }
     public StatusTransacao getStatus() { return status; }
+    public String getCategoriaId() { return categoriaId; }
+
+    public void setCategoriaId(String categoriaId) { this.categoriaId = categoriaId; }
+
 
     /** Só pode atualizar enquanto PENDENTE */
     public void atualizarValor(BigDecimal novoValor) {

@@ -27,6 +27,13 @@ public class TransacaoRepositorio {
         return Optional.ofNullable(id).map(transacao::get);
     }
 
+    public boolean existePorCategoriaId(String categoriaId) {
+        Objects.requireNonNull(categoriaId, "ID da Categoria não pode ser nulo");
+        // Percorre a lista de transações e para no primeiro que encontrar com o ID
+        return transacao.values().stream()
+                .anyMatch(transacao -> categoriaId.equals(transacao.getCategoriaId()));
+    }
+
     /** Lista todas. */
     public List<Transacao> listarTodas() {
         return List.copyOf(transacao.values());

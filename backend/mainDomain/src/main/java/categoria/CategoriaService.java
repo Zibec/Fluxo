@@ -1,15 +1,19 @@
 // Em: src/main/java/categoria/CategoriaService.java
 package categoria;
 
+import transacao.TransacaoRepositorio;
+
 import java.util.Optional;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class CategoriaService {
 
     private final CategoriaRepositorio categoriaRepositorio;
+    private final TransacaoRepositorio transacaoRepositorio;
 
-    public CategoriaService(CategoriaRepositorio categoriaRepositorio) {
+    public CategoriaService(CategoriaRepositorio categoriaRepositorio, TransacaoRepositorio transacaoRepositorio) {
         this.categoriaRepositorio = categoriaRepositorio;
+        this.transacaoRepositorio = transacaoRepositorio;
     }
 
     public void salvar(Categoria categoria) {
@@ -29,6 +33,12 @@ public class CategoriaService {
             throw new IllegalArgumentException("Categoria não encontrada");
         }
 
+        // VERIFICAÇÃO DE SEGURANÇA: A categoria está em uso?
+        if (transacaoRepositorio.existePorCategoriaId(id)) {
+            throw new IllegalStateException("Categoria não pode ser excluída pois está em uso");
+        }
+
+        // Se a verificação passar, a exclusão é permitida
         categoriaRepositorio.deletar(id);
     }
 }
