@@ -3,6 +3,8 @@ package conta;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.List;
+import java.util.ArrayList;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class ContaRepositorio {
@@ -22,5 +24,13 @@ public class ContaRepositorio {
     public boolean contaExistente(String nome) {
         notNull(nome, "O nome da conta não pode ser nulo");
         return contas.values().stream().anyMatch(c -> c.getNome().equals(nome));
+    }
+
+    public List<Conta> listarTodas() {
+        return new ArrayList<>(contas.values());
+    }
+
+    public void limpar() {
+        contas.clear();
     }
 }

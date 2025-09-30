@@ -42,4 +42,11 @@ public class TransacaoRepositorio {
     private static String chave(String agendamentoId, LocalDate data) {
         return agendamentoId + "#" + data;
     }
+
+    public Optional<Transacao> obterPorId(String id) {
+        Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
+        // 'transacao' é o nome do seu Map principal, então usamos ele para buscar pelo ID.
+        return Optional.ofNullable(transacao.get(id));
+    }
+
 }

@@ -8,6 +8,13 @@ import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notBlank;
 
 public class Transacao {
+
+    public enum Tipo {
+        DESPESA,
+        RECEITA,
+        REEMBOLSO
+    }
+
     private final String id;              // pode ser UUID
     private final String origemAgendamentoId; // pra rastrear de qual agendamento veio (idempotência/ auditoria)
     private final String descricao;
@@ -15,8 +22,10 @@ public class Transacao {
     private LocalDate data;
     private StatusTransacao status;
     private String categoriaId;
+    private final Tipo tipo;
+    private String transacaoOriginalId;
 
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId) {
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId, Tipo tipo) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
@@ -25,10 +34,11 @@ public class Transacao {
         this.data = Objects.requireNonNull(data);
         this.status = Objects.requireNonNull(status);
         this.categoriaId = categoriaId;
+        this.tipo = Objects.requireNonNull(tipo, "O tipo da transação é obrigatório");
     }
 
     //Construtor sem categoria
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status) {
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, Tipo tipo) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
@@ -36,6 +46,7 @@ public class Transacao {
         this.valor = valor;
         this.data = Objects.requireNonNull(data);
         this.status = Objects.requireNonNull(status);
+        this.tipo = Objects.requireNonNull(tipo, "O tipo da transação é obrigatório");
     }
 
     public String getId() { return id; }
@@ -45,6 +56,9 @@ public class Transacao {
     public LocalDate getData() { return data; }
     public StatusTransacao getStatus() { return status; }
     public String getCategoriaId() { return categoriaId; }
+    public Tipo getTipo() {return tipo;}
+    public String getTransacaoOriginalId() {return transacaoOriginalId;}
+    public void setTransacaoOriginalId(String transacaoOriginalId) {this.transacaoOriginalId = transacaoOriginalId;}
 
     public void setCategoriaId(String categoriaId) { this.categoriaId = categoriaId; }
 
