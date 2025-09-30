@@ -11,8 +11,8 @@ Feature: Rastreamento de Investimentos
     Given que o job agendado é executado
     When o sistema consulta a API externa do Banco Central
     But a API não está disponível
-    Then o sistema deve registrar um log de erro
-    And a texa Selic não é atualizada naquele dia
+    Then a texa Selic não é atualizada naquele dia
+    And o sistema deve registrar um log de erro
 
   #Para cada investimento "Tesouro Selic", aplicar rendimento diário automaticamente.
   Scenario: Atulização de rendimento bem-sucedida
@@ -22,7 +22,7 @@ Feature: Rastreamento de Investimentos
     Then o valor atualizado do investimento deve ser 1010
 
   Scenario: Tentativa de aplicar rendimento sem taxa Selic disponível
-    Given que existe um invesimento do tipo "Tesouro Selic" com valor atual de 1000
+    Given que existe um investimento do tipo "Tesouro Selic" com valor atual de 1000
     And não há taxa Selic disponível no sistema
     When o job de atualização de rendimento é executado
     Then o investimento não deve ser atualizado
