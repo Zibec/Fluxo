@@ -1,35 +1,55 @@
 package contasapagar;
 
-import conta.Conta;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import transacao.StatusTransacao;
 import transacao.Transacao;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.UUID;
+
+import conta.Conta;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ContasAPagarTest {
+
     private Conta conta;
     private Transacao transacao;
 
     // -------------------------
-    // Transações Únicas
+    // Transações Avulsas
     // -------------------------
 
     @Given("o usuário possui uma conta com saldo {string}")
     public void oUsuarioPossuiUmaContaComSaldo(String saldo) {
-        conta = new Conta(new BigDecimal(saldo));
+        conta = new Conta();
+        conta.setSaldo(new BigDecimal(saldo));
         assertEquals(new BigDecimal(saldo), conta.getSaldo());
     }
 
     @When("o usuário cria uma transação única {string} de {string}")
     public void oUsuarioCriaUmaTransacaoUnica(String descricao, String valor) {
-        transacao = new Transacao("1", descricao, new BigDecimal(valor), "Pendente", conta, true);
-        assertTrue(transacao.isUnica());
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                null, // origemAgendamentoId é null para avulsa
+                descricao,
+                new BigDecimal(valor),
+                LocalDate.now(),
+                StatusTransacao.PENDENTE,
+                "categoria1",
+                conta,
+                true
+        );
+        assertTrue(transacao.isAvulsa());
     }
 
-    @Then("a transação deve estar registrada com status {string}")
-    public void aTransacaoDeveEstarRegistradaComStatus(String status) {
-        assertEquals(status, transacao.getStatus());
+    @Then("a transação deve estar registrada com status PENDENTE")
+    public void aTransacaoDeveEstarRegistradaComStatusPendente() {
+        assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
     }
 
     @And("o saldo da conta deve permanecer {string}")
@@ -37,17 +57,26 @@ public class ContasAPagarTest {
         assertEquals(new BigDecimal(saldoEsperado), conta.getSaldo());
     }
 
-
     @Given("existe uma transação única pendente de {string} com descrição {string}")
     public void existeUmaTransacaoUnicaPendente(String valor, String descricao) {
-        transacao = new Transacao(descricao, new BigDecimal(valor), "Pendente", conta, true);
-        assertEquals("Pendente", transacao.getStatus());
-        assertTrue(transacao.isUnica());
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                null,
+                descricao,
+                new BigDecimal(valor),
+                LocalDate.now(),
+                StatusTransacao.PENDENTE,
+                "categoria1",
+                conta,
+                true
+        );
+        assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
+        assertTrue(transacao.isAvulsa());
     }
 
     @When("o usuário altera o valor para {string}")
     public void oUsuarioAlteraOValorPara(String novoValor) {
-        transacao.setValor(new BigDecimal(novoValor));
+        transacao.atualizarValor(new BigDecimal(novoValor));
     }
 
     @Then("a transação deve refletir o novo valor {string}")
@@ -55,15 +84,24 @@ public class ContasAPagarTest {
         assertEquals(new BigDecimal(valorEsperado), transacao.getValor());
     }
 
-    @And("o status deve permanecer {string}")
-    public void oStatusDevePermanecer(String statusEsperado) {
-        assertEquals(statusEsperado, transacao.getStatus());
+    @And("o status deve permanecer PENDENTE")
+    public void oStatusDevePermanecerPendente() {
+        assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
     }
-
 
     @Given("existe uma transação única pendente de {string}")
     public void existeUmaTransacaoUnicaPendenteDe(String valor) {
-        transacao = new Transacao("Transação Única", new BigDecimal(valor), "Pendente", conta, true);
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                null,
+                "Transação Única",
+                new BigDecimal(valor),
+                LocalDate.now(),
+                StatusTransacao.PENDENTE,
+                "categoria1",
+                conta,
+                true
+        );
     }
 
     @When("o usuário deleta essa transação")
@@ -76,15 +114,14 @@ public class ContasAPagarTest {
         assertNull(transacao);
     }
 
-
-    @When("o usuário marca a transação como {string}")
-    public void oUsuarioMarcaATransacaoComo(String novoStatus) {
+    @When("o usuário marca a transação como EFETIVADA")
+    public void oUsuarioMarcaATransacaoComoEfetivada() {
         transacao.efetivar();
     }
 
-    @Then("o status da transação deve ser {string}")
-    public void oStatusDaTransacaoDeveSer(String statusEsperado) {
-        assertEquals(statusEsperado, transacao.getStatus());
+    @Then("o status da transação deve ser EFETIVADA")
+    public void oStatusDaTransacaoDeveSerEfetivada() {
+        assertEquals(StatusTransacao.EFETIVADA, transacao.getStatus());
     }
 
     @And("o valor da transação deve ser debitado da conta")
@@ -97,6 +134,30 @@ public class ContasAPagarTest {
         assertEquals(new BigDecimal(saldoEsperado), conta.getSaldo());
     }
 
+    // -------------------------
+    // Transações Recorrentes (Agendadas)
+    // -------------------------
+
+    @Given("existe uma transação recorrente pendente de {string}")
+    public void existeUmaTransacaoRecorrentePendenteDe(String valor) {
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                "agendamento123",
+                "Assinatura",
+                new BigDecimal(valor),
+                LocalDate.now(),
+                StatusTransacao.PENDENTE,
+                "categoria2",
+                conta,
+                false
+        );
+        assertFalse(transacao.isAvulsa());
+    }
+
+    @When("o usuário efetiva essa transação")
+    public void oUsuarioEfetivaEssaTransacao() {
+        transacao.efetivar();
+    }
 
     // -------------------------
     // Notificações de Vencimento
@@ -104,8 +165,17 @@ public class ContasAPagarTest {
 
     @Given("existe uma transação pendente com vencimento para amanhã")
     public void existeUmaTransacaoPendenteComVencimentoParaAmanha() {
-        transacao = new Transacao("Conta de Luz", new BigDecimal("100.00"), "Pendente", conta, true);
-        transacao.setDataVencimento(LocalDate.now().plusDays(1));
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                null,
+                "Conta de Luz",
+                new BigDecimal("100.00"),
+                LocalDate.now().plusDays(1),
+                StatusTransacao.PENDENTE,
+                "categoria3",
+                conta,
+                true
+        );
     }
 
     @When("o sistema verifica transações pendentes próximas do vencimento")
