@@ -100,5 +100,12 @@ public class Transacao {
 
         this.data = novaData;
     }
+
+    public boolean isProximaDoVencimento() {
+        if (data.equals(LocalDate.now().plusDays(1))) {
+            return true;
+        }
+        return false;
+    }
 }
 
