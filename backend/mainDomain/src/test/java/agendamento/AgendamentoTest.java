@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import conta.Conta;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AgendamentoTest {
@@ -23,6 +25,7 @@ public class AgendamentoTest {
     private final AgendamentoService agService = new AgendamentoService(agRepo, txService);
     private String agendamentoId;
     private LocalDate hoje;
+    private Conta conta = new Conta();
 
     // ----------------- Helpers -----------------
     private static BigDecimal parseValor(String raw) {
@@ -58,7 +61,7 @@ public class AgendamentoTest {
     public void whenRegistrarParaDia(String data) {
         var ag = agService.obter(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
     }
 
     @And("o dia atual é {string}")
@@ -89,7 +92,7 @@ public class AgendamentoTest {
     public void givenTransacaoJaAgendadaParaDia(String data) {
         LocalDate d = LocalDate.parse(data, BR);
         var ag = agService.obter(agendamentoId).orElseThrow();
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
         qtdAntes = (int) txRepo.listarTodas().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId())).count();
         assertEquals(1, qtdAntes, "Deveria existir exatamente 1 transação já criada");
@@ -119,7 +122,7 @@ public class AgendamentoTest {
                 parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR));
         agService.salvar(ag);
         dataTransacaoCriada = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada, conta, false);
         assertTrue(txRepo.encontrarPorAgendamentoEData(agendamentoId, dataTransacaoCriada).isPresent());
     }
 
@@ -151,7 +154,7 @@ public class AgendamentoTest {
                 parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR));
         agService.salvar(ag);
         dataOriginal = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal, conta, false);
         assertTrue(txRepo.encontrarPorAgendamentoEData(agendamentoId, dataOriginal).isPresent());
     }
 
@@ -169,7 +172,7 @@ public class AgendamentoTest {
         txAntiga.cancelar();
         LocalDate dNova = LocalDate.parse(novaData, BR);
         var vNovo = parseValor(novoValor);
-        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova);
+        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova, conta, false);
         dataOriginal = dNova;
     }
 
@@ -230,7 +233,7 @@ public class AgendamentoTest {
     public void thenAgendaPagamentoParaDia(String dia) {
         var ag = agService.obter(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(dia, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
         assertTrue(txRepo.encontrarPorAgendamentoEData(agendamentoId, d).isPresent());
     }
 

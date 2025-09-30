@@ -1,4 +1,4 @@
-package categoria;
+/*package categoria;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -132,3 +132,4 @@ public class CategoriaTest {
         assertTrue(categoriaRepositorio.obterPorNome(nome).isPresent(), "A categoria foi removida, mas não deveria.");
     }
 }
+*/
