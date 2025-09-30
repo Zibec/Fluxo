@@ -38,18 +38,32 @@ public class Agendamento {
     public void cancelar() { this.ativo = false; this.proximaData = null; }
 
     public void avancarProximaData() {
-        switch (frequencia) {
-            case DIARIA -> proximaData = proximaData.plusDays(1);
-            case SEMANAL -> proximaData = proximaData.plusWeeks(1);
-            case MENSAL -> proximaData = proximaData.plusMonths(1)
-                    .withDayOfMonth(Math.min(proximaData.getDayOfMonth(),
-                            proximaData.plusMonths(0).lengthOfMonth()));
-            case ANUAL -> proximaData = proximaData.plusYears(1);
-        }
-        // regra “meses curtos”: ao avançar mês, se dia 29/30/31 não existe, ajusta p/ último dia do mês
-        var ultimoDia = proximaData.lengthOfMonth();
-        if (proximaData.getDayOfMonth() > ultimoDia) {
-            proximaData = proximaData.withDayOfMonth(ultimoDia);
+        if (!this.ativo) return; // ou trate como preferir
+        if (this.proximaData == null) return;
+
+        switch (this.frequencia) {
+            case MENSAL -> {
+                // guarda o dia desejado (p.ex., 31)
+                int diaDesejado = this.proximaData.getDayOfMonth();
+
+                // soma 1 mês
+                LocalDate candidata = this.proximaData.plusMonths(1);
+
+                // limita ao último dia do mês destino
+                int ultimoDiaMes = candidata.lengthOfMonth();
+                this.proximaData = candidata.withDayOfMonth(Math.min(diaDesejado, ultimoDiaMes));
+            }
+            case SEMANAL -> this.proximaData = this.proximaData.plusWeeks(1);
+            case DIARIA  -> this.proximaData = this.proximaData.plusDays(1);
+            case ANUAL   -> {
+                // ano bissexto: 29/02 pode cair para 28/02 em ano não bissexto
+                int dia = this.proximaData.getDayOfMonth();
+                int mes = this.proximaData.getMonthValue();
+                LocalDate candidata = this.proximaData.plusYears(1);
+                int ultimoDiaMes = candidata.withMonth(mes).lengthOfMonth();
+                this.proximaData = candidata.withMonth(mes).withDayOfMonth(Math.min(dia, ultimoDiaMes));
+            }
+            default -> throw new IllegalStateException("Frequência não suportada: " + this.frequencia);
         }
     }
 }

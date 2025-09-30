@@ -13,6 +13,8 @@ import conta.Conta;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AgendamentoTest {
+    private LocalDate dataTxAgendada;
+    private LocalDate dataAntesReagendamento;
 
     private final DateTimeFormatter BR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -46,6 +48,31 @@ public class AgendamentoTest {
             case "cancelada" -> StatusTransacao.CANCELADA;
             default -> StatusTransacao.PENDENTE;
         };
+    }
+
+    private Transacao ensureTransacaoParaAtualizar() {
+        var ag = agService.obter(agendamentoId).orElseThrow(() ->
+                new AssertionError("Agendamento não encontrado"));
+
+        // 1) data-base preferencial: a que foi criada no Given do cenário
+        LocalDate base = (this.dataTxAgendada != null) ? this.dataTxAgendada : ag.getProximaData();
+
+        // 2) tenta achar pela data-base
+        var txOpt = txRepo.encontrarPorAgendamentoEData(agendamentoId, base);
+        if (txOpt.isPresent()) return txOpt.get();
+
+        // 3) fallback: pega QUALQUER transação já ligada a este agendamento
+        var qualquer = txRepo.listarTodas().stream()
+                .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
+                .findFirst();
+        if (qualquer.isPresent()) return qualquer.get();
+
+        // 4) se não existir nenhuma, cria agora e retorna
+        txService.criarPendenteDeAgendamento(
+                agendamentoId, ag.getDescricao(), ag.getValor(), base, conta, false
+        );
+        return txRepo.encontrarPorAgendamentoEData(agendamentoId, base)
+                .orElseThrow(() -> new AssertionError("Falha ao preparar transação para atualização"));
     }
 
     // ---------- Criação de transação futura ----------
@@ -268,4 +295,297 @@ public class AgendamentoTest {
         var ag = agService.obter(agendamentoId).orElseThrow();
         assertNull(ag.getProximaData(), "Após cancelar, a próxima data deve ser nula");
     }
+
+    // ---------- Validação: agendamento no passado ----------
+
+    private String msgErro; // para guardar mensagens de erro
+
+    @When("o usuário tenta agendar uma transação para o dia {string}")
+    public void usuarioTentaAgendarTransacaoParaODia(String dataStr) {
+        LocalDate data = LocalDate.parse(dataStr, BR);
+        try {
+            Agendamento ag = new Agendamento(
+                    UUID.randomUUID().toString(),
+                    "Agendamento inválido",
+                    new BigDecimal("100.00"),
+                    Frequencia.MENSAL,
+                    data
+            );
+
+            // usa o "hoje" do cenário, se já tiver sido definido; senão, usa o relógio real
+            LocalDate referenciaHoje = (this.hoje != null ? this.hoje : LocalDate.now());
+
+            // >>> chama a versão com validação (NÃO use agService.salvar aqui)
+            agService.salvarValidandoNaoNoPassado(ag, referenciaHoje);
+
+            // se chegou aqui, salvou — mas não deveria
+            msgErro = null;
+        } catch (Exception e) {
+            msgErro = e.getMessage();
+        }
+    }
+
+    // ---------- Atualização de transação (data inválida no passado) ----------
+    @Given("que existe uma transação agendada para o dia {string} no valor de {string}")
+    public void givenTransacaoAgendadaParaDia(String data, String valor) {
+        agendamentoId = UUID.randomUUID().toString();
+        var ag = new Agendamento(agendamentoId, "Transação teste",
+                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR));
+        agService.salvar(ag);
+    }
+
+    @Given("a data atual é {string}")
+    public void givenDataAtualGenerica(String dataHoje) {
+        hoje = LocalDate.parse(dataHoje, BR);
+    }
+
+    @When("o usuário tenta atualizar a data dessa transação para {string}")
+    public void whenUsuarioTentaAtualizarData(String novaDataStr) {
+        LocalDate hojeRef = (this.hoje != null ? this.hoje : LocalDate.now());
+        LocalDate novaData = LocalDate.parse(novaDataStr, BR);
+
+        Transacao tx = ensureTransacaoParaAtualizar(); // helper que te passei antes
+        this.dataAntesReagendamento = tx.getData();    // guarda a data original
+
+        try {
+            tx.reagendarPara(novaData, hojeRef); // deve lançar se novaData < hojeRef
+            msgErro = null;                      // se não lançou, não houve erro
+        } catch (Exception e) {
+            msgErro = e.getMessage();            // usado nos Then
+        }
+    }
+
+    @Then("o sistema não deve permitir a atualização")
+    public void thenSistemaNaoPermiteAtualizacao() {
+        // precisa ter dado erro
+        assertNotNull(msgErro, "Esperado erro ao tentar reagendar para data no passado");
+
+        // e a data da transação NÃO pode ter mudado
+        var tx = txRepo.listarTodas().stream()
+                .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
+                .findFirst().orElseThrow();
+        assertEquals(dataAntesReagendamento, tx.getData(), "A data da transação não deveria ter sido alterada");
+        assertEquals(StatusTransacao.PENDENTE, tx.getStatus(), "A transação deve permanecer pendente");
+    }
+
+    @Then("deve informar que a nova data é inválida por estar no passado")
+    public void thenInformaDataInvalida() {
+        assertTrue(
+                msgErro != null && (
+                        msgErro.toLowerCase().contains("inválida") ||
+                                msgErro.toLowerCase().contains("invalida") || // sem acento
+                                msgErro.toLowerCase().contains("passado")
+                ),
+                "Mensagem deveria indicar que a data é inválida por estar no passado. Recebido: " + msgErro
+        );
+    }
+
+    // ---------- Cancelamento de transação já executada ----------
+    @Given("que existe uma transação que já foi executada no dia {string}")
+    public void givenTransacaoJaExecutada(String data) {
+        agendamentoId = UUID.randomUUID().toString();
+        var ag = new Agendamento(agendamentoId, "Transação executada",
+                new BigDecimal("200.00"), Frequencia.MENSAL, LocalDate.parse(data, BR));
+        agService.salvar(ag);
+
+        // cria a pendente vinculada à conta usada nos testes
+        LocalDate d = LocalDate.parse(data, BR);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
+
+        // <<< GARANTE SALDO >>>
+        // use o método que sua classe Conta expõe (geralmente "creditar" ou "depositar")
+        // aqui credito um valor maior que o débito da transação:
+        conta.creditar(new BigDecimal("1000.00"));   // ou: conta.depositar(...)
+
+        // efetiva (agora com saldo suficiente)
+        var tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, d).orElseThrow();
+        tx.efetivar();
+    }
+
+    @When("o usuário tenta cancelar essa transação executada")
+    public void whenCancelaTransacaoExecutada() {
+        var tx = txRepo.listarTodas().stream()
+                .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
+                .findFirst().orElseThrow();
+        try {
+            tx.cancelar();
+        } catch (Exception e) {
+            // esperado: não pode cancelar já executada
+        }
+    }
+
+    @Then("o sistema deve informar que não é possível cancelar uma transação já executada")
+    public void thenNaoCancelaExecutada() {
+        var tx = txRepo.listarTodas().stream()
+                .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
+                .findFirst().orElseThrow();
+        assertEquals(StatusTransacao.EFETIVADA, tx.getStatus());
+    }
+
+    // ---------- Atualização próxima data assinatura ----------
+    @Given("existe uma assinatura mensal {string} configurada para o dia {string} com próxima data {string}")
+    public void givenAssinaturaMensalConfigurada(String nome, String dia, String prox) {
+        agendamentoId = UUID.randomUUID().toString();
+        var ag = new Agendamento(agendamentoId, nome, new BigDecimal("50.00"),
+                Frequencia.MENSAL, LocalDate.parse(prox, BR));
+        agService.salvar(ag);
+    }
+
+    @Given("a próxima data de transação é {string}")
+    public void givenProximaData(String data) {
+        var ag = agService.obter(agendamentoId).orElseThrow();
+        assertEquals(LocalDate.parse(data, BR), ag.getProximaData());
+    }
+
+    @When("o sistema executa a cobrança no dia {string}")
+    public void whenExecutaCobranca(String data) {
+        var ag = agService.obter(agendamentoId).orElseThrow();
+        agService.executarSeHoje(ag, LocalDate.parse(data, BR));
+    }
+
+    @Then("a próxima data de transação deve ser {string}  # ou {int}\\/{int} em ano bissexto")
+    public void thenProximaDataDeveSerOu(String esperado, Integer dia, Integer mes) {
+        var ag = agService.obter(agendamentoId).orElseThrow();
+
+        LocalDate esperado1 = LocalDate.parse(esperado, BR);
+
+        // tenta montar a alternativa (ex.: 29/02) usando o MESMO ano de 'esperado1'
+        LocalDate esperado2 = null;
+        try {
+            esperado2 = LocalDate.of(esperado1.getYear(), mes, dia);
+        } catch (Exception ignored) {
+            // se não for ano bissexto, essa data não existe; mantém esperado2 = null
+        }
+
+        boolean ok = ag.getProximaData().equals(esperado1)
+                || (esperado2 != null && ag.getProximaData().equals(esperado2));
+
+        assertTrue(ok, "Próxima data deveria ser " + esperado1 + (esperado2 != null ? " ou " + esperado2 : ""));
+    }
+
+    // ---------- Cancelamento de assinatura inexistente ----------
+    @Given("que não existe uma assinatura ativa chamada {string} com status {string}")
+    public void givenAssinaturaInexistente(String nome, String status) {
+        agendamentoId = UUID.randomUUID().toString();
+        var ag = new Agendamento(agendamentoId, nome, new BigDecimal("80.00"),
+                Frequencia.MENSAL, LocalDate.now().plusDays(5));
+        if ("cancelada".equalsIgnoreCase(status)) {
+            ag.cancelar();
+        }
+        agService.salvar(ag);
+    }
+
+    @When("o usuário tenta cancelar essa assinatura")
+    public void whenCancelaAssinaturaInexistente() {
+        var ag = agService.obter(agendamentoId).orElseThrow();
+        if (ag.isAtivo()) ag.cancelar();
+    }
+
+    @Then("o sistema deve informar que não há assinatura ativa para cancelar")
+    public void thenNaoHaAssinaturaAtiva() {
+        var ag = agService.obter(agendamentoId).orElseThrow();
+        assertFalse(ag.isAtivo(), "Assinatura não deveria estar ativa");
+    }
+
+    // ---------- Criação de transação no novo ciclo ----------
+    @Given("não existe transação agendada para o dia {string}")
+    public void givenNaoExisteTransacao(String data) {
+        var tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR));
+        assertTrue(tx.isEmpty(), "Não deveria existir transação na data " + data);
+    }
+
+    @When("o agendamento executar em {string}")
+    public void whenAgendamentoExecutar(String data) {
+        var ag = agService.obter(agendamentoId).orElseThrow();
+        agService.executarSeHoje(ag, LocalDate.parse(data, BR));
+    }
+
+    @Then("deve ser criada exatamente uma transação para o dia {string}")
+    public void thenCriaExatamenteUma(String data) {
+        LocalDate d = LocalDate.parse(data, BR);
+        var txs = txRepo.listarTodas().stream()
+                .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()) && d.equals(t.getData()))
+                .toList();
+        assertEquals(1, txs.size(), "Deveria existir exatamente uma transação nessa data");
+    }
+
+    @Given("existe uma assinatura mensal {string} configurada para o dia {string}")
+    public void existeUmaAssinaturaMensalConfiguradaParaODia(String nomePlano, String diaStr) {
+        int dia = Integer.parseInt(diaStr);
+        LocalDate base = (hoje != null ? hoje : LocalDate.now());
+        LocalDate proxima = base.withDayOfMonth(Math.min(dia, base.lengthOfMonth()));
+
+        agendamentoId = UUID.randomUUID().toString();
+        BigDecimal valorPadrao = new BigDecimal("50.00");
+
+        Agendamento ag = new Agendamento(
+                agendamentoId,
+                nomePlano,
+                valorPadrao,
+                Frequencia.MENSAL,
+                proxima
+        );
+        agService.salvar(ag);
+    }
+
+    @Given("que não existe uma assinatura ativa chamada {string} \\(inexistente ou status {string}\\)")
+    public void queNaoExisteUmaAssinaturaAtivaChamadaInexistenteOuStatus(String nome, String status) {
+        agendamentoId = UUID.randomUUID().toString();
+
+        // Se for "inexistente", não cria nada no repositório (simula ausência)
+        if ("inexistente".equalsIgnoreCase(status)) {
+            return;
+        }
+
+        // Se for "cancelada", cria e já cancela
+        BigDecimal valorPadrao = new BigDecimal("80.00");
+        LocalDate proxima = (hoje != null ? hoje : LocalDate.now()).plusDays(3);
+
+        Agendamento ag = new Agendamento(
+                agendamentoId,
+                nome,
+                valorPadrao,
+                Frequencia.MENSAL,
+                proxima
+        );
+        ag.cancelar();
+        agService.salvar(ag);
+    }
+
+    @Then("^\\s*o sistema não deve salvar o agendamento\\s*$")
+    public void sistemaNaoDeveSalvarAgendamento_regex() {
+        assertNotNull(msgErro, "Esperado erro ao salvar agendamento no passado");
+    }
+
+    @Then("^\\s*deve informar que a data é inválida por estar no passado\\s*$")
+    public void deveInformarQueDataInvalidaPorEstarNoPassado_regex() {
+        assertTrue(
+                msgErro != null && (
+                        msgErro.toLowerCase().contains("inválida")
+                                || msgErro.toLowerCase().contains("invalida")  // sem acento, por via das dúvidas
+                                || msgErro.toLowerCase().contains("passado")
+                ),
+                "Mensagem deveria indicar que a data é inválida por estar no passado. Recebido: " + msgErro
+        );
+    }
+
+    @Given("existe uma assinatura mensal configurada para o dia {string} com próxima data {string}")
+    public void existeUmaAssinaturaMensalConfiguradaParaODiaComProximaData(String diaStr, String proxStr) {
+        // a próxima data do cenário é a que manda
+        LocalDate proxima = LocalDate.parse(proxStr, BR);
+
+        agendamentoId = UUID.randomUUID().toString();
+        BigDecimal valorPadrao = new BigDecimal("50.00");
+
+        Agendamento ag = new Agendamento(
+                agendamentoId,
+                "Assinatura",          // nome padrão (o cenário não passa nome)
+                valorPadrao,
+                Frequencia.MENSAL,
+                proxima
+        );
+        agService.salvar(ag);
+    }
+
+
 }

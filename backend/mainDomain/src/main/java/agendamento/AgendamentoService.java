@@ -23,6 +23,16 @@ public class AgendamentoService {
         agRepo.salvar(a);
     }
 
+    /** Versão com validação parametrizada pelo 'hoje' do cenário. */
+    public void salvarValidandoNaoNoPassado(Agendamento a, LocalDate hoje) {
+        Objects.requireNonNull(a, "Agendamento obrigatório");
+        Objects.requireNonNull(hoje, "Hoje obrigatório");
+        if (a.getProximaData() != null && a.getProximaData().isBefore(hoje)) {
+            throw new IllegalArgumentException("Data inválida por estar no passado");
+        }
+        agRepo.salvar(a);
+    }
+
     public Optional<Agendamento> obter(String id) {
         return agRepo.obter(id);
     }

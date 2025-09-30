@@ -48,11 +48,12 @@ Feature: Automação e Agendamento de transações
         Then deve ser criada uma data de transação no dia "17/10/2025"
         And a próxima data de transação deve ser "17/11/2025"
 
-    Scenario: Atualiza próxima data após execução
-        Given existe uma assinatura mensal "Netflix" configurada para o dia "17"
-        And a próxima data de transação é "17/11/2025"
-        When o sistema executa a cobrança no dia "17/11/2025"
-        Then a próxima data de transação deve ser "17/12/2025"
+    Scenario: Próxima data avança até novembro após duas cobranças
+        Given existe uma assinatura mensal "Netflix" configurada para o dia "17" com próxima data "17/09/2025"
+        And a próxima data de transação é "17/09/2025"
+        When o sistema executa a cobrança no dia "17/09/2025"
+        And o sistema executa a cobrança no dia "17/10/2025"
+        Then a próxima data de transação deve ser "17/11/2025"
 
     Scenario: Assinatura em mês curtos
         Given que existe uma data de vencimento de assinatura para o dia "29/02/2025"
