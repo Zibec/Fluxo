@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ContasAPagarTest {
 
-    private Conta conta;
+    private Conta conta = new Conta();
     private Transacao transacao;
 
     // -------------------------
@@ -26,7 +26,6 @@ public class ContasAPagarTest {
 
     @Given("o usuário possui uma conta com saldo {string}")
     public void oUsuarioPossuiUmaContaComSaldo(String saldo) {
-        conta = new Conta();
         conta.setSaldo(new BigDecimal(saldo));
         assertEquals(new BigDecimal(saldo), conta.getSaldo());
     }
@@ -47,9 +46,9 @@ public class ContasAPagarTest {
         assertTrue(transacao.isAvulsa());
     }
 
-    @Then("a transação deve estar registrada com status PENDENTE")
-    public void aTransacaoDeveEstarRegistradaComStatusPendente() {
-        assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
+    @Then("a transação deve estar registrada com status {string}")
+    public void aTransacaoDeveEstarRegistradaComStatus(String status) {
+        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), transacao.getStatus());
     }
 
     @And("o saldo da conta deve permanecer {string}")
@@ -84,9 +83,9 @@ public class ContasAPagarTest {
         assertEquals(new BigDecimal(valorEsperado), transacao.getValor());
     }
 
-    @And("o status deve permanecer PENDENTE")
-    public void oStatusDevePermanecerPendente() {
-        assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
+    @And("o status deve permanecer {string}")
+    public void oStatusDevePermanecer(String status){
+        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), transacao.getStatus());
     }
 
     @Given("existe uma transação única pendente de {string}")
@@ -114,14 +113,17 @@ public class ContasAPagarTest {
         assertNull(transacao);
     }
 
-    @When("o usuário marca a transação como EFETIVADA")
-    public void oUsuarioMarcaATransacaoComoEfetivada() {
-        transacao.efetivar();
+    @When("o usuário marca a transação como {string}")
+    public void oUsuarioMarcaATransacaoComo(String status) {
+        StatusTransacao statusTransacao = StatusTransacao.valueOf(status.toUpperCase());
+        if (statusTransacao == StatusTransacao.EFETIVADA) {
+            transacao.efetivar();
+        }
     }
 
-    @Then("o status da transação deve ser EFETIVADA")
-    public void oStatusDaTransacaoDeveSerEfetivada() {
-        assertEquals(StatusTransacao.EFETIVADA, transacao.getStatus());
+    @Then("o status da transação deve ser {string}")
+    public void oStatusDaTransacaoDeveSer(String status) {
+        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), transacao.getStatus());
     }
 
     @And("o valor da transação deve ser debitado da conta")
