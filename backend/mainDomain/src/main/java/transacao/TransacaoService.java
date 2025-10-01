@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import conta.Conta;
+
 public class TransacaoService {
     private final TransacaoRepositorio repo;
 
@@ -17,7 +19,7 @@ public class TransacaoService {
      * Cria uma transação PENDENTE oriunda de agendamento.
      * Idempotente por (agendamentoId, data): se já existe, retorna a existente.
      */
-    public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data) {
+    public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data, Conta conta, boolean avulsa) {
         Optional<Transacao> existente = repo.encontrarPorAgendamentoEData(agendamentoId, data);
         if (existente.isPresent()) {
             return existente.get(); // idempotência: não duplica
@@ -29,7 +31,9 @@ public class TransacaoService {
                 descricao,
                 valor,
                 data,
-                StatusTransacao.PENDENTE
+                StatusTransacao.PENDENTE,
+                conta,
+                avulsa
         );
         repo.salvar(t);
         return t;
