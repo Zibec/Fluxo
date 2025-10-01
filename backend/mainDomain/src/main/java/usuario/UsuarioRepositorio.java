@@ -23,4 +23,9 @@ public class UsuarioRepositorio {
         notNull(email, "O email não pode ser nulo");
         return usuarios.values().stream().anyMatch(u -> u.getEmail().equals(email));
     }
+
+    public boolean usernameExistente(String username) {
+        notNull(username, "O username não pode ser nulo");
+        return usuarios.values().stream().anyMatch(u -> u.getUsername().equals(username));
+    }
 }

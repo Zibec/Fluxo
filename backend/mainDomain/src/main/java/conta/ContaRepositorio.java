@@ -18,4 +18,9 @@ public class ContaRepositorio {
         notNull(contaId, "O ID da conta não pode ser nulo");
         return Optional.ofNullable(contas.get(contaId));
     }
+
+    public boolean contaExistente(String nome) {
+        notNull(nome, "O nome da conta não pode ser nulo");
+        return contas.values().stream().anyMatch(c -> c.getNome().equals(nome));
+    }
 }

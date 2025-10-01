@@ -98,6 +98,9 @@ public class Cartao {
     }
 
     public void setDataFechamentoFatura(LocalDate dataFechamentoFatura) {
+        if (dataFechamentoFatura.isAfter(this.dataVencimentoFatura) && this.dataVencimentoFatura != null) {
+            throw new IllegalArgumentException("A data de fechamento não pode ser posterior à data de vencimento.");
+        }
         this.dataFechamentoFatura = dataFechamentoFatura;
     }
 
@@ -119,6 +122,10 @@ public class Cartao {
     public void realizarTransacao(BigDecimal valor) {
         if (fatura == null) {
             fatura = new Fatura( String.valueOf(contador) + System.currentTimeMillis(), this, dataVencimentoFatura);
+        }
+
+        if(getLimiteDisponivel().compareTo(valor) < 0) {
+            throw new IllegalArgumentException("Limite indisponível para esta transação.");
         }
 
         fatura.adicionarValor(valor);
