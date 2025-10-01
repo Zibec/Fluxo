@@ -32,4 +32,8 @@ public class OrcamentoRepositorio {
         notNull(chave, "A chave do orcamento não pode ser nula");
         return Optional.ofNullable((orcamentos.get(chave)));
     }
+
+    public void limpar() {
+        orcamentos.clear();
+    }
 }

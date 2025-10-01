@@ -99,7 +99,7 @@ public class CategoriaTest {
     @And("existe pelo menos uma transação associada à categoria {string}")
     public void existePeloMenosUmaTransacaoAssociadaACategoria(String nomeCategoria) {
         Transacao transacao = new Transacao(
-                UUID.randomUUID().toString(), null, "Teste", BigDecimal.TEN, LocalDate.now(), StatusTransacao.EFETIVADA, this.categoria.getId()
+                UUID.randomUUID().toString(), null, "Teste", BigDecimal.TEN, LocalDate.now(), StatusTransacao.EFETIVADA, this.categoria.getId(),Transacao.Tipo.DESPESA
         );
         transacaoRepositorio.salvar(transacao);
     }

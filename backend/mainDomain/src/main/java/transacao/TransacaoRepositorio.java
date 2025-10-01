@@ -49,4 +49,8 @@ public class TransacaoRepositorio {
         return Optional.ofNullable(transacao.get(id));
     }
 
+    public void limpar() {
+        transacao.clear();
+        idxAgendamentoData.clear();
+    }
 }

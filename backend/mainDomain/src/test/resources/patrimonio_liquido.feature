@@ -29,3 +29,18 @@ Scenario: Tentar visualizar gráfico sem histórico de patrimônio
   Given que eu sou um novo usuário sem nenhum snapshot de patrimônio
   When eu acessar a tela de evolução do patrimônio
   Then o sistema deve exibir a mensagem "O histórico de patrimônio ainda não foi gerado"
+
+Scenario: Não gerar snapshot fora do fim do mês
+  Given que hoje não é o último dia do mês
+  And meu patrimônio líquido atual é de R$ 30000.00
+  When o processo automático de snapshot for executado
+  Then nenhum registro histórico de patrimônio deve ser salvo
+
+Scenario: Visualização do gráfico de evolução com dados históricos
+ Given que eu tenho os seguintes snapshots de patrimônio:
+   | Data       | Valor       |
+   | 2025-07-31 | R$ 25000.00 |
+   | 2025-08-31 | R$ 27000.00 |
+   | 2025-09-30 | R$ 26500.00 |
+  When eu acessar a tela de evolução do patrimônio
+  Then um gráfico de linhas deve ser exibido com os dados do histórico

@@ -35,7 +35,8 @@ public class TransacaoService {
                 descricao,
                 valor,
                 data,
-                StatusTransacao.PENDENTE
+                StatusTransacao.PENDENTE,
+                Transacao.Tipo.DESPESA
         );
         repo.salvar(t);
         return t;
