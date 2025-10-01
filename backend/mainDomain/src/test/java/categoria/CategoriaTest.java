@@ -1,4 +1,4 @@
-/*package categoria;
+package categoria;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
@@ -99,7 +99,7 @@ public class CategoriaTest {
     @And("existe pelo menos uma transação associada à categoria {string}")
     public void existePeloMenosUmaTransacaoAssociadaACategoria(String nomeCategoria) {
         Transacao transacao = new Transacao(
-                UUID.randomUUID().toString(), null, "Teste", BigDecimal.TEN, LocalDate.now(), StatusTransacao.EFETIVADA, this.categoria.getId()
+                UUID.randomUUID().toString(), null, "Teste", BigDecimal.TEN, LocalDate.now(), StatusTransacao.EFETIVADA, this.categoria.getId(), null, false
         );
         transacaoRepositorio.salvar(transacao);
     }
@@ -132,4 +132,3 @@ public class CategoriaTest {
         assertTrue(categoriaRepositorio.obterPorNome(nome).isPresent(), "A categoria foi removida, mas não deveria.");
     }
 }
-*/
