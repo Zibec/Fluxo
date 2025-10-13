@@ -82,7 +82,7 @@ public class OrcamentoTest {
     @Then("o usuário deve ver o orçamento salvo para {string} em {string} com valor {string}")
     public void deveVerOrcamentoSalvoParaCategoriaMesValor(String categoriaEsperada, String mesAno, String valorEsperado) {
         var ym = parseAnoMes(mesAno);
-        var chave = new OrcamentoChave(usuario, ym, categoria);
+        var chave = new OrcamentoChave(usuario, ym, categoriaEsperada);
         var opt = repo.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não foi salvo");
         Assertions.assertEquals(parseMoedaBR(valorEsperado), opt.get().getLimite());
@@ -90,10 +90,15 @@ public class OrcamentoTest {
 
     @Given("existe um orçamento de {string} para {string} em {string}")
     public void existeUmOrcamento(String valorMoeda, String categoria, String mesAno) {
+        if (this.usuario == null) this.usuario = "Gabriel"; // <- padroniza o usuário para a chave
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
         var chave = new OrcamentoChave(usuario, ym, categoria);
         repo.salvarNovo(chave, new Orcamento(valor)); // já existente
+
+        // guarda no contexto para os @Then/@And
+        this.categoria = categoria;
+        this.anoMes = ym;
     }
 
     @When("o usuário tenta definir um orçamento de {string} para {string} em {string}")
@@ -117,6 +122,10 @@ public class OrcamentoTest {
     @And("o orçamento não deve ser salvo")
     public void orcamentoNaoDeveSerSalvo() {
         Assertions.assertNotNull(erro, "Era esperado erro");
+        var chave = new OrcamentoChave(usuario, anoMes, categoria);
+        var opt = repo.obterOrcamento(chave);
+        // No cenário de duplicidade, o original deve continuar existindo
+        Assertions.assertTrue(opt.isPresent(), "O orçamento original deveria continuar salvo");
     }
 
     @Given("que existe um orçamento na categoria {string} para o mês {string} de {string}")
@@ -248,6 +257,11 @@ public class OrcamentoTest {
     @And("o orçamento não deve ser aplicado")
     public void orcamentoNaoDeveSerAplicado() {
         Assertions.assertNotNull(erro, "Era esperado falhar valor negativo");
+        var chave = new OrcamentoChave(usuario, anoMes, categoria);
+        Assertions.assertTrue(
+                repo.obterOrcamento(chave).isEmpty(),
+                "Não deveria haver orçamento salvo para a chave"
+        );
     }
 
     // ==========================================================
