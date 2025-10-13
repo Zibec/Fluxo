@@ -1,7 +1,7 @@
 Feature: Gestão de Perfis Familiares
   #A conta principal pode criar, editar e excluir perfis secundários.
-  Scenario: Criar, editar e excluir perfil secundário com sucesso
-    Given que estou logado na conta principal
+  Scenario: Criar, editar e excluir perfil com sucesso
+    Given que estou logado no usuário
     When eu crio um novo perfil chamado "Filho"
     Then o perfil "Filho" deve estar disponível a lista de perfis
     When eu edito o perfil "Filho" para "Filho Mais Velho"
@@ -28,4 +28,4 @@ Feature: Gestão de Perfis Familiares
     When eu registro uma nova despesa de "R$150,00" para "Restaurante"
     But não seleciono nenhum perfil
     Then o sistema deve impedir o registro no banco de dados
-    And deve exibir a mensagem "É obrigatório a seleção de um perfil"
+    And deve exibir a mensagem "É obrigatório a seleção de um perfil"6
