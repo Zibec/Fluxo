@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.*;
 
+//Criar serviço e repositório para um conceito de taxaSelic e, no seviço, chamar a API do banco e guardar no repositorio
+
 public class RastreamentoDeInvestimentosTest {
 
     private Investimento investimento;
@@ -40,12 +42,13 @@ public class RastreamentoDeInvestimentosTest {
             excecaoCapturada = e;
         }
     }
-
+    // Fazer com um mock configurável da API. Quando funcionando oferecer o valor e quando não raise exception
     @When("o sistema consulta a API externa do Banco Central")
     public void sistemaConsultaApi(){
         apiForaDoAr = false;
     }
 
+    //Checar via repositório se a taxa foi armazenada
     @Then("a taxa Selic diária é armazenada no sistema")
     public void taxaSelicArmazenada(){
         assertNotNull(selicApiClient.buscarTaxaSelicDiaria());
@@ -106,6 +109,8 @@ public class RastreamentoDeInvestimentosTest {
     }
 
     @Then("o valor atualizado do investimento deve ser {double}")
+
+    // Fazer a verificação pelo repositório
     public void verificarValorAtualizado(double esperado){
         assertEquals(esperado, investimento.getValorAtual().doubleValue(), 0.001);
     }
@@ -114,6 +119,7 @@ public class RastreamentoDeInvestimentosTest {
 
 
     @And("não há taxa Selic disponível no sistema")
+    //Criar um repositório que guarda essa informação como mock
     public void taxaNaoDisponivel(){
         apiForaDoAr = true;
     }
