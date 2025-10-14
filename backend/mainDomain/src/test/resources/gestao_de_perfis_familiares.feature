@@ -28,4 +28,4 @@ Feature: Gestão de Perfis Familiares
     When eu registro uma nova despesa de "R$150,00" para "Restaurante"
     But não seleciono nenhum perfil
     Then o sistema deve impedir o registro no banco de dados
-    And deve exibir a mensagem "É obrigatório a seleção de um perfil"6
+    And deve exibir a mensagem "É obrigatório a seleção de um perfil"

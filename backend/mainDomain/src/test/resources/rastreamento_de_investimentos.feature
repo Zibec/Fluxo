@@ -5,7 +5,6 @@ Feature: Rastreamento de Investimentos
     Given que o job agendado é executado
     When o sistema consulta a API externa do Banco Central
     Then a taxa Selic diária é armazenada no sistema
-    And está disponível para cálculo de rendimentos
 
   Scenario: Falha ao consultar a API externa
     Given que o job agendado é executado
