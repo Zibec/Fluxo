@@ -174,16 +174,19 @@ public class ContasAPagarTest {
                 conta,
                 true
         );
+        txRepositorio.salvar(transacao);
     }
 
     @When("o sistema verifica transações pendentes próximas do vencimento")
     public void oSistemaVerificaTransacoesPendentesProximasDoVencimento() {
-        assertTrue(transacao.isProximaDoVencimento());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertTrue(t.isProximaDoVencimento());
     }
 
     @Then("deve ser gerada uma notificação para o usuário")
     public void deveSerGeradaUmaNotificacaoParaOUsuario() {
-        assertTrue(transacao.isProximaDoVencimento());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertTrue(t.isProximaDoVencimento());
     }
 
     @Then("o sistema deve recusar a operação e exibir mensagem de erro")
