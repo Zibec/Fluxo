@@ -18,4 +18,9 @@ public class TaxaSelicService {
         taxaSelicRepository.salvar(novaTaxaSelic);
 
     }
+
+    public TaxaSelicService(SelicApiClient selicApiClient, TaxaSelicRepository taxaSelicRepository) {
+        this.selicApiClient = selicApiClient;
+        this.taxaSelicRepository = taxaSelicRepository;
+    }
 }

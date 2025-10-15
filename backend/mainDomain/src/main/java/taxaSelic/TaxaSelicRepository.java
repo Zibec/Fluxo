@@ -12,4 +12,8 @@ public class TaxaSelicRepository {
     public TaxaSelic obter(){
         return taxaSelic;
     }
+
+    public TaxaSelicRepository(TaxaSelic taxaSelic) {
+        this.taxaSelic = taxaSelic;
+    }
 }

@@ -48,8 +48,8 @@ public class Investimento {
         this.tipo = tipo;
     }
 
-    public void atualizarValor(Double taxaSelic) {
-        this.valorAtual = this.valorAtual.multiply(new BigDecimal(1 + taxaSelic));
+    public void atualizarValor(BigDecimal taxaSelic) {
+        this.valorAtual = this.valorAtual.add(this.valorAtual.multiply(taxaSelic));
     }
 
 

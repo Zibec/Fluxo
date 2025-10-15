@@ -1,22 +1,24 @@
 package jobScheduler;
 
 import investimento.Investimento;
+import investimento.InvestimentoRepositorio;
 import investimento.InvestimentoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JobScheduler {
 
     private final InvestimentoService investimentoService;
-    private List<Investimento> investimentos;
+    private InvestimentoRepositorio investimentoRepositorio;
 
-    public JobScheduler(InvestimentoService investmentoService, List<Investimento> investimentos) {
+    public JobScheduler(InvestimentoService investmentoService, InvestimentoRepositorio investimentoRepositorio) {
         this.investimentoService = investmentoService;
-        this.investimentos = investimentos;
+        this.investimentoRepositorio = investimentoRepositorio;
     }
 
     public void executarJob() {
-        for (Investimento inv : investimentos) {
+        for (Investimento inv : investimentoRepositorio.obterTodos()) {
             if ("Tesouro Selic".equals(inv.getTipo())) {
                 investimentoService.atualizarRendimento(inv);
             }

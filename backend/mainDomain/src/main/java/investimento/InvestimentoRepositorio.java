@@ -1,32 +1,48 @@
 package investimento;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class InvestimentoRepositorio {
 
-    private final Map<String, Investimento> investimentos = new HashMap<>();
+    //Refatorar para ser uma lista.
+    private ArrayList<Investimento> investimentos = new ArrayList<Investimento>();
 
     public void salvar(Investimento investimento){
-        investimentos.put(investimento.getId(), investimento);
+        investimentos.add(investimento);
     }
 
-    public Optional<Investimento> obter(String investimentoId){
-        return Optional.ofNullable(investimentos.get(investimentoId));
+    public Investimento obter(String investimentoId){
+        for (Investimento inv : investimentos){
+            if (investimentoId.equals(inv.getId())){
+                return inv;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Investimento> obterTodos(){
+        return investimentos;
     }
 
     public void atualizar(String investimentoId, Investimento investimento){
 
-        if(investimentos.replace(investimentoId, investimento) == null){
-            throw new IllegalStateException("Não existe um investimento com esse id");
+        for (Investimento inv : investimentos){
+            if(investimentoId.equals(inv.getId())){
+                inv = investimento;
+            }
         }
     }
 
     public void deletar(String investimentoId){
         notNull(investimentoId, "O id não pode ser nulo");
-        investimentos.remove(investimentoId);
+        for (Investimento inv : investimentos){
+            if (investimentoId.equals(inv.getId())){
+                investimentos.remove(inv);
+            }
+        }
+
     }
 
 }

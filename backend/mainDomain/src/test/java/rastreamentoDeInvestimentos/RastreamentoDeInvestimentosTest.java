@@ -9,25 +9,25 @@ import investimento.InvestimentoService;
 import io.cucumber.java.en.*;
 import jobScheduler.JobScheduler;
 import selicApiClient.SelicApiClient;
+import taxaSelic.TaxaSelic;
+import taxaSelic.TaxaSelicRepository;
+import taxaSelic.TaxaSelicService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-//Criar serviço e repositório para um conceito de taxaSelic e, no seviço, chamar a API do banco e guardar no repositorio
-
 public class RastreamentoDeInvestimentosTest {
 
     private Investimento investimento;
     private HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio;
-    private SelicApiClient selicApiClient = new SelicApiClient();
+    private SelicApiClient selicApiClient = new SelicApiClient(true);
     private InvestimentoService investimentoService;
     private JobScheduler jobScheduler;
     private InvestimentoRepositorio investimentoRepositorio;
-
-    private List<Investimento> investimentos;
-    private boolean apiForaDoAr;
+    private TaxaSelicRepository taxaSelicRepository = new TaxaSelicRepository(null);
+    private TaxaSelicService taxaSelicService = new TaxaSelicService(selicApiClient, taxaSelicRepository);
     private Exception excecaoCapturada;
 
     //Regra de negócio: O sistema precisa de um job agendado para buscar a taxa Selic diária de uma API externa confiável.
@@ -45,33 +45,39 @@ public class RastreamentoDeInvestimentosTest {
     // Fazer com um mock configurável da API. Quando funcionando oferecer o valor e quando não raise exception
     @When("o sistema consulta a API externa do Banco Central")
     public void sistemaConsultaApi(){
-        apiForaDoAr = false;
+        taxaSelicService.atualizarTaxaSelic();
     }
 
     //Checar via repositório se a taxa foi armazenada
     @Then("a taxa Selic diária é armazenada no sistema")
     public void taxaSelicArmazenada(){
-        assertNotNull(selicApiClient.buscarTaxaSelicDiaria());
+        assertNotNull(taxaSelicRepository.obter());
     }
-
-    @And("está disponível para cálculo de rendimentos")
-    public void disponívelParaCalculo(){}
 
     //Scenario: Falha ao consultar a API externa
 
 
-    @But("a API não está disponível")
+    @When("o sistema consulta a API externa do Banco Central, mas a API não está disponível")
     public void apiNaoDisponivel(){
-        apiForaDoAr = true;
+        selicApiClient.setStatus(false);
+
+        try{
+            taxaSelicService.atualizarTaxaSelic();
+        }catch (Exception e) {
+            excecaoCapturada = e;
+        }
     }
 
     @Then("a texa Selic não é atualizada naquele dia")
     public void taxaNaoAtualizada(){
-        assertThrows(RuntimeException.class, () -> jobScheduler.executarJob());
+        assertNull(taxaSelicRepository.obter());
     }
 
     @And("o sistema deve registrar um log de erro")
-    public void registroDeLogDeErro(){}
+    public void registroDeLogDeErro(){
+        assertNotNull(excecaoCapturada);
+        assertTrue(excecaoCapturada.getMessage().contains("Falha em buscar a taxa selic."));
+    }
 
     //Regra de negócio: Para cada investimento "Tesouro Selic", aplicar rendimento diário automaticamente.
 
@@ -81,23 +87,26 @@ public class RastreamentoDeInvestimentosTest {
     public void criarInvestimento(String tipo, double valor){
         BigDecimal valorBigDecimal = BigDecimal.valueOf(valor);
         investimento = new Investimento("1", "Desc" , valorBigDecimal, tipo);
-        investimentos = new ArrayList<>();
-        investimentos.add(investimento);
         historicoInvestimentoRepositorio = new HistoricoInvestimentoRepositorio();
-        selicApiClient = new SelicApiClient(){
-            @Override
-            public Double buscarTaxaSelicDiaria(){
-                if (apiForaDoAr) return null;
-                return 0.01;
-            }
-        };
+        selicApiClient.setStatus(true);
         investimentoRepositorio = new InvestimentoRepositorio();
-        investimentoService = new InvestimentoService(investimentoRepositorio, selicApiClient, new HistoricoInvestimentoService(historicoInvestimentoRepositorio));
-        jobScheduler = new JobScheduler(investimentoService, investimentos);
+
+        //taxaSelicRepository = new TaxaSelicRepository(null);
+
+        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, new HistoricoInvestimentoService(historicoInvestimentoRepositorio));
+        investimentoService.salvar(investimento);
+        jobScheduler = new JobScheduler(investimentoService, investimentoRepositorio);
+        excecaoCapturada = null;
+        historicoInvestimentoRepositorio.setStatus(true);
     }
 
     @And("a taxa selic diária é de {double} \\({int}%)")
-    public void taxaSelicUmPorcento(Double double1, Integer int1){}
+    public void taxaSelicUmPorcento(Double double1, Integer int1){
+        taxaSelicService.atualizarTaxaSelic();
+        double a = 1;
+        assertNotNull(taxaSelicRepository.obter().getValor());
+        assertEquals(new BigDecimal(double1), taxaSelicRepository.obter().getValor());
+    }
 
     @When("o job de atualização de rendimento é executado")
     public void executarJobRendimento(){
@@ -112,7 +121,8 @@ public class RastreamentoDeInvestimentosTest {
 
     // Fazer a verificação pelo repositório
     public void verificarValorAtualizado(double esperado){
-        assertEquals(esperado, investimento.getValorAtual().doubleValue(), 0.001);
+        double valorAtualizado = investimentoRepositorio.obter(investimento.getId()).getValorAtual().doubleValue();
+        assertEquals(esperado, valorAtualizado, 0.001);
     }
 
     //Scenario: Tentativa de aplicar rendimento sem taxa Selic disponível
@@ -121,17 +131,21 @@ public class RastreamentoDeInvestimentosTest {
     @And("não há taxa Selic disponível no sistema")
     //Criar um repositório que guarda essa informação como mock
     public void taxaNaoDisponivel(){
-        apiForaDoAr = true;
+        selicApiClient.setStatus(false);
     }
 
     @Then("o investimento não deve ser atualizado")
     public void investimentoNaoAtualizado() {
         double valorAntes = 1000;
-        assertEquals(valorAntes, investimento.getValorAtual().doubleValue(), 0.001);
+        double valorAtual = investimentoRepositorio.obter(investimento.getId()).getValorAtual().doubleValue();
+        assertEquals(valorAntes, valorAtual, 0.001);
     }
 
     @And("o sistema deve registrar um log de falha")
-    public void regsitrarLogDeFalha(){}
+    public void regsitrarLogDeFalha(){
+        assertNotNull(excecaoCapturada);
+        assertTrue(excecaoCapturada.getMessage().contains("Taxa Selic não disponível."));
+    }
 
     //Regra de negócio: Sempre que o rendimento é aplicado, registrar histórico com data e valor.
 
@@ -140,34 +154,22 @@ public class RastreamentoDeInvestimentosTest {
     @Then("deve existir um registro no histórico com a data atual e o valor {double}")
     public void verificarHistorico(Double esperado){
         assertFalse(historicoInvestimentoRepositorio.obterTodos().isEmpty());
-        HistoricoInvestimento h = historicoInvestimentoRepositorio.obterTodos().get(0);
+        HistoricoInvestimento h = historicoInvestimentoRepositorio.obterTodos().getFirst();
         assertEquals(esperado, h.getValorAtualizado().doubleValue(), 0.001);
     }
 
     //Scenario: Falha ao registrar histórico
 
-    @But("ocorre uma falha no registro de histórico")
-    public void falhaNoHistorico(){
-        historicoInvestimentoRepositorio = new HistoricoInvestimentoRepositorio(){
-            @Override
-            public void salvar(HistoricoInvestimento historicoInvestimento){
-                throw new RuntimeException("Falha ao salvar histórico");
-            }
-        };
-
-        investimento = new Investimento("1", "Desc" , new BigDecimal(1000), "Tesouro Selic");
-        investimentos = new ArrayList<>();
-        investimentos.add(investimento);
-        investimentoRepositorio = new InvestimentoRepositorio();
-        investimentoService = new InvestimentoService(investimentoRepositorio, selicApiClient, new HistoricoInvestimentoService(historicoInvestimentoRepositorio));
-        jobScheduler = new JobScheduler(investimentoService, investimentos);
-
-        try {
+    @When("o job de atualização de rendimento é executado, mas ocorre uma falha no registro de histórico")
+    public void executarJobRendimentoFalhaHistorico(){
+        historicoInvestimentoRepositorio.setStatus(false);
+        try{
             jobScheduler.executarJob();
-        } catch (Exception e) {
+        } catch (Exception e){
             excecaoCapturada = e;
         }
     }
+
 
     @Then("o sistema deve gerar um log de erro indicando falha ao registrar histórico")
     public void logErroHistorico(){

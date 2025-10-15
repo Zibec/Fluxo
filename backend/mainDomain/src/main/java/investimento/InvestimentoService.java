@@ -3,6 +3,9 @@ package investimento;
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoService;
 import selicApiClient.SelicApiClient;
+import taxaSelic.TaxaSelic;
+import taxaSelic.TaxaSelicRepository;
+import taxaSelic.TaxaSelicService;
 
 import java.time.LocalDate;
 
@@ -11,12 +14,12 @@ import static org.apache.commons.lang3.Validate.notNull;
 public class InvestimentoService {
     private final InvestimentoRepositorio investimentoRepositorio;
     private final HistoricoInvestimentoService historicoInvestimentoService;
-    private final SelicApiClient selicApiClient;
+    private final TaxaSelicRepository taxaSelicRepository;
 
-    public InvestimentoService(InvestimentoRepositorio investimentoRepositorio, SelicApiClient selicApiClient, HistoricoInvestimentoService historicoInvestimentoService) {
+    public InvestimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoService historicoInvestimentoService) {
         this.investimentoRepositorio = investimentoRepositorio;
         this.historicoInvestimentoService = historicoInvestimentoService;
-        this.selicApiClient = selicApiClient;
+        this.taxaSelicRepository = taxaSelicRepository;
     }
 
     public void salvar (Investimento investimento){
@@ -25,7 +28,7 @@ public class InvestimentoService {
     }
     public Investimento obter(String investimentoId){
         notNull(investimentoId, "Investimento não pode ser nulo");
-        return investimentoRepositorio.obter(investimentoId).orElseThrow(() -> new IllegalArgumentException("Investimento não encontrado"));
+        return investimentoRepositorio.obter(investimentoId);
     }
 
     public void atualizar(String investimentoId, Investimento investimento){
@@ -35,13 +38,13 @@ public class InvestimentoService {
     }
 
     public void atualizarRendimento (Investimento investimento){
-        Double taxaSelic = selicApiClient.buscarTaxaSelicDiaria();
+        TaxaSelic taxaSelic = taxaSelicRepository.obter();
 
         if (taxaSelic == null) {
-            throw new RuntimeException("Taxa Selic não disponível");
+            throw new RuntimeException("Taxa Selic não disponível.");
         }
 
-        investimento.atualizarValor(taxaSelic);
+        investimento.atualizarValor(taxaSelic.getValor());
 
         HistoricoInvestimento historicoInvestimento = new HistoricoInvestimento(
                 investimento.getId(),
