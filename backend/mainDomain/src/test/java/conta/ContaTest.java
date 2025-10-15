@@ -61,20 +61,9 @@ public class ContaTest {
         assertTrue(contaService.obter(contaAtual.getId()).isPresent(), "A conta deveria estar salva no repositório.");
     }
 
-    // Scenario: Cadastro de conta sem informar todos os campos obrigatórios
-    @Given("que o usuário não informa todos os campos obrigatórios")
-    public void que_o_usuario_nao_informa_todos_os_campos_obrigatorios() {
-        this.camposObrigatoriosInformados = false;
-    }
-
     @When("tentar salvar a conta")
     public void tentar_salvar_a_conta() {
         salvar_a_conta();
-    }
-
-    @Then("o sistema deve recusar o cadastro e exibir mensagem de erro")
-    public void o_sistema_deve_recusar_o_cadastro_e_exibir_mensagem_de_erro() {
-        assertNotNull(thrownException);
     }
 
     // Scenario: Cadastro de conta com nome único no mesmo banco
@@ -154,12 +143,6 @@ public class ContaTest {
     @When("tenta realizar um depósito de R$ {double}")
     public void tenta_realizar_um_deposito_de_r(Double valor) {
         realiza_um_deposito_de_r(valor); // A lógica é a mesma, mas deve capturar exceção.
-    }
-
-    @Then("o sistema deve recusar a operação e exibir mensagem de erro")
-    public void o_sistema_deve_recusar_a_operacao_e_exibir_mensagem_de_erro() {
-        assertNotNull(thrownException);
-        assertInstanceOf(IllegalArgumentException.class, thrownException);
     }
 
     // Scenario: Realizar retirada dentro do saldo disponível

@@ -254,14 +254,17 @@ public class AgendamentoTest {
     @When("o usuário tem essa assinatura para pagar no dia {string}")
     public void whenTemAssinaturaParaDia(String dia) {
         hoje = LocalDate.parse(dia, BR);
+        var ag = agService.obter(agendamentoId).orElseThrow();
+        agService.executarSeHoje(ag, hoje);              // << ação acontece no WHEN
     }
 
     @Then("o sistema botará o pagamento agendado para o dia {string}")
     public void thenAgendaPagamentoParaDia(String dia) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(dia, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
-        assertTrue(txRepo.encontrarPorAgendamentoEData(agendamentoId, d).isPresent());
+        assertTrue(                                   // << THEN só verifica no repositório
+                txRepo.encontrarPorAgendamentoEData(agendamentoId, d).isPresent(),
+                "Deveria existir transação agendada para " + dia
+        );
     }
 
     // ---------- Cancelamento de assinatura ----------
@@ -304,8 +307,9 @@ public class AgendamentoTest {
     public void usuarioTentaAgendarTransacaoParaODia(String dataStr) {
         LocalDate data = LocalDate.parse(dataStr, BR);
         try {
+            this.agendamentoId = UUID.randomUUID().toString(); // << guardar ID
             Agendamento ag = new Agendamento(
-                    UUID.randomUUID().toString(),
+                    agendamentoId,
                     "Agendamento inválido",
                     new BigDecimal("100.00"),
                     Frequencia.MENSAL,
@@ -555,9 +559,14 @@ public class AgendamentoTest {
     @Then("^\\s*o sistema não deve salvar o agendamento\\s*$")
     public void sistemaNaoDeveSalvarAgendamento_regex() {
         assertNotNull(msgErro, "Esperado erro ao salvar agendamento no passado");
+        // validação via repositório (como se fosse o banco)
+        assertTrue(
+                agRepo.obter(agendamentoId).isEmpty(),
+                "Agendamento não deveria ter sido salvo no repositório"
+        );
     }
 
-    @Then("^\\s*deve informar que a data é inválida por estar no passado\\s*$")
+    @Then("deve informar que a data é inválida por estar no passado")
     public void deveInformarQueDataInvalidaPorEstarNoPassado_regex() {
         assertTrue(
                 msgErro != null && (
