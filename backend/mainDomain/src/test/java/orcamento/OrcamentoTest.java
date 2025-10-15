@@ -2,6 +2,7 @@ package orcamento;
 
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
+import transacao.TransacaoRepositorio;
 import transacao.TransacaoService;
 
 import java.math.BigDecimal;
@@ -14,14 +15,13 @@ import java.util.Optional;
 
 public class OrcamentoTest {
 
-    // ---------- Infra simples para os testes ----------
     private final OrcamentoRepositorio repo = new OrcamentoRepositorio();
 
     private static class FakeTransacaoService extends TransacaoService {
         private final Map<OrcamentoChave, BigDecimal> acumulado = new HashMap<>();
 
-        public FakeTransacaoService() {
-            super(null);
+        public FakeTransacaoService(TransacaoRepositorio repositorio) {
+            super(repositorio);
         }
 
         public void set(OrcamentoChave k, BigDecimal v) {
@@ -37,11 +37,11 @@ public class OrcamentoTest {
         }
     }
 
-    private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService();
+    private final TransacaoRepositorio transacaoRepoParaTeste = new TransacaoRepositorio();
+    private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService(transacaoRepoParaTeste);
 
     private final OrcamentoService service = new OrcamentoService(repo, fakeTransacaoService);
 
-    /** Coletor simples de notificação. */
     private static class Notificador {
         private String ultimaMensagem;
         public void notificar(String msg) { ultimaMensagem = msg; }
@@ -50,14 +50,12 @@ public class OrcamentoTest {
     }
     private final Notificador notificador = new Notificador();
 
-    // ---------- Contexto do cenário ----------
     private String usuario;
     private String categoria;
     private YearMonth anoMes;
     private Throwable erro;
     private String mensagemSistema;
 
-    // Guarda a última chave e o último total calculado para validar o progresso
     private OrcamentoChave ultimaChaveVerificada;
     private BigDecimal ultimoTotalCalculado;
 
@@ -96,7 +94,7 @@ public class OrcamentoTest {
         var chave = new OrcamentoChave(usuario, ym, categoriaEsperada);
         var opt = repo.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não foi salvo");
-        Assertions.assertEquals(parseMoedaBR(valorEsperado), opt.get().getLimite());
+        Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
 
     @Given("existe um orçamento de {string} para {string} em {string}")
@@ -174,7 +172,7 @@ public class OrcamentoTest {
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
         var opt = repo.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não encontrado após atualizar");
-        Assertions.assertEquals(parseMoedaBR(valorEsperado), opt.get().getLimite());
+        Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
 
     // ==========================================================
@@ -203,7 +201,6 @@ public class OrcamentoTest {
         if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoria);
-        // ALTERADO: Usando o novo Fake
         fakeTransacaoService.set(chave, parseMoedaBR(valorMoeda));
     }
 
@@ -213,16 +210,13 @@ public class OrcamentoTest {
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoria);
 
-        // ALTERADO: Usando o novo Fake
         var antes = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
         var orc = repo.obterOrcamento(chave).orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
         var limite = orc.getLimite();
 
         var valor = parseMoedaBR(valorDespesa);
-        // ALTERADO: Usando o novo Fake
         fakeTransacaoService.add(chave, valor);
 
-        // ALTERADO: Usando o novo Fake
         var depois = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
 
         var oitenta = limite.multiply(BigDecimal.valueOf(0.8));
@@ -285,7 +279,6 @@ public class OrcamentoTest {
         if (this.usuario == null) this.usuario = "Gabriel";
         YearMonth ym = parseAnoMes(mesAno);
 
-        // ALTERADO: Usando o novo Fake
         BigDecimal totalCalculado = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
         BigDecimal totalEsperado  = parseMoedaBR(esperado);
 

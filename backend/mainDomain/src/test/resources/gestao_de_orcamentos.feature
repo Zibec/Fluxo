@@ -14,7 +14,7 @@ Feature: Gestão de Orçamentos
         Given que existe a categoria "Alimentação" para um usuário autenticado como "Gabriel"
         And existe um orçamento de "R$ 100,00" para "Alimentação" em "09/2025"
         When o usuário tenta definir um orçamento de "R$ 120,00" para "Alimentação" em "09/2025"
-        Then o sistema deve retornar "Já existe um orçamento para essa chave"
+        Then o sistema deve retornar "Já existe um orçamento para esta categoria neste mês"
         And o orçamento não deve ser salvo
 
     Scenario: Permitir criação de orçamento no mês seguinte para a mesma categoria
