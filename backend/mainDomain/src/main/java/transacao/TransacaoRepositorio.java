@@ -42,4 +42,29 @@ public class TransacaoRepositorio {
     private static String chave(String agendamentoId, LocalDate data) {
         return agendamentoId + "#" + data;
     }
+
+    public Optional<Transacao> buscarPorId(String id) {
+        Objects.requireNonNull(id, "ID da transação não pode ser nulo");
+        return Optional.ofNullable(transacao.get(id));
+    }
+
+    public void atualizar(Transacao t) {
+        salvar(t); // Reutiliza o método salvar
+    }
+
+    public void excluir(String id) {
+        Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
+
+        Transacao removida = transacao.remove(id);
+        if (removida == null) {
+            throw new NoSuchElementException("Transação com ID " + id + " não encontrada para exclusão.");
+        }
+
+        // Remove também do índice auxiliar, se existir
+        if (removida.getOrigemAgendamentoId() != null) {
+            idxAgendamentoData.remove(chave(removida.getOrigemAgendamentoId(), removida.getData()));
+        }
+
+    }
+
 }

@@ -3,27 +3,34 @@ Feature: Gestão de Metas de Redução de Dívidas
   Eu quero criar e acompanhar metas inversas
   Para que eu visualize meu progresso na redução do saldo devedor
 
-  Scenario: Criar uma meta de redução de dívida válida
-    Given que existe uma conta do tipo "Cartão de Crédito" com saldo devedor de 5000
-    When eu crio uma meta de redução de dívida de 2000 até "31/12/2025"
-    Then a meta deve ser salva com status "Em andamento"
-    And o progresso inicial deve ser 0
+  Scenario: Criação de meta de quitação válida
+    When o usuário cria uma meta de quitação para reduzir a dívida em "2000" até "2025-12-31"
+    Then a meta deve ser registrada com status "Ativa"
+    And o saldo inicial da dívida deve ser armazenado como "5000"
 
-  Scenario: Progresso da meta atualizado após pagamento
-    Given que existe uma meta de redução de dívida de 2000 vinculada ao Cartão de Crédito
-    And o saldo inicial da dívida era de 5000
-    When o saldo atual da dívida passa a ser 4000
-    Then o progresso da meta deve ser de 1000
-    And o sistema deve registrar que 50% da meta foi atingida
+  Scenario: Criação de meta de quitação inválida (valor negativo)
+    When o usuário tenta criar uma meta de quitação com valor de redução "-500"
+    Then o sistema deve rejeitar a criação da meta
 
-  Scenario: Conclusão da meta de redução de dívida
-    Given que existe uma meta de redução de dívida de 2000 vinculada ao Cartão de Crédito
-    When o saldo atual da dívida passa a ser 3000
-    Then a meta deve ser marcada como "Concluída"
-    And o sistema deve gerar uma notificação de parabéns
+  Scenario: Atualização de progresso da meta
+    Given existe uma meta de quitação ativa com objetivo de "2000" e saldo inicial de "5000"
+    When o saldo atual da dívida é reduzido para "3500"
+    Then o progresso deve ser calculado como "1500"
+    And a meta deve continuar com status "Ativa"
 
-  Scenario: Tentativa de criar meta para conta que não é dívida
-    Given que existe uma conta do tipo "Conta Corrente" com saldo positivo
-    When eu tento criar uma meta de redução de dívida vinculada a esta conta
-    Then o sistema deve impedir a criação da meta
-    And deve exibir uma mensagem de erro "A meta só pode ser criada para contas de dívida"
+  Scenario: Conclusão automática da meta
+    Given existe uma meta de quitação ativa com objetivo de "2000" e saldo inicial de "5000"
+    When o saldo atual da dívida é reduzido para "2800"
+    Then o progresso deve ser "2200"
+    And o status da meta deve ser alterado para "Concluída"
+
+  Scenario: Vinculação de pagamento extra à meta
+    Given existe uma meta de quitação ativa para uma conta de cartão de crédito
+    When o usuário registra uma transação marcada como "pagamento extra"
+    Then o valor da transação deve ser somado ao progresso da meta
+    And o sistema deve atualizar o percentual de conclusão
+
+  Scenario: Exclusão de meta existente
+    Given existe uma meta de quitação ativa
+    When o usuário exclui a meta
+    Then a meta não deve mais existir no sistema

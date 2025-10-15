@@ -31,16 +31,14 @@ Feature: Gestão de Contas a Pagar
     And o valor da transação deve ser debitado da conta
     And o saldo da conta deve ser "750.00"
 
-  # Transação Recorrente (já veio de um agendamento do Landim)
-  Scenario: Efetivar pagamento de uma transação recorrente pendente
-    Given existe uma transação recorrente pendente de "300.00"
-    And o usuário possui uma conta com saldo "1200.00"
-    When o usuário efetiva essa transação
-    Then o status da transação deve ser "Efetivada"
-    And o saldo da conta deve ser "900.00"
-
   # Notificações
   Scenario: Notificação de transações próximas do vencimento
     Given existe uma transação pendente com vencimento para amanhã
     When o sistema verifica transações pendentes próximas do vencimento
     Then deve ser gerada uma notificação para o usuário
+
+  Scenario: Efetivar transação com saldo insuficiente
+    Given: existe uma transação única pendente de "250.00"
+    And: o usuário possui uma conta com saldo "200.00"
+    When: o usuário marca a transação como "Efetivada"
+    Then: o sistema deve recusar a operação e exibir mensagem de erro
