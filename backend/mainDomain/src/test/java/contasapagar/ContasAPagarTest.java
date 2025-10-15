@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import transacao.StatusTransacao;
 import transacao.Transacao;
+import transacao.Transacao.Tipo; // IMPORT ADICIONADO
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,14 +35,15 @@ public class ContasAPagarTest {
     public void oUsuarioCriaUmaTransacaoUnica(String descricao, String valor) {
         transacao = new Transacao(
                 UUID.randomUUID().toString(),
-                null, // origemAgendamentoId é null para avulsa
+                null,
                 descricao,
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta,
-                true
+                true,
+                Tipo.DESPESA
         );
         assertTrue(transacao.isAvulsa());
     }
@@ -67,7 +69,8 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta,
-                true
+                true,
+                Tipo.DESPESA
         );
         assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
         assertTrue(transacao.isAvulsa());
@@ -99,7 +102,8 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta,
-                true
+                true,
+                Tipo.DESPESA
         );
     }
 
@@ -151,7 +155,8 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria2",
                 conta,
-                false
+                false,
+                Tipo.DESPESA
         );
         assertFalse(transacao.isAvulsa());
     }
@@ -176,7 +181,8 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria3",
                 conta,
-                true
+                true,
+                Tipo.DESPESA
         );
     }
 

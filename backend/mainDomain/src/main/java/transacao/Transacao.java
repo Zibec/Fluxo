@@ -29,16 +29,16 @@ public class Transacao {
     private Conta contaAssociada;
     private boolean avulsa;
 
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId, Conta contaAssociada, boolean avulsa,Tipo tipo) {
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId, Conta contaAssociada, boolean avulsa, Tipo tipo) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
+        this.tipo = tipo;
         isTrue(valor != null && valor.signum() >= 0, "Valor deve ser positivo");
         this.valor = valor;
         this.data = Objects.requireNonNull(data);
         this.status = Objects.requireNonNull(status);
         this.categoriaId = categoriaId;
-        this.tipo = Objects.requireNonNull(tipo, "O tipo da transação é obrigatório");
         this.contaAssociada = contaAssociada;
         this.avulsa = avulsa;
     }

@@ -1,5 +1,6 @@
 package reembolso;
 
+import conta.Conta;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -26,6 +27,7 @@ public class ReembolsoTest {
     private Exception excecaoCapturada;
     private Transacao reembolsoResultado;
     private BigDecimal totalReceitasAntes;
+    private Conta contaDeTeste;
 
     @Before
     public void setup() {
@@ -37,11 +39,12 @@ public class ReembolsoTest {
         excecaoCapturada = null;
         reembolsoResultado = null;
         totalReceitasAntes = null;
+        contaDeTeste = new Conta("conta-teste-id", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
     }
 
     @Given("que registrei uma despesa original com ID {string} de R$ {double} na categoria {string}")
     public void que_registrei_uma_despesa_original_com_id_de_na_categoria(String id, Double valor, String categoria) {
-        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, categoria, Transacao.Tipo.DESPESA);
+        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, categoria, contaDeTeste, true, Transacao.Tipo.DESPESA);
         transacaoRepo.salvar(despesa);
     }
 
@@ -52,7 +55,7 @@ public class ReembolsoTest {
     @Given("que uma despesa original com ID {string} tem o valor de R$ {double} na categoria {string} em {string}")
     public void que_uma_despesa_original_com_id_tem_o_valor_de_r_na_categoria_em(String id, Double valor, String categoria, String mesAno) {
         LocalDate data = YearMonth.parse(mesAno, DateTimeFormatter.ofPattern("MM/yyyy")).atDay(1);
-        Transacao despesa = new Transacao(id, null, "Despesa Original Teste", BigDecimal.valueOf(valor), data, StatusTransacao.EFETIVADA, categoria, Transacao.Tipo.DESPESA);
+        Transacao despesa = new Transacao(id, null, "Despesa Original Teste", BigDecimal.valueOf(valor), data, StatusTransacao.EFETIVADA, categoria, contaDeTeste, true, Transacao.Tipo.DESPESA);
         transacaoRepo.salvar(despesa);
     }
 
@@ -68,7 +71,8 @@ public class ReembolsoTest {
 
     @Given("que eu tenho uma despesa original com ID {string} de R$ {double}")
     public void que_eu_tenho_uma_despesa_original_com_id_de_r(String id, Double valor) {
-        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, "Categoria Teste", Transacao.Tipo.DESPESA);
+        // CONSTRUTOR CORRIGIDO
+        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, "Categoria Teste", contaDeTeste, true, Transacao.Tipo.DESPESA);
         transacaoRepo.salvar(despesa);
     }
 
@@ -80,7 +84,7 @@ public class ReembolsoTest {
     @Given("o total de receitas do usuário é de R$ {double}")
     public void o_total_de_receitas_do_usuario_e_de_r(Double totalReceitas) {
         this.totalReceitasAntes = BigDecimal.valueOf(totalReceitas);
-        Transacao receita = new Transacao(UUID.randomUUID().toString(), null, "Salário", this.totalReceitasAntes, LocalDate.now(), StatusTransacao.EFETIVADA, "Salário", Transacao.Tipo.RECEITA);
+        Transacao receita = new Transacao(UUID.randomUUID().toString(), null, "Salário", this.totalReceitasAntes, LocalDate.now(), StatusTransacao.EFETIVADA, "Salário", contaDeTeste, true, Transacao.Tipo.RECEITA);
         transacaoRepo.salvar(receita);
     }
 
@@ -115,7 +119,6 @@ public class ReembolsoTest {
     @When("eu tento registrar um reembolso de R$ {double} para a despesa com ID {string}")
     public void eu_tento_registrar_um_reembolso_de_r_para_a_despesa_com_id(Double valorReembolso, String idDespesa) {
         try {
-            // --- CORREÇÃO FINAL AQUI ---
             this.reembolsoResultado = reembolsoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), idDespesa);
         } catch (Exception e) {
             this.excecaoCapturada = e;

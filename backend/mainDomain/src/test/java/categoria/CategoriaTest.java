@@ -8,7 +8,8 @@ import io.cucumber.java.en.When;
 import transacao.StatusTransacao;
 import transacao.Transacao;
 import transacao.TransacaoRepositorio;
-
+import conta.Conta;
+import transacao.Transacao.Tipo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -98,8 +99,19 @@ public class CategoriaTest {
 
     @And("existe pelo menos uma transação associada à categoria {string}")
     public void existePeloMenosUmaTransacaoAssociadaACategoria(String nomeCategoria) {
+        Conta contaDeTeste = new Conta("conta-id-teste", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
+
         Transacao transacao = new Transacao(
-                UUID.randomUUID().toString(), null, "Teste", BigDecimal.TEN, LocalDate.now(), StatusTransacao.EFETIVADA, this.categoria.getId(), null, false
+                UUID.randomUUID().toString(),
+                null,
+                "Teste",
+                BigDecimal.TEN,
+                LocalDate.now(),
+                StatusTransacao.EFETIVADA,
+                this.categoria.getId(),
+                contaDeTeste,
+                false,
+                Tipo.DESPESA
         );
         transacaoRepositorio.salvar(transacao);
     }

@@ -2,6 +2,7 @@ package orcamento;
 
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
+import transacao.TransacaoService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,19 +17,29 @@ public class OrcamentoTest {
     // ---------- Infra simples para os testes ----------
     private final OrcamentoRepositorio repo = new OrcamentoRepositorio();
 
-    /** Fake do somatório de transações no mês por (usuario,categoria,anoMes). */
-    private static class SumarioFake implements TransacaoSumario {
+    private static class FakeTransacaoService extends TransacaoService {
         private final Map<OrcamentoChave, BigDecimal> acumulado = new HashMap<>();
-        public void set(OrcamentoChave k, BigDecimal v) { acumulado.put(k, v); }
-        public void add(OrcamentoChave k, BigDecimal v) { acumulado.put(k, acumulado.getOrDefault(k, BigDecimal.ZERO).add(v)); }
-        @Override public BigDecimal totalGastoMes(String usuarioId, String categoriaId, YearMonth anoMes) {
+
+        public FakeTransacaoService() {
+            super(null);
+        }
+
+        public void set(OrcamentoChave k, BigDecimal v) {
+            acumulado.put(k, v);
+        }
+
+        public void add(OrcamentoChave k, BigDecimal v) {
+            acumulado.put(k, acumulado.getOrDefault(k, BigDecimal.ZERO).add(v));
+        }
+
+        public BigDecimal totalGastoMes(String usuarioId, String categoriaId, YearMonth anoMes) {
             return acumulado.getOrDefault(new OrcamentoChave(usuarioId, anoMes, categoriaId), BigDecimal.ZERO);
         }
     }
-    private final SumarioFake sumario = new SumarioFake();
 
-    /** Serviço para criar e calcular progresso. */
-    private final OrcamentoService service = new OrcamentoService(repo, sumario);
+    private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService();
+
+    private final OrcamentoService service = new OrcamentoService(repo, fakeTransacaoService);
 
     /** Coletor simples de notificação. */
     private static class Notificador {
@@ -182,7 +193,6 @@ public class OrcamentoTest {
         notificador.limpar();
     }
 
-    // ---- ALIAS para aceitar step sem o "que"
     @Given("existe uma categoria {string} com gasto limite de {string} para o mês {string}")
     public void existeUmaCategoriaComGastoLimiteDeParaOMes(String categoria, String valorMoeda, String mesAno) {
         existeCategoriaComLimiteParaOMes(categoria, valorMoeda, mesAno);
@@ -193,7 +203,8 @@ public class OrcamentoTest {
         if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoria);
-        sumario.set(chave, parseMoedaBR(valorMoeda));
+        // ALTERADO: Usando o novo Fake
+        fakeTransacaoService.set(chave, parseMoedaBR(valorMoeda));
     }
 
     @When("o usuário registra uma despesa de {string} na categoria {string} em {string}")
@@ -202,17 +213,18 @@ public class OrcamentoTest {
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoria);
 
-        var antes = sumario.totalGastoMes(usuario, categoria, ym);
+        // ALTERADO: Usando o novo Fake
+        var antes = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
         var orc = repo.obterOrcamento(chave).orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
         var limite = orc.getLimite();
 
-        // adiciona a despesa no acumulado
         var valor = parseMoedaBR(valorDespesa);
-        sumario.add(chave, valor);
+        // ALTERADO: Usando o novo Fake
+        fakeTransacaoService.add(chave, valor);
 
-        var depois = sumario.totalGastoMes(usuario, categoria, ym);
+        // ALTERADO: Usando o novo Fake
+        var depois = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
 
-        // Regras de notificação
         var oitenta = limite.multiply(BigDecimal.valueOf(0.8));
 
         if (antes.compareTo(oitenta) < 0 && depois.compareTo(oitenta) >= 0 && depois.compareTo(limite) < 0) {
@@ -273,10 +285,10 @@ public class OrcamentoTest {
         if (this.usuario == null) this.usuario = "Gabriel";
         YearMonth ym = parseAnoMes(mesAno);
 
-        BigDecimal totalCalculado = sumario.totalGastoMes(usuario, categoria, ym);
+        // ALTERADO: Usando o novo Fake
+        BigDecimal totalCalculado = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
         BigDecimal totalEsperado  = parseMoedaBR(esperado);
 
-        // guarda para o próximo passo (progresso)
         this.ultimaChaveVerificada = new OrcamentoChave(usuario, ym, categoria);
         this.ultimoTotalCalculado  = totalCalculado;
 
@@ -284,7 +296,6 @@ public class OrcamentoTest {
                 "Total gasto diferente do esperado");
     }
 
-    // ---- ALIAS para aceitar "permanece"
     @Then("o sistema deve mostrar que o total gasto para {string} em {string} permanece {string}")
     public void sistemaDeveMostrarQueOTotalGastoParaEmPermanece(String categoria, String mesAno, String esperado) {
         sistemaDeveMostrarQueOTotalGastoParaEmEDe(categoria, mesAno, esperado);
@@ -299,7 +310,6 @@ public class OrcamentoTest {
                 .orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
         BigDecimal limite = orc.getLimite();
 
-        // evita divisão por zero (no domínio, limite deve ser positivo)
         BigDecimal progresso = limite.compareTo(BigDecimal.ZERO) == 0
                 ? BigDecimal.ZERO
                 : ultimoTotalCalculado.multiply(BigDecimal.valueOf(100))
@@ -315,7 +325,6 @@ public class OrcamentoTest {
     // ---------- Helpers & utilidades ----------
 
     private static BigDecimal parseMoedaBR(String s) {
-        // Aceita "R$ 1.234,56" ou "100,00" ou "-50,00"
         String limpo = s.trim();
         limpo = limpo.replaceAll("[Rr]\\$\\s*", "");
         limpo = limpo.replace(".", "");
@@ -324,7 +333,6 @@ public class OrcamentoTest {
     }
 
     private static YearMonth parseAnoMes(String s) {
-        // Aceita "09/2025" ou "9/2025"
         var norm = Normalizer.normalize(s.trim(), Normalizer.Form.NFKC);
         String[] p = norm.split("/");
         if (p.length != 2) throw new IllegalArgumentException("Formato de mês/ano inválido: " + s);
