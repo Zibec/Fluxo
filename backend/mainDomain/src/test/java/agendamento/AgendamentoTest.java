@@ -581,7 +581,7 @@ public class AgendamentoTest {
         agService.salvar(ag);
     }
 
-    @Then("^\\s*o sistema não deve salvar o agendamento\\s*$")
+    @Then("o sistema não deve salvar o agendamento")
     public void sistemaNaoDeveSalvarAgendamento_regex() {
         assertNotNull(msgErro, "Esperado erro ao salvar agendamento no passado");
         // validação via repositório (como se fosse o banco)

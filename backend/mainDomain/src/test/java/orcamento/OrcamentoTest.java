@@ -251,6 +251,10 @@ public class OrcamentoTest {
     public void usuarioTentaDefinirValor(String valorMoeda, String categoria, String mesAno) {
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
+
+        this.categoria = categoria;
+        this.anoMes = ym;
+
         try {
             service.criarOrcamentoMensal(usuario, categoria, ym, valor);
             mensagemSistema = "Criado com sucesso";
