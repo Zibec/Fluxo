@@ -4,20 +4,50 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import conta.Conta;
+
 import static org.apache.commons.lang3.Validate.isTrue;
 import static org.apache.commons.lang3.Validate.notBlank;
 
 public class Transacao {
+
+    public enum Tipo {
+        DESPESA,
+        RECEITA,
+        REEMBOLSO
+    }
+
     private final String id;              // pode ser UUID
     private final String origemAgendamentoId; // pra rastrear de qual agendamento veio (idempotência/ auditoria)
     private final String descricao;
     private BigDecimal valor;
     private LocalDate data;
     private StatusTransacao status;
+    private String categoriaId;
+    private final Tipo tipo;
+    private String transacaoOriginalId;
+    private Conta contaAssociada;
+    private boolean avulsa;
 
     private String perfilId;
 
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String perfilId) {
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId, Conta contaAssociada, boolean avulsa, Tipo tipo, String perfilId) {
+        this.id = Objects.requireNonNull(id);
+        this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
+        this.descricao = notBlank(descricao, "Descrição obrigatória");
+        this.tipo = tipo;
+        isTrue(valor != null && valor.signum() >= 0, "Valor deve ser positivo");
+        this.valor = valor;
+        this.data = Objects.requireNonNull(data);
+        this.status = Objects.requireNonNull(status);
+        this.categoriaId = categoriaId;
+        this.contaAssociada = contaAssociada;
+        this.avulsa = avulsa;
+        this.perfilId = perfilId;
+    }
+
+    //Construtor sem categoria
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, Conta contaAssociada, boolean avulsa,Tipo tipo, String perfilId) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
@@ -25,6 +55,9 @@ public class Transacao {
         this.valor = valor;
         this.data = Objects.requireNonNull(data);
         this.status = Objects.requireNonNull(status);
+        this.tipo = Objects.requireNonNull(tipo, "O tipo da transação é obrigatório");
+        this.contaAssociada = contaAssociada;
+        this.avulsa = avulsa;
         this.perfilId = perfilId;
     }
 
@@ -37,6 +70,15 @@ public class Transacao {
     public BigDecimal getValor() { return valor; }
     public LocalDate getData() { return data; }
     public StatusTransacao getStatus() { return status; }
+    public String getCategoriaId() { return categoriaId; }
+    public Tipo getTipo() {return tipo;}
+    public String getTransacaoOriginalId() {return transacaoOriginalId;}
+    public void setTransacaoOriginalId(String transacaoOriginalId) {this.transacaoOriginalId = transacaoOriginalId;}
+    public boolean isAvulsa() { return avulsa; }
+    public Conta getContaAssociada() { return contaAssociada; }
+
+    public void setCategoriaId(String categoriaId) { this.categoriaId = categoriaId; }
+
 
     /** Só pode atualizar enquanto PENDENTE */
     public void atualizarValor(BigDecimal novoValor) {
@@ -54,6 +96,7 @@ public class Transacao {
         if (this.status != StatusTransacao.PENDENTE) {
             throw new IllegalStateException("Só é possível efetivar transações pendentes");
         }
+        this.contaAssociada.debitar(this.getValor());
         this.status = StatusTransacao.EFETIVADA;
     }
 
@@ -77,6 +120,13 @@ public class Transacao {
         }
 
         this.data = novaData;
+    }
+
+    public boolean isProximaDoVencimento() {
+        if (data.equals(LocalDate.now().plusDays(1))) {
+            return true;
+        }
+        return false;
     }
 }
 

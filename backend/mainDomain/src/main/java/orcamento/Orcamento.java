@@ -12,7 +12,7 @@ public class Orcamento {
 
     public Orcamento(BigDecimal limite) {
         notNull(limite, "O limite não pode ser nulo");
-        isTrue(limite.signum()>0, "O limite deve ser maior que zero");
+        isTrue(limite.signum()>0, "Valor do orçamento deve ser maior que zero");
         this.limite = limite;
         this.dataLimite = LocalDate.now().plusMonths(1);
     }

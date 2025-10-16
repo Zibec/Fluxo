@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="RunCucumberTest" time="0.967" tests="23" errors="23" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="RunCucumberTest" time="0.009" tests="1" errors="1" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="23"/>
     <property name="sun.cpu.isalist" value="amd64"/>
     <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.class.path" value="C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\target\test-classes;C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\target\classes;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-java\7.23.0\cucumber-java-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-core\7.23.0\cucumber-core-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-gherkin\7.23.0\cucumber-gherkin-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-gherkin-messages\7.23.0\cucumber-gherkin-messages-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\gherkin\32.1.1\gherkin-32.1.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\messages\27.2.0\messages-27.2.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\testng-xml-formatter\0.3.1\testng-xml-formatter-0.3.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\query\13.6.0\query-13.6.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\tag-expressions\6.1.2\tag-expressions-6.1.2.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-expressions\18.0.1\cucumber-expressions-18.0.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\datatable\7.23.0\datatable-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-plugin\7.23.0\cucumber-plugin-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\docstring\7.23.0\docstring-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\html-formatter\21.10.1\html-formatter-21.10.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\junit-xml-formatter\0.7.1\junit-xml-formatter-0.7.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\ci-environment\10.0.1\ci-environment-10.0.1.jar;C:\Users\lfta\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\lfta\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\lfta\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-junit\7.29.0\cucumber-junit-7.29.0.jar;"/>
+    <property name="java.class.path" value="C:\Users\PC\Desktop\Fluxo\backend\mainDomain\target\test-classes;C:\Users\PC\Desktop\Fluxo\backend\mainDomain\target\classes;C:\Users\PC\.m2\repository\io\cucumber\cucumber-java\7.23.0\cucumber-java-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-core\7.23.0\cucumber-core-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-gherkin\7.23.0\cucumber-gherkin-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-gherkin-messages\7.23.0\cucumber-gherkin-messages-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\gherkin\32.1.1\gherkin-32.1.1.jar;C:\Users\PC\.m2\repository\io\cucumber\messages\27.2.0\messages-27.2.0.jar;C:\Users\PC\.m2\repository\io\cucumber\testng-xml-formatter\0.3.1\testng-xml-formatter-0.3.1.jar;C:\Users\PC\.m2\repository\io\cucumber\query\13.6.0\query-13.6.0.jar;C:\Users\PC\.m2\repository\io\cucumber\tag-expressions\6.1.2\tag-expressions-6.1.2.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-expressions\18.0.1\cucumber-expressions-18.0.1.jar;C:\Users\PC\.m2\repository\io\cucumber\datatable\7.23.0\datatable-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-plugin\7.23.0\cucumber-plugin-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\docstring\7.23.0\docstring-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\html-formatter\21.10.1\html-formatter-21.10.1.jar;C:\Users\PC\.m2\repository\io\cucumber\junit-xml-formatter\0.7.1\junit-xml-formatter-0.7.1.jar;C:\Users\PC\.m2\repository\io\cucumber\ci-environment\10.0.1\ci-environment-10.0.1.jar;C:\Users\PC\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\PC\.m2\repository\commons-validator\commons-validator\1.9.0\commons-validator-1.9.0.jar;C:\Users\PC\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar;C:\Users\PC\.m2\repository\commons-digester\commons-digester\2.1\commons-digester-2.1.jar;C:\Users\PC\.m2\repository\commons-logging\commons-logging\1.3.2\commons-logging-1.3.2.jar;C:\Users\PC\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;C:\Users\PC\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\PC\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.1\junit-jupiter-engine-5.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-engine\1.9.1\junit-platform-engine-1.9.1.jar;C:\Users\PC\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-commons\1.9.1\junit-platform-commons-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.1\junit-jupiter-api-5.9.1.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-junit-platform-engine\7.14.1\cucumber-junit-platform-engine-7.14.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite\1.9.1\junit-platform-suite-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite-api\1.9.1\junit-platform-suite-api-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite-engine\1.9.1\junit-platform-suite-engine-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite-commons\1.9.1\junit-platform-suite-commons-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-launcher\1.9.1\junit-platform-launcher-1.9.1.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="user.variant" value=""/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
-    <property name="user.timezone" value="America/Fortaleza"/>
-    <property name="os.name" value="Windows 11"/>
+    <property name="user.timezone" value="America/Sao_Paulo"/>
+    <property name="os.name" value="Windows 10"/>
     <property name="java.vm.specification.version" value="23"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="BR"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-23\bin"/>
-    <property name="sun.java.command" value="C:\Users\lfta\AppData\Local\Temp\surefire11433463103629062977\surefirebooter-20250924105058207_3.jar C:\Users\lfta\AppData\Local\Temp\surefire11433463103629062977 2025-09-24T10-50-56_338-jvmRun1 surefire-20250924105058207_1tmp surefire_0-20250924105058207_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\PC\AppData\Local\Temp\surefire3369060047843734823\surefirebooter-20251016103041595_3.jar C:\Users\PC\AppData\Local\Temp\surefire3369060047843734823 2025-10-16T10-30-39_806-jvmRun1 surefire-20251016103041595_1tmp surefire_0-20251016103041595_2tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\target\test-classes;C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\target\classes;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-java\7.23.0\cucumber-java-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-core\7.23.0\cucumber-core-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-gherkin\7.23.0\cucumber-gherkin-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-gherkin-messages\7.23.0\cucumber-gherkin-messages-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\gherkin\32.1.1\gherkin-32.1.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\messages\27.2.0\messages-27.2.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\testng-xml-formatter\0.3.1\testng-xml-formatter-0.3.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\query\13.6.0\query-13.6.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\tag-expressions\6.1.2\tag-expressions-6.1.2.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-expressions\18.0.1\cucumber-expressions-18.0.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\datatable\7.23.0\datatable-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-plugin\7.23.0\cucumber-plugin-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\docstring\7.23.0\docstring-7.23.0.jar;C:\Users\lfta\.m2\repository\io\cucumber\html-formatter\21.10.1\html-formatter-21.10.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\junit-xml-formatter\0.7.1\junit-xml-formatter-0.7.1.jar;C:\Users\lfta\.m2\repository\io\cucumber\ci-environment\10.0.1\ci-environment-10.0.1.jar;C:\Users\lfta\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\lfta\.m2\repository\junit\junit\4.13.2\junit-4.13.2.jar;C:\Users\lfta\.m2\repository\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar;C:\Users\lfta\.m2\repository\io\cucumber\cucumber-junit\7.29.0\cucumber-junit-7.29.0.jar;"/>
+    <property name="surefire.test.class.path" value="C:\Users\PC\Desktop\Fluxo\backend\mainDomain\target\test-classes;C:\Users\PC\Desktop\Fluxo\backend\mainDomain\target\classes;C:\Users\PC\.m2\repository\io\cucumber\cucumber-java\7.23.0\cucumber-java-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-core\7.23.0\cucumber-core-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-gherkin\7.23.0\cucumber-gherkin-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-gherkin-messages\7.23.0\cucumber-gherkin-messages-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\gherkin\32.1.1\gherkin-32.1.1.jar;C:\Users\PC\.m2\repository\io\cucumber\messages\27.2.0\messages-27.2.0.jar;C:\Users\PC\.m2\repository\io\cucumber\testng-xml-formatter\0.3.1\testng-xml-formatter-0.3.1.jar;C:\Users\PC\.m2\repository\io\cucumber\query\13.6.0\query-13.6.0.jar;C:\Users\PC\.m2\repository\io\cucumber\tag-expressions\6.1.2\tag-expressions-6.1.2.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-expressions\18.0.1\cucumber-expressions-18.0.1.jar;C:\Users\PC\.m2\repository\io\cucumber\datatable\7.23.0\datatable-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-plugin\7.23.0\cucumber-plugin-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\docstring\7.23.0\docstring-7.23.0.jar;C:\Users\PC\.m2\repository\io\cucumber\html-formatter\21.10.1\html-formatter-21.10.1.jar;C:\Users\PC\.m2\repository\io\cucumber\junit-xml-formatter\0.7.1\junit-xml-formatter-0.7.1.jar;C:\Users\PC\.m2\repository\io\cucumber\ci-environment\10.0.1\ci-environment-10.0.1.jar;C:\Users\PC\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\PC\.m2\repository\commons-validator\commons-validator\1.9.0\commons-validator-1.9.0.jar;C:\Users\PC\.m2\repository\commons-beanutils\commons-beanutils\1.9.4\commons-beanutils-1.9.4.jar;C:\Users\PC\.m2\repository\commons-digester\commons-digester\2.1\commons-digester-2.1.jar;C:\Users\PC\.m2\repository\commons-logging\commons-logging\1.3.2\commons-logging-1.3.2.jar;C:\Users\PC\.m2\repository\commons-collections\commons-collections\3.2.2\commons-collections-3.2.2.jar;C:\Users\PC\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\PC\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.9.1\junit-jupiter-engine-5.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-engine\1.9.1\junit-platform-engine-1.9.1.jar;C:\Users\PC\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-commons\1.9.1\junit-platform-commons-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.9.1\junit-jupiter-api-5.9.1.jar;C:\Users\PC\.m2\repository\io\cucumber\cucumber-junit-platform-engine\7.14.1\cucumber-junit-platform-engine-7.14.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite\1.9.1\junit-platform-suite-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite-api\1.9.1\junit-platform-suite-api-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite-engine\1.9.1\junit-platform-suite-engine-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-suite-commons\1.9.1\junit-platform-suite-commons-1.9.1.jar;C:\Users\PC\.m2\repository\org\junit\platform\junit-platform-launcher\1.9.1\junit-platform-launcher-1.9.1.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
-    <property name="user.home" value="C:\Users\lfta"/>
+    <property name="user.home" value="C:\Users\PC"/>
     <property name="user.language" value="pt"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="java.version.date" value="2024-09-17"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-23"/>
     <property name="file.separator" value="\"/>
-    <property name="basedir" value="C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain"/>
+    <property name="basedir" value="C:\Users\PC\Desktop\Fluxo\backend\mainDomain"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\lfta\AppData\Local\Temp\surefire11433463103629062977\surefirebooter-20250924105058207_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\PC\AppData\Local\Temp\surefire3369060047843734823\surefirebooter-20251016103041595_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="23+37-2369"/>
-    <property name="user.name" value="lfta"/>
+    <property name="user.name" value="PC"/>
     <property name="stdout.encoding" value="Cp1252"/>
     <property name="path.separator" value=";"/>
     <property name="os.version" value="10.0"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="file.encoding" value="UTF-8"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
-    <property name="localRepository" value="C:\Users\lfta\.m2\repository"/>
+    <property name="localRepository" value="C:\Users\PC\.m2\repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
-    <property name="java.io.tmpdir" value="C:\Users\lfta\AppData\Local\Temp\"/>
+    <property name="java.io.tmpdir" value="C:\Users\PC\AppData\Local\Temp\"/>
     <property name="java.version" value="23"/>
-    <property name="user.dir" value="C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain"/>
+    <property name="user.dir" value="C:\Users\PC\Desktop\Fluxo\backend\mainDomain"/>
     <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
     <property name="sun.os.patch.level" value=""/>
     <property name="native.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk-23\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\dotnet\;C:\Program Files\WireGuard\;C:\Program Files (x86)\Graphviz\bin;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.11\bin;C:\Users\lfta\AppData\Local\Programs\Python\Python312\Scripts\;C:\Users\lfta\AppData\Local\Programs\Python\Python312\;C:\Users\lfta\AppData\Local\Microsoft\WindowsApps;C:\Users\lfta\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\lfta\AppData\Local\Programs\Git\cmd;C:\MinGW\bin;C:\Users\lfta\AppData\Roaming\npm;C:\Program Files\nodejs\node_modules\npm\bin;;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-23\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Oracle\Java\java8path;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\MinGW\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Git\cmd;C:\ProgramData\UNIVALI\Portugol Studio;C:\Program Files\dotnet\;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\ProgramData\chocolatey\lib\make\tools\install\bin;&quot;C:\Windows\System32\;C:\Windows\System32\WindowsPowerShell\v1.0\&quot;;;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\GitHub CLI\;C:\ProgramData\chocolatey\lib\maven\apache-maven-3.9.11\bin;C:\Users\PC\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\PC\AppData\Local\Programs\Python\Python310\;C:\Users\PC\AppData\Local\Microsoft\WindowsApps;C:\Users\PC\AppData\Local\Programs\Microsoft VS Code\bin;C:\ffmpeg\bin;C:\sqlite3;C:\Users\PC\AppData\Roaming\npm;C:\ProgramData\chocolatey\lib\make\tools\install\bin;;."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
     <property name="stderr.encoding" value="Cp1252"/>
     <property name="java.vendor" value="Oracle Corporation"/>
@@ -58,723 +58,39 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="67.0"/>
   </properties>
-  <testcase name="Atualizar e-mail com sucesso" classname="Configurações da Conta de Usuário" time="0.149">
-    <error message="The step &apos;que estou logado no sistema&apos; and 5 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de configurações de conta&quot;)&#10;public void acesso_a_página_de_configurações_de_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu altero meu e-mail para {string}&quot;)&#10;public void eu_altero_meu_e_mail_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;o e-mail não está em uso por outro usuário&quot;)&#10;public void o_e_mail_não_está_em_uso_por_outro_usuário() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve salvar o novo e-mail&quot;)&#10;public void o_sistema_deve_salvar_o_novo_e_mail() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir uma mensagem de sucesso {string}&quot;)&#10;public void exibir_uma_mensagem_de_sucesso(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 5 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de configurações de conta")
-public void acesso_a_página_de_configurações_de_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu altero meu e-mail para {string}")
-public void eu_altero_meu_e_mail_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("o e-mail não está em uso por outro usuário")
-public void o_e_mail_não_está_em_uso_por_outro_usuário() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve salvar o novo e-mail")
-public void o_sistema_deve_salvar_o_novo_e_mail() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir uma mensagem de sucesso {string}")
-public void exibir_uma_mensagem_de_sucesso(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Atualizar e-mail já existente" classname="Configurações da Conta de Usuário" time="0.002">
-    <error message="The step &apos;que estou logado no sistema&apos; and 5 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de configurações de conta&quot;)&#10;public void acesso_a_página_de_configurações_de_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu altero meu e-mail para {string}&quot;)&#10;public void eu_altero_meu_e_mail_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;o e-mail já está em uso por outro usuário&quot;)&#10;public void o_e_mail_já_está_em_uso_por_outro_usuário() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve recusar a alteração&quot;)&#10;public void o_sistema_deve_recusar_a_alteração() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 5 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de configurações de conta")
-public void acesso_a_página_de_configurações_de_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu altero meu e-mail para {string}")
-public void eu_altero_meu_e_mail_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("o e-mail já está em uso por outro usuário")
-public void o_e_mail_já_está_em_uso_por_outro_usuário() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve recusar a alteração")
-public void o_sistema_deve_recusar_a_alteração() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Alterar senha com sucesso" classname="Configurações da Conta de Usuário" time="0.013">
-    <error message="The step &apos;que estou logado no sistema&apos; and 7 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de configurações de conta&quot;)&#10;public void acesso_a_página_de_configurações_de_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu informo minha senha atual {string}&quot;)&#10;public void eu_informo_minha_senha_atual(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;informo a nova senha {string}&quot;)&#10;public void informo_a_nova_senha(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;confirmo a nova senha&quot;)&#10;public void confirmo_a_nova_senha() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve validar a senha atual&quot;)&#10;public void o_sistema_deve_validar_a_senha_atual() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;armazenar a nova senha com criptografia forte&quot;)&#10;public void armazenar_a_nova_senha_com_criptografia_forte() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 7 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de configurações de conta")
-public void acesso_a_página_de_configurações_de_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu informo minha senha atual {string}")
-public void eu_informo_minha_senha_atual(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("informo a nova senha {string}")
-public void informo_a_nova_senha(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("confirmo a nova senha")
-public void confirmo_a_nova_senha() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve validar a senha atual")
-public void o_sistema_deve_validar_a_senha_atual() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("armazenar a nova senha com criptografia forte")
-public void armazenar_a_nova_senha_com_criptografia_forte() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Alterar senha com senha atual incorreta" classname="Configurações da Conta de Usuário" time="0.016">
-    <error message="The step &apos;que estou logado no sistema&apos; and 5 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de configurações de conta&quot;)&#10;public void acesso_a_página_de_configurações_de_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu informo uma senha atual incorreta {string}&quot;)&#10;public void eu_informo_uma_senha_atual_incorreta(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;tento cadastrar a nova senha {string}&quot;)&#10;public void tento_cadastrar_a_nova_senha(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve recusar a alteração&quot;)&#10;public void o_sistema_deve_recusar_a_alteração() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 5 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de configurações de conta")
-public void acesso_a_página_de_configurações_de_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu informo uma senha atual incorreta {string}")
-public void eu_informo_uma_senha_atual_incorreta(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("tento cadastrar a nova senha {string}")
-public void tento_cadastrar_a_nova_senha(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve recusar a alteração")
-public void o_sistema_deve_recusar_a_alteração() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Definir moeda e formato de data preferidos" classname="Configurações da Conta de Usuário" time="0.013">
-    <error message="The step &apos;que estou logado no sistema&apos; and 7 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de configurações de conta&quot;)&#10;public void acesso_a_página_de_configurações_de_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu seleciono a moeda {string}&quot;)&#10;public void eu_seleciono_a_moeda(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;seleciono o formato de data {string}&quot;)&#10;public void seleciono_o_formato_de_data(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve salvar as preferências&quot;)&#10;public void o_sistema_deve_salvar_as_preferências() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;todos os valores monetários exibidos devem estar em dólares&quot;)&#10;public void todos_os_valores_monetários_exibidos_devem_estar_em_dólares() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;todas as datas exibidas devem seguir o formato {string}&quot;)&#10;public void todas_as_datas_exibidas_devem_seguir_o_formato(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 7 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de configurações de conta")
-public void acesso_a_página_de_configurações_de_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu seleciono a moeda {string}")
-public void eu_seleciono_a_moeda(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("seleciono o formato de data {string}")
-public void seleciono_o_formato_de_data(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve salvar as preferências")
-public void o_sistema_deve_salvar_as_preferências() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("todos os valores monetários exibidos devem estar em dólares")
-public void todos_os_valores_monetários_exibidos_devem_estar_em_dólares() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("todas as datas exibidas devem seguir o formato {string}")
-public void todas_as_datas_exibidas_devem_seguir_o_formato(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Cadastrar cartão de crédito com sucesso" classname="Gestão de Contas e Cartões" time="0.007">
-    <error message="The step &apos;que estou logado no sistema&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de gestão de contas e cartões&quot;)&#10;public void acesso_a_página_de_gestão_de_contas_e_cartões() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu cadastro um cartão de crédito com limite de {string}&quot;)&#10;public void eu_cadastro_um_cartão_de_crédito_com_limite_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve salvar os dados do cartão&quot;)&#10;public void o_sistema_deve_salvar_os_dados_do_cartão() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de gestão de contas e cartões")
-public void acesso_a_página_de_gestão_de_contas_e_cartões() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu cadastro um cartão de crédito com limite de {string}")
-public void eu_cadastro_um_cartão_de_crédito_com_limite_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve salvar os dados do cartão")
-public void o_sistema_deve_salvar_os_dados_do_cartão() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Calcular limite disponível após nova despesa" classname="Gestão de Contas e Cartões" time="0.011">
-    <error message="The step &apos;que tenho um cartão de crédito com limite total de &quot;5000&quot;&apos; and 3 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho um cartão de crédito com limite total de {string}&quot;)&#10;public void que_tenho_um_cartão_de_crédito_com_limite_total_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;despesas na fatura aberta somando {string}&quot;)&#10;public void despesas_na_fatura_aberta_somando(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu realizo uma nova compra de {string}&quot;)&#10;public void eu_realizo_uma_nova_compra_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve recalcular o limite disponível como {string}&quot;)&#10;public void o_sistema_deve_recalcular_o_limite_disponível_como(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho um cartão de crédito com limite total de "5000"' and 3 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho um cartão de crédito com limite total de {string}")
-public void que_tenho_um_cartão_de_crédito_com_limite_total_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("despesas na fatura aberta somando {string}")
-public void despesas_na_fatura_aberta_somando(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu realizo uma nova compra de {string}")
-public void eu_realizo_uma_nova_compra_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve recalcular o limite disponível como {string}")
-public void o_sistema_deve_recalcular_o_limite_disponível_como(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Fechamento automático da fatura" classname="Gestão de Contas e Cartões" time="0.008">
-    <error message="The step &apos;que tenho uma fatura em aberto com despesas&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma fatura em aberto com despesas&quot;)&#10;public void que_tenho_uma_fatura_em_aberto_com_despesas() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;a data de fechamento é hoje&quot;)&#10;public void a_data_de_fechamento_é_hoje() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;o processo de fechamento de fatura é executado&quot;)&#10;public void o_processo_de_fechamento_de_fatura_é_executado() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve consolidar o valor a pagar&quot;)&#10;public void o_sistema_deve_consolidar_o_valor_a_pagar() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;criar uma nova fatura para o próximo período&quot;)&#10;public void criar_uma_nova_fatura_para_o_próximo_período() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma fatura em aberto com despesas' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma fatura em aberto com despesas")
-public void que_tenho_uma_fatura_em_aberto_com_despesas() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("a data de fechamento é hoje")
-public void a_data_de_fechamento_é_hoje() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("o processo de fechamento de fatura é executado")
-public void o_processo_de_fechamento_de_fatura_é_executado() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve consolidar o valor a pagar")
-public void o_sistema_deve_consolidar_o_valor_a_pagar() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("criar uma nova fatura para o próximo período")
-public void criar_uma_nova_fatura_para_o_próximo_período() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Cadastrar conta corrente com sucesso" classname="Gestão de Contas e Cartões" time="0.015">
-    <error message="The step &apos;que estou logado no sistema&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de gestão de contas&quot;)&#10;public void acesso_a_página_de_gestão_de_contas() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu cadastro uma conta corrente no banco {string} agência {string} número {string} com saldo inicial {string}&quot;)&#10;public void eu_cadastro_uma_conta_corrente_no_banco_agência_número_com_saldo_inicial(String string, String string2, String string3, String string4) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve salvar os dados da conta&quot;)&#10;public void o_sistema_deve_salvar_os_dados_da_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de gestão de contas")
-public void acesso_a_página_de_gestão_de_contas() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu cadastro uma conta corrente no banco {string} agência {string} número {string} com saldo inicial {string}")
-public void eu_cadastro_uma_conta_corrente_no_banco_agência_número_com_saldo_inicial(String string, String string2, String string3, String string4) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve salvar os dados da conta")
-public void o_sistema_deve_salvar_os_dados_da_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Atualizar saldo da conta corrente após depósito" classname="Gestão de Contas e Cartões" time="0.005">
-    <error message="The step &apos;que tenho uma conta corrente com saldo &quot;2000&quot;&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma conta corrente com saldo {string}&quot;)&#10;public void que_tenho_uma_conta_corrente_com_saldo(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu registro um depósito de {string}&quot;)&#10;public void eu_registro_um_depósito_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o saldo da conta deve ser atualizado para {string}&quot;)&#10;public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma conta corrente com saldo "2000"' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma conta corrente com saldo {string}")
-public void que_tenho_uma_conta_corrente_com_saldo(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu registro um depósito de {string}")
-public void eu_registro_um_depósito_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o saldo da conta deve ser atualizado para {string}")
-public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Atualizar saldo da conta corrente após retirada" classname="Gestão de Contas e Cartões" time="0.004">
-    <error message="The step &apos;que tenho uma conta corrente com saldo &quot;2000&quot;&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma conta corrente com saldo {string}&quot;)&#10;public void que_tenho_uma_conta_corrente_com_saldo(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu registro uma retirada de {string}&quot;)&#10;public void eu_registro_uma_retirada_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o saldo da conta deve ser atualizado para {string}&quot;)&#10;public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma conta corrente com saldo "2000"' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma conta corrente com saldo {string}")
-public void que_tenho_uma_conta_corrente_com_saldo(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu registro uma retirada de {string}")
-public void eu_registro_uma_retirada_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o saldo da conta deve ser atualizado para {string}")
-public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Cadastrar conta poupança com sucesso" classname="Gestão de Contas e Cartões" time="0.006">
-    <error message="The step &apos;que estou logado no sistema&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de gestão de contas&quot;)&#10;public void acesso_a_página_de_gestão_de_contas() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu cadastro uma conta poupança no banco {string} agência {string} número {string} com saldo inicial {string}&quot;)&#10;public void eu_cadastro_uma_conta_poupança_no_banco_agência_número_com_saldo_inicial(String string, String string2, String string3, String string4) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve salvar os dados da conta&quot;)&#10;public void o_sistema_deve_salvar_os_dados_da_conta() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de gestão de contas")
-public void acesso_a_página_de_gestão_de_contas() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu cadastro uma conta poupança no banco {string} agência {string} número {string} com saldo inicial {string}")
-public void eu_cadastro_uma_conta_poupança_no_banco_agência_número_com_saldo_inicial(String string, String string2, String string3, String string4) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve salvar os dados da conta")
-public void o_sistema_deve_salvar_os_dados_da_conta() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Registrar depósito em conta poupança" classname="Gestão de Contas e Cartões" time="0.004">
-    <error message="The step &apos;que tenho uma conta poupança com saldo &quot;3000&quot;&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma conta poupança com saldo {string}&quot;)&#10;public void que_tenho_uma_conta_poupança_com_saldo(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu registro um depósito de {string}&quot;)&#10;public void eu_registro_um_depósito_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o saldo da conta deve ser atualizado para {string}&quot;)&#10;public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma conta poupança com saldo "3000"' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma conta poupança com saldo {string}")
-public void que_tenho_uma_conta_poupança_com_saldo(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu registro um depósito de {string}")
-public void eu_registro_um_depósito_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o saldo da conta deve ser atualizado para {string}")
-public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Registrar retirada em conta poupança" classname="Gestão de Contas e Cartões" time="0.01">
-    <error message="The step &apos;que tenho uma conta poupança com saldo &quot;3000&quot;&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma conta poupança com saldo {string}&quot;)&#10;public void que_tenho_uma_conta_poupança_com_saldo(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu registro uma retirada de {string}&quot;)&#10;public void eu_registro_uma_retirada_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o saldo da conta deve ser atualizado para {string}&quot;)&#10;public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma conta poupança com saldo "3000"' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma conta poupança com saldo {string}")
-public void que_tenho_uma_conta_poupança_com_saldo(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu registro uma retirada de {string}")
-public void eu_registro_uma_retirada_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o saldo da conta deve ser atualizado para {string}")
-public void o_saldo_da_conta_deve_ser_atualizado_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Cadastrar carteira digital com sucesso" classname="Gestão de Contas e Cartões" time="0.011">
-    <error message="The step &apos;que estou logado no sistema&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que estou logado no sistema&quot;)&#10;public void que_estou_logado_no_sistema() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Given(&quot;acesso a página de gestão de contas&quot;)&#10;public void acesso_a_página_de_gestão_de_contas() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu cadastro uma carteira digital {string} com saldo inicial {string}&quot;)&#10;public void eu_cadastro_uma_carteira_digital_com_saldo_inicial(String string, String string2) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o sistema deve salvar os dados da carteira&quot;)&#10;public void o_sistema_deve_salvar_os_dados_da_carteira() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;exibir a mensagem {string}&quot;)&#10;public void exibir_a_mensagem(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que estou logado no sistema' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que estou logado no sistema")
-public void que_estou_logado_no_sistema() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Given("acesso a página de gestão de contas")
-public void acesso_a_página_de_gestão_de_contas() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu cadastro uma carteira digital {string} com saldo inicial {string}")
-public void eu_cadastro_uma_carteira_digital_com_saldo_inicial(String string, String string2) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o sistema deve salvar os dados da carteira")
-public void o_sistema_deve_salvar_os_dados_da_carteira() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("exibir a mensagem {string}")
-public void exibir_a_mensagem(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Atualizar saldo da carteira digital após entrada" classname="Gestão de Contas e Cartões" time="0.005">
-    <error message="The step &apos;que tenho uma carteira digital &quot;PayPal&quot; com saldo &quot;800&quot;&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma carteira digital {string} com saldo {string}&quot;)&#10;public void que_tenho_uma_carteira_digital_com_saldo(String string, String string2) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu registro uma entrada de {string}&quot;)&#10;public void eu_registro_uma_entrada_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o saldo da carteira deve ser atualizado para {string}&quot;)&#10;public void o_saldo_da_carteira_deve_ser_atualizado_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma carteira digital "PayPal" com saldo "800"' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma carteira digital {string} com saldo {string}")
-public void que_tenho_uma_carteira_digital_com_saldo(String string, String string2) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu registro uma entrada de {string}")
-public void eu_registro_uma_entrada_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o saldo da carteira deve ser atualizado para {string}")
-public void o_saldo_da_carteira_deve_ser_atualizado_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Atualizar saldo da carteira digital após saída" classname="Gestão de Contas e Cartões" time="0.005">
-    <error message="The step &apos;que tenho uma carteira digital &quot;PayPal&quot; com saldo &quot;800&quot;&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Given(&quot;que tenho uma carteira digital {string} com saldo {string}&quot;)&#10;public void que_tenho_uma_carteira_digital_com_saldo(String string, String string2) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@When(&quot;eu registro uma saída de {string}&quot;)&#10;public void eu_registro_uma_saída_de(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Then(&quot;o saldo da carteira deve ser atualizado para {string}&quot;)&#10;public void o_saldo_da_carteira_deve_ser_atualizado_para(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que tenho uma carteira digital "PayPal" com saldo "800"' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Given("que tenho uma carteira digital {string} com saldo {string}")
-public void que_tenho_uma_carteira_digital_com_saldo(String string, String string2) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@When("eu registro uma saída de {string}")
-public void eu_registro_uma_saída_de(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Then("o saldo da carteira deve ser atualizado para {string}")
-public void o_saldo_da_carteira_deve_ser_atualizado_para(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Adicionar uma nova categoria com sucesso" classname="Gestão de Categorias" time="0.004">
-    <error message="The step &apos;que o usuário está na tela de gerenciamento de categorias&apos; and 2 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Dado(&quot;que o usuário está na tela de gerenciamento de categorias&quot;)&#10;public void que_o_usuário_está_na_tela_de_gerenciamento_de_categorias() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Quando(&quot;o usuário insere o nome {string} e salva&quot;)&#10;public void o_usuário_insere_o_nome_e_salva(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;a categoria {string} deve aparecer na lista de categorias&quot;)&#10;public void a_categoria_deve_aparecer_na_lista_de_categorias(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que o usuário está na tela de gerenciamento de categorias' and 2 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Dado("que o usuário está na tela de gerenciamento de categorias")
-public void que_o_usuário_está_na_tela_de_gerenciamento_de_categorias() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Quando("o usuário insere o nome {string} e salva")
-public void o_usuário_insere_o_nome_e_salva(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("a categoria {string} deve aparecer na lista de categorias")
-public void a_categoria_deve_aparecer_na_lista_de_categorias(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Tentar adicionar uma categoria que já existe" classname="Gestão de Categorias" time="0.006">
-    <error message="The step &apos;que a categoria &quot;Moradia&quot; já existe na lista&apos; and 3 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Dado(&quot;que a categoria {string} já existe na lista&quot;)&#10;public void que_a_categoria_já_existe_na_lista(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Quando(&quot;o usuário tenta criar uma nova categoria com o nome {string}&quot;)&#10;public void o_usuário_tenta_criar_uma_nova_categoria_com_o_nome(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;o sistema deve exibir uma mensagem de erro {string}&quot;)&#10;public void o_sistema_deve_exibir_uma_mensagem_de_erro(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;a lista de categorias não deve ser alterada&quot;)&#10;public void a_lista_de_categorias_não_deve_ser_alterada() {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que a categoria "Moradia" já existe na lista' and 3 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Dado("que a categoria {string} já existe na lista")
-public void que_a_categoria_já_existe_na_lista(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Quando("o usuário tenta criar uma nova categoria com o nome {string}")
-public void o_usuário_tenta_criar_uma_nova_categoria_com_o_nome(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("o sistema deve exibir uma mensagem de erro {string}")
-public void o_sistema_deve_exibir_uma_mensagem_de_erro(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("a lista de categorias não deve ser alterada")
-public void a_lista_de_categorias_não_deve_ser_alterada() {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Deletar uma categoria que não está em uso" classname="Gestão de Categorias" time="0.009">
-    <error message="The step &apos;que o usuário tem uma categoria chamada &quot;Extra&quot;&apos; and 3 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Dado(&quot;que o usuário tem uma categoria chamada {string}&quot;)&#10;public void que_o_usuário_tem_uma_categoria_chamada(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Dado(&quot;não existe nenhuma transação associada à categoria {string}&quot;)&#10;public void não_existe_nenhuma_transação_associada_à_categoria(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Quando(&quot;o usuário escolhe deletar a categoria {string}&quot;)&#10;public void o_usuário_escolhe_deletar_a_categoria(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;a categoria {string} deve ser removida da lista&quot;)&#10;public void a_categoria_deve_ser_removida_da_lista(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que o usuário tem uma categoria chamada "Extra"' and 3 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Dado("que o usuário tem uma categoria chamada {string}")
-public void que_o_usuário_tem_uma_categoria_chamada(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Dado("não existe nenhuma transação associada à categoria {string}")
-public void não_existe_nenhuma_transação_associada_à_categoria(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Quando("o usuário escolhe deletar a categoria {string}")
-public void o_usuário_escolhe_deletar_a_categoria(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("a categoria {string} deve ser removida da lista")
-public void a_categoria_deve_ser_removida_da_lista(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Tentar deletar uma categoria que está em uso" classname="Gestão de Categorias" time="0.024">
-    <error message="The step &apos;que o usuário tem uma categoria chamada &quot;Alimentação&quot;&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Dado(&quot;que o usuário tem uma categoria chamada {string}&quot;)&#10;public void que_o_usuário_tem_uma_categoria_chamada(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Dado(&quot;existe pelo menos uma transação associada à categoria {string}&quot;)&#10;public void existe_pelo_menos_uma_transação_associada_à_categoria(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Quando(&quot;o usuário tenta deletar a categoria {string}&quot;)&#10;public void o_usuário_tenta_deletar_a_categoria(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;o sistema deve exibir uma mensagem de erro {string}&quot;)&#10;public void o_sistema_deve_exibir_uma_mensagem_de_erro(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;a categoria {string} deve continuar na lista&quot;)&#10;public void a_categoria_deve_continuar_na_lista(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que o usuário tem uma categoria chamada "Alimentação"' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Dado("que o usuário tem uma categoria chamada {string}")
-public void que_o_usuário_tem_uma_categoria_chamada(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Dado("existe pelo menos uma transação associada à categoria {string}")
-public void existe_pelo_menos_uma_transação_associada_à_categoria(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Quando("o usuário tenta deletar a categoria {string}")
-public void o_usuário_tenta_deletar_a_categoria(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("o sistema deve exibir uma mensagem de erro {string}")
-public void o_sistema_deve_exibir_uma_mensagem_de_erro(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("a categoria {string} deve continuar na lista")
-public void a_categoria_deve_continuar_na_lista(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Fazer um aporte (contribuição) com saldo suficiente" classname="Metas de Poupança" time="0.011">
-    <error message="The step &apos;que eu tenho uma meta de poupança &quot;Viagem de Férias&quot; com saldo atual de R$ 500,00&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Dado(&quot;que eu tenho uma meta de poupança {string} com saldo atual de R$ {double}&quot;)&#10;public void que_eu_tenho_uma_meta_de_poupança_com_saldo_atual_de_r$(String string, Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Dado(&quot;o saldo da minha Conta principal é de R$ {double}&quot;)&#10;public void o_saldo_da_minha_conta_principal_é_de_r$(Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Quando(&quot;eu faço um aporte de R$ {double} para a meta {string}&quot;)&#10;public void eu_faço_um_aporte_de_r$_para_a_meta(Double double1, String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;o saldo da meta {string} deve ser R$ {double}&quot;)&#10;public void o_saldo_da_meta_deve_ser_r$(String string, Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;o saldo da minha Conta principal deve ser R$ {double}&quot;)&#10;public void o_saldo_da_minha_conta_principal_deve_ser_r$(Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que eu tenho uma meta de poupança "Viagem de Férias" com saldo atual de R$ 500,00' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Dado("que eu tenho uma meta de poupança {string} com saldo atual de R$ {double}")
-public void que_eu_tenho_uma_meta_de_poupança_com_saldo_atual_de_r$(String string, Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Dado("o saldo da minha Conta principal é de R$ {double}")
-public void o_saldo_da_minha_conta_principal_é_de_r$(Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Quando("eu faço um aporte de R$ {double} para a meta {string}")
-public void eu_faço_um_aporte_de_r$_para_a_meta(Double double1, String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("o saldo da meta {string} deve ser R$ {double}")
-public void o_saldo_da_meta_deve_ser_r$(String string, Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("o saldo da minha Conta principal deve ser R$ {double}")
-public void o_saldo_da_minha_conta_principal_deve_ser_r$(Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
-]]></error>
-  </testcase>
-  <testcase name="Tentar fazer um aporte com saldo insuficiente" classname="Metas de Poupança" time="0.009">
-    <error message="The step &apos;que eu tenho uma meta de poupança &quot;Celular Novo&quot; com saldo atual de R$ 100,00&apos; and 4 other step(s) are undefined.&#10;You can implement these steps using the snippet(s) below:&#10;&#10;@Dado(&quot;que eu tenho uma meta de poupança {string} com saldo atual de R$ {double}&quot;)&#10;public void que_eu_tenho_uma_meta_de_poupança_com_saldo_atual_de_r$(String string, Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Dado(&quot;o saldo da minha Conta principal é de R$ {double}&quot;)&#10;public void o_saldo_da_minha_conta_principal_é_de_r$(Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Quando(&quot;eu tento fazer um aporte de R$ {double} para a meta {string}&quot;)&#10;public void eu_tento_fazer_um_aporte_de_r$_para_a_meta(Double double1, String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;o sistema deve exibir a mensagem de erro {string}&quot;)&#10;public void o_sistema_deve_exibir_a_mensagem_de_erro(String string) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;@Então(&quot;o saldo da meta {string} deve permanecer R$ {double}&quot;)&#10;public void o_saldo_da_meta_deve_permanecer_r$(String string, Double double1) {&#10;    // Write code here that turns the phrase above into concrete actions&#10;    throw new io.cucumber.java.PendingException();&#10;}&#10;" type="io.cucumber.junit.UndefinedStepException"><![CDATA[io.cucumber.junit.UndefinedStepException: 
-The step 'que eu tenho uma meta de poupança "Celular Novo" com saldo atual de R$ 100,00' and 4 other step(s) are undefined.
-You can implement these steps using the snippet(s) below:
-
-@Dado("que eu tenho uma meta de poupança {string} com saldo atual de R$ {double}")
-public void que_eu_tenho_uma_meta_de_poupança_com_saldo_atual_de_r$(String string, Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Dado("o saldo da minha Conta principal é de R$ {double}")
-public void o_saldo_da_minha_conta_principal_é_de_r$(Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Quando("eu tento fazer um aporte de R$ {double} para a meta {string}")
-public void eu_tento_fazer_um_aporte_de_r$_para_a_meta(Double double1, String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("o sistema deve exibir a mensagem de erro {string}")
-public void o_sistema_deve_exibir_a_mensagem_de_erro(String string) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-@Então("o saldo da meta {string} deve permanecer R$ {double}")
-public void o_saldo_da_meta_deve_permanecer_r$(String string, Double double1) {
-    // Write code here that turns the phrase above into concrete actions
-    throw new io.cucumber.java.PendingException();
-}
-
+  <testcase name="" classname="RunCucumberTest" time="0.009">
+    <error message="Suite [RunCucumberTest] did not discover any tests" type="org.junit.platform.suite.engine.NoTestsDiscoveredException"><![CDATA[org.junit.platform.suite.engine.NoTestsDiscoveredException: Suite [RunCucumberTest] did not discover any tests
+	at org.junit.platform.suite.engine.SuiteTestDescriptor.computeTestExecutionResult(SuiteTestDescriptor.java:156)
+	at org.junit.platform.suite.engine.SuiteTestDescriptor.execute(SuiteTestDescriptor.java:151)
+	at org.junit.platform.suite.engine.SuiteTestEngine.lambda$execute$0(SuiteTestEngine.java:73)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.accept(ForEachOps.java:184)
+	at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:215)
+	at java.base/java.util.Iterator.forEachRemaining(Iterator.java:133)
+	at java.base/java.util.Spliterators$IteratorSpliterator.forEachRemaining(Spliterators.java:1939)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:570)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:560)
+	at java.base/java.util.stream.ForEachOps$ForEachOp.evaluateSequential(ForEachOps.java:151)
+	at java.base/java.util.stream.ForEachOps$ForEachOp$OfRef.evaluateSequential(ForEachOps.java:174)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:265)
+	at java.base/java.util.stream.ReferencePipeline.forEach(ReferencePipeline.java:636)
+	at org.junit.platform.suite.engine.SuiteTestEngine.execute(SuiteTestEngine.java:73)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:147)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:127)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:90)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:55)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:102)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:114)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:86)
+	at org.junit.platform.launcher.core.DefaultLauncherSession$DelegatingLauncher.execute(DefaultLauncherSession.java:86)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:184)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:148)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:122)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 ]]></error>
   </testcase>
 </testsuite>

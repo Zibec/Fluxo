@@ -19,4 +19,8 @@ public class UsuarioService {
     public boolean emailExistente(String email) {
         return usuarioRepositorio.emailExistente(email);
     }
+
+    public boolean usernameExistente(String username) {
+        return usuarioRepositorio.usernameExistente(username);
+    }
 }
