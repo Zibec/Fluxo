@@ -15,6 +15,9 @@ public class TransacaoRepositorio {
 
     /** Salva (insere/atualiza) uma transação. */
     public void salvar(Transacao t) {
+        if (t.getPerfilId() == null){
+            throw new RuntimeException("É obrigatório a seleção de um perfil.");
+        }
         transacao.put(t.getId(), t);
         if (t.getOrigemAgendamentoId() != null) {
             idxAgendamentoData.put(chave(t.getOrigemAgendamentoId(), t.getData()), t.getId());

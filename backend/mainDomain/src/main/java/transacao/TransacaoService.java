@@ -40,7 +40,7 @@ public class TransacaoService {
                 StatusTransacao.PENDENTE,
                 conta,
                 avulsa,
-                Transacao.Tipo.DESPESA,
+                Tipo.DESPESA,
                 perfilId
         );
         repo.salvar(t);
@@ -56,7 +56,7 @@ public class TransacaoService {
 
         // Soma todas as DESPESAS da categoria no mês especificado
         BigDecimal totalDespesas = todasTransacoes.stream()
-                .filter(t -> t.getTipo() == Transacao.Tipo.DESPESA)
+                .filter(t -> t.getTipo() == Tipo.DESPESA)
                 .filter(t -> categoriaId.equals(t.getCategoriaId()))
                 .filter(t -> YearMonth.from(t.getData()).equals(mes))
                 .map(Transacao::getValor)
@@ -64,7 +64,7 @@ public class TransacaoService {
 
         // Soma todos os REEMBOLSOS da categoria no mês especificado
         BigDecimal totalReembolsos = todasTransacoes.stream()
-                .filter(t -> t.getTipo() == Transacao.Tipo.REEMBOLSO)
+                .filter(t -> t.getTipo() == Tipo.REEMBOLSO)
                 .filter(t -> categoriaId.equals(t.getCategoriaId()))
                 .filter(t -> YearMonth.from(t.getData()).equals(mes))
                 .map(Transacao::getValor)
@@ -104,7 +104,8 @@ public class TransacaoService {
                 despesaOriginal.getCategoriaId(),
                 contaDaDespesaOriginal,
                 true,
-                Transacao.Tipo.REEMBOLSO
+                Tipo.REEMBOLSO,
+                despesaOriginal.getPerfilId()
         );
 
         reembolso.setTransacaoOriginalId(idDespesaOriginal);

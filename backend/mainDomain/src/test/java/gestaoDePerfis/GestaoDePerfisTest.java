@@ -1,5 +1,7 @@
 package gestaoDePerfis;
 
+import conta.Conta;
+import conta.ContaRepositorio;
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
@@ -30,9 +32,10 @@ public class GestaoDePerfisTest {
     private Perfil perfil;
     private PerfilRepository perfilRepository = new PerfilRepository();
     private Transacao transacao;
-    private TransacaoRepositorio transacaoRepositorio = new InMemoryTransacaoRepositorio();
-    private TransacaoService transacaoService = new TransacaoService(transacaoRepositorio);
+    private TransacaoRepositorio transacaoRepositorio = new TransacaoRepositorio();
     private Exception excecaoCapturada = null;
+    private Conta contaDeTeste;
+    private ContaRepositorio contaRepositorio = new ContaRepositorio();
     //Regra de negócio: Ao criar uma nova despesa, deve ser obrigatório selecionar qual perfil realizou o gasto. A transação no banco deve conter referência ao perfil que a realizou.
 
     //Cenário: Registrar gasto associado a um perfil com sucesso
@@ -41,6 +44,10 @@ public class GestaoDePerfisTest {
     public void criarPerfil(String nome){
         perfil = new Perfil("0", nome);
         perfilRepository.salvar(perfil);
+        contaDeTeste = new Conta("conta-teste-id", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
+        contaRepositorio.salvar(contaDeTeste);
+        transacaoRepositorio = new TransacaoRepositorio();
+
     }
 
     @When("eu registro uma nova despesa de {double} reais para {string}, e seleciono o perfil Filho")
@@ -52,6 +59,9 @@ public class GestaoDePerfisTest {
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
+                contaRepositorio.obter(contaDeTeste.getId()).get(),
+                true,
+                Tipo.DESPESA,
                 "0"
         );
 
@@ -94,6 +104,8 @@ public class GestaoDePerfisTest {
         perfilRepository.salvar(new Perfil("0", "Pai"));
         perfilRepository.salvar(new Perfil("1", "Mãe"));
         perfilRepository.salvar(new Perfil("2", "Filho"));
+        contaDeTeste = new Conta("conta-teste-id", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
+        contaRepositorio.salvar(contaDeTeste);
     }
 
     @When("eu registro uma nova despesa de {double} reais para {string}, mas não seleciono nenhum perfil")
@@ -105,6 +117,9 @@ public class GestaoDePerfisTest {
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
+                contaRepositorio.obter(contaDeTeste.getId()).get(),
+                true,
+                Tipo.DESPESA,
                 null
         );
 

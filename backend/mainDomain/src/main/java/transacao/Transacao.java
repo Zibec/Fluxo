@@ -11,12 +11,6 @@ import static org.apache.commons.lang3.Validate.notBlank;
 
 public class Transacao {
 
-    public enum Tipo {
-        DESPESA,
-        RECEITA,
-        REEMBOLSO
-    }
-
     private final String id;              // pode ser UUID
     private final String origemAgendamentoId; // pra rastrear de qual agendamento veio (idempotência/ auditoria)
     private final String descricao;
