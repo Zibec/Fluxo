@@ -22,7 +22,6 @@ public class ReembolsoTest {
     private OrcamentoRepositorio orcamentoRepo;
     private TransacaoService transacaoService;
     private OrcamentoService orcamentoService;
-    private ReembolsoService reembolsoService;
 
     private Exception excecaoCapturada;
     private Transacao reembolsoResultado;
@@ -35,7 +34,6 @@ public class ReembolsoTest {
         orcamentoRepo = new OrcamentoRepositorio();
         transacaoService = new TransacaoService(transacaoRepo);
         orcamentoService = new OrcamentoService(orcamentoRepo, transacaoService);
-        reembolsoService = new ReembolsoService(transacaoRepo);
         excecaoCapturada = null;
         reembolsoResultado = null;
         totalReceitasAntes = null;
@@ -91,7 +89,7 @@ public class ReembolsoTest {
     @When("eu registrar um reembolso de R$ {double} e o vincular à despesa com ID {string}")
     public void eu_registrar_um_reembolso_e_o_vincular_a_despesa_com_id(Double valorReembolso, String idDespesa) {
         try {
-            this.reembolsoResultado = reembolsoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), idDespesa);
+            this.reembolsoResultado = transacaoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), idDespesa);
         } catch (Exception e) {
             this.excecaoCapturada = e;
         }
@@ -105,7 +103,7 @@ public class ReembolsoTest {
     @When("eu tento registrar um reembolso de R$ {double} sem selecionar uma despesa original")
     public void eu_tento_registrar_um_reembolso_de_r_sem_selecionar_uma_despesa_original(Double valorReembolso) {
         try {
-            reembolsoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), null);
+            transacaoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), null);
         } catch (Exception e) {
             this.excecaoCapturada = e;
         }
@@ -119,7 +117,7 @@ public class ReembolsoTest {
     @When("eu tento registrar um reembolso de R$ {double} para a despesa com ID {string}")
     public void eu_tento_registrar_um_reembolso_de_r_para_a_despesa_com_id(Double valorReembolso, String idDespesa) {
         try {
-            this.reembolsoResultado = reembolsoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), idDespesa);
+            this.reembolsoResultado = transacaoService.registrarReembolso(BigDecimal.valueOf(valorReembolso), idDespesa);
         } catch (Exception e) {
             this.excecaoCapturada = e;
         }
