@@ -15,13 +15,19 @@ public class Agendamento {
     private LocalDate proximaData;
     private boolean ativo = true;
 
-    public Agendamento(String id, String descricao, BigDecimal valor, Frequencia frequencia, LocalDate proximaData) {
+    private String perfilId;
+    public Agendamento(String id, String descricao, BigDecimal valor, Frequencia frequencia, LocalDate proximaData, String perfilId) {
         this.id = Objects.requireNonNull(id);
         this.descricao = notBlank(descricao, "Descrição obrigatória");
         isTrue(valor != null && valor.signum() >= 0, "Valor deve ser positivo");
         this.valor = valor;
         this.frequencia = Objects.requireNonNull(frequencia);
         this.proximaData = Objects.requireNonNull(proximaData);
+        this.perfilId = perfilId;
+    }
+
+    public String getPerfilId() {
+        return perfilId;
     }
 
     public String getId() { return id; }

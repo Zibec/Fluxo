@@ -9,7 +9,6 @@ import investimento.InvestimentoService;
 import io.cucumber.java.en.*;
 import jobScheduler.JobScheduler;
 import selicApiClient.SelicApiClient;
-import taxaSelic.TaxaSelic;
 import taxaSelic.TaxaSelicRepository;
 import taxaSelic.TaxaSelicService;
 

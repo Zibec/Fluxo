@@ -15,7 +15,9 @@ public class Transacao {
     private LocalDate data;
     private StatusTransacao status;
 
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status) {
+    private String perfilId;
+
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String perfilId) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
@@ -23,8 +25,12 @@ public class Transacao {
         this.valor = valor;
         this.data = Objects.requireNonNull(data);
         this.status = Objects.requireNonNull(status);
+        this.perfilId = perfilId;
     }
 
+    public String getPerfilId() {
+        return perfilId;
+    }
     public String getId() { return id; }
     public String getOrigemAgendamentoId() { return origemAgendamentoId; }
     public String getDescricao() { return descricao; }

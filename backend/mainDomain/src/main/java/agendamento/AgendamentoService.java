@@ -29,7 +29,8 @@ public class AgendamentoService {
                 a.getId(),
                 a.getDescricao(),
                 a.getValor(),
-                hoje
+                hoje,
+                a.getPerfilId()
         );
 
         a.avancarProximaData();
