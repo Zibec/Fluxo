@@ -34,7 +34,7 @@ public class MetaInversa {
             throw new IllegalArgumentException("Valor do aporte deve ser positivo.");
         }
         this.valorAcumulado = this.valorAcumulado.add(valorDoAporte);
-        this.contaAssociada.debitar(valorDoAporte);
+        this.contaAssociada.realizarTransacao(valorDoAporte);
 
         if (this.valorAcumulado.compareTo(this.valorDivida) >= 0) {
             conluirMeta();
