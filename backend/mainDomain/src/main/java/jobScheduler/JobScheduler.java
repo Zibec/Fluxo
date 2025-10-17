@@ -19,9 +19,7 @@ public class JobScheduler {
 
     public void executarJob() {
         for (Investimento inv : investimentoRepositorio.obterTodos()) {
-            if ("Tesouro Selic".equals(inv.getTipo())) {
-                investimentoService.atualizarRendimento(inv);
-            }
+            investimentoService.atualizarRendimento(inv);
         }
     }
 

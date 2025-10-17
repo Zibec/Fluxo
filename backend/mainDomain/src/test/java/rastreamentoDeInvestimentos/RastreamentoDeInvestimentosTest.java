@@ -82,10 +82,10 @@ public class RastreamentoDeInvestimentosTest {
 
     //Scenario: Atualização de rendimento bem-sucedida
 
-    @Given("que existe um investimento do tipo {string} com valor atual de {double}")
-    public void criarInvestimento(String tipo, double valor){
+    @Given("que existe um investimento do tipo Tesouro Selic com valor atual de {double}")
+    public void criarInvestimento(double valor){
         BigDecimal valorBigDecimal = BigDecimal.valueOf(valor);
-        investimento = new Investimento("1", "Desc" , valorBigDecimal, tipo);
+        investimento = new Investimento("1", "Investimento A", "Desc" , valorBigDecimal);
         historicoInvestimentoRepositorio = new HistoricoInvestimentoRepositorio();
         selicApiClient.setStatus(true);
         investimentoRepositorio = new InvestimentoRepositorio();

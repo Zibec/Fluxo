@@ -14,13 +14,13 @@ Feature: Rastreamento de Investimentos
 
   #Para cada investimento "Tesouro Selic", aplicar rendimento diário automaticamente.
   Scenario: Atualização de rendimento bem-sucedida
-    Given que existe um investimento do tipo "Tesouro Selic" com valor atual de 1000
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
     And a taxa selic diária é de 0.01 (1%)
     When o job de atualização de rendimento é executado
     Then o valor atualizado do investimento deve ser 1010
 
   Scenario: Tentativa de aplicar rendimento sem taxa Selic disponível
-    Given que existe um investimento do tipo "Tesouro Selic" com valor atual de 1000
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
     And não há taxa Selic disponível no sistema
     When o job de atualização de rendimento é executado
     Then o investimento não deve ser atualizado
@@ -28,13 +28,13 @@ Feature: Rastreamento de Investimentos
 
   #Sempre que o rendimento é aplicado, registrar histórico com data e valor.
   Scenario: Registro de histórico após atualização
-    Given que existe um investimento do tipo "Tesouro Selic" com valor atual de 1000
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
     And a taxa selic diária é de 0.01 (1%)
     When o job de atualização de rendimento é executado
     Then deve existir um registro no histórico com a data atual e o valor 1010
 
   Scenario: Falha ao registrar histórico
-    Given que existe um investimento do tipo "Tesouro Selic" com valor atual de 1000
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
     And a taxa selic diária é de 0.01 (1%)
     When o job de atualização de rendimento é executado, mas ocorre uma falha no registro de histórico
     Then o sistema deve gerar um log de erro indicando falha ao registrar histórico
