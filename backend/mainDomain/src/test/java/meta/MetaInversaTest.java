@@ -19,7 +19,7 @@ public class MetaInversaTest {
 
     // Cenário base
     @Given("que o usuário possui uma conta com saldo {string}")
-    public void queUsuarioPossuiConta(String nomeConta, String saldo) {
+    public void queUsuarioPossuiConta(String saldo) {
         this.conta = new Conta();
         this.conta.setSaldo(new BigDecimal(saldo));
     }
