@@ -1,36 +1,39 @@
 Feature: Gestão de Metas de Redução de Dívidas
-  Como um usuário focado em quitar uma dívida
-  Eu quero criar e acompanhar metas inversas
-  Para que eu visualize meu progresso na redução do saldo devedor
+  Como um usuário que deseja quitar uma dívida
+  Quero criar e acompanhar uma meta inversa
+  Para que eu possa visualizar o quanto já paguei e quanto ainda falta quitar
 
-  Scenario: Criação de meta de quitação válida
-    When o usuário cria uma meta de quitação para reduzir a dívida em "2000" até "2025-12-31"
-    Then a meta deve ser registrada com status "Ativa"
-    And o saldo inicial da dívida deve ser armazenado como "5000"
+  Background:
+    Given que o usuário possui uma conta com saldo "1500.00"
 
-  Scenario: Criação de meta de quitação inválida (valor negativo)
-    When o usuário tenta criar uma meta de quitação com valor de redução "-500"
-    Then o sistema deve rejeitar a criação da meta
+  Scenario: Criar uma meta inversa válida
+    When o usuário cria uma meta inversa com nome "Quitar Cartão" e valor alvo "1000.00"
+    Then a meta deve ser criada com status "ATIVA"
+    And o valor amortizado inicial deve ser "0.00"
 
-  Scenario: Atualização de progresso da meta
-    Given existe uma meta de quitação ativa com objetivo de "2000" e saldo inicial de "5000"
-    When o saldo atual da dívida é reduzido para "3500"
-    Then o progresso deve ser calculado como "1500"
-    And a meta deve continuar com status "Ativa"
+  Scenario: Realizar um aporte válido
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário realiza um aporte de "400.00" para amortizar a dívida
+    Then o valor amortizado deve ser "400.00"
+    And o progresso deve ser "0.40"
 
-  Scenario: Conclusão automática da meta
-    Given existe uma meta de quitação ativa com objetivo de "2000" e saldo inicial de "5000"
-    When o saldo atual da dívida é reduzido para "2800"
-    Then o progresso deve ser "2200"
-    And o status da meta deve ser alterado para "Concluída"
+  Scenario: Concluir meta ao atingir o valor da dívida
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário realiza um aporte de "1000.00"
+    Then o status da meta deve mudar para "CONCLUIDA"
+    And o progresso deve ser "1.00"
 
-  Scenario: Vinculação de pagamento extra à meta
-    Given existe uma meta de quitação ativa para uma conta de cartão de crédito
-    When o usuário registra uma transação marcada como "pagamento extra"
-    Then o valor da transação deve ser somado ao progresso da meta
-    And o sistema deve atualizar o percentual de conclusão
+  Scenario: Realizar aporte inválido (valor nulo)
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário tenta realizar um aporte de valor nulo
+    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser positivo."
 
-  Scenario: Exclusão de meta existente
-    Given existe uma meta de quitação ativa
-    When o usuário exclui a meta
-    Then a meta não deve mais existir no sistema
+  Scenario: Realizar aporte inválido (valor negativo)
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário tenta realizar um aporte de "-50.00"
+    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser positivo."
+
+  Scenario: Verificar progresso proporcional
+    Given que existe uma meta inversa ativa de "1200.00"
+    When o usuário realiza um aporte de "300.00"
+    Then o progresso deve ser "0.25"
