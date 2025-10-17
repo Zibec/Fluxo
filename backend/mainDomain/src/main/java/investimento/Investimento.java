@@ -52,6 +52,10 @@ public class Investimento {
         this.valorAtual = this.valorAtual.multiply(taxaSelic.add(new BigDecimal(1)));
     }
 
+    public void resgatarValor(BigDecimal valor){
+        this.valorAtual = this.valorAtual.subtract(valor);
+    }
+
 
 
 }

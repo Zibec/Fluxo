@@ -1,24 +1,27 @@
 package investimento;
 
 import historicoInvestimento.HistoricoInvestimento;
+import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
 import selicApiClient.SelicApiClient;
 import taxaSelic.TaxaSelic;
 import taxaSelic.TaxaSelicRepository;
 import taxaSelic.TaxaSelicService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class InvestimentoService {
     private final InvestimentoRepositorio investimentoRepositorio;
-    private final HistoricoInvestimentoService historicoInvestimentoService;
+    private final HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio;
     private final TaxaSelicRepository taxaSelicRepository;
 
-    public InvestimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoService historicoInvestimentoService) {
+    public InvestimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio) {
         this.investimentoRepositorio = investimentoRepositorio;
-        this.historicoInvestimentoService = historicoInvestimentoService;
+        this.historicoInvestimentoRepositorio = historicoInvestimentoRepositorio;
         this.taxaSelicRepository = taxaSelicRepository;
     }
 
@@ -52,6 +55,26 @@ public class InvestimentoService {
                 LocalDate.now()
         );
 
-        historicoInvestimentoService.salvar(historicoInvestimento);
+        historicoInvestimentoRepositorio.salvar(historicoInvestimento);
+    }
+
+    public void resgateTotal(String investimentoId){
+
+        historicoInvestimentoRepositorio.deletarTodosPorId(investimentoId);
+
+        investimentoRepositorio.deletar(investimentoId);
+
+    }
+
+    public void resgateParcial(String investimentoId, BigDecimal valor){
+        Investimento investimento = investimentoRepositorio.obter(investimentoId);
+
+        if(investimento.getValorAtual().compareTo(valor) == 0 || investimento.getValorAtual().compareTo(valor) < 0){
+            throw new RuntimeException("Tentativa de resgate total em resgate parcial ou valor inválido.");
+        }
+
+        investimento.resgatarValor(valor);
+
+        historicoInvestimentoRepositorio.salvar(new HistoricoInvestimento(investimentoId, investimento.getValorAtual(), LocalDate.now()));
     }
 }

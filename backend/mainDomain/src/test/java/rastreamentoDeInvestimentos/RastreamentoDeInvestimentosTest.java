@@ -92,7 +92,7 @@ public class RastreamentoDeInvestimentosTest {
 
         //taxaSelicRepository = new TaxaSelicRepository(null);
 
-        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, new HistoricoInvestimentoService(historicoInvestimentoRepositorio));
+        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio);
         investimentoService.salvar(investimento);
         jobScheduler = new JobScheduler(investimentoService, investimentoRepositorio);
         excecaoCapturada = null;
@@ -180,40 +180,61 @@ public class RastreamentoDeInvestimentosTest {
 
     @When("realizo o resgate total do valor investido")
     public void resgateTotaldoValor(){
+        try{
+            investimentoService.resgateTotal(investimentoRepositorio.obter("1").getId());
+        }catch (Exception e){
+            excecaoCapturada = e;
+        }
 
     }
 
     @Then("o investimento deve ser removido do sistema")
     public void investimentoRemovido(){
-
+        ArrayList<Investimento> investimentos = investimentoRepositorio.obterTodos();
+        assertTrue(investimentos.isEmpty());
     }
 
     //Scenario: Falha em etapas anteriores do resgate total
 
     @When("realizo o resgate total do valor investido, mas uma falha ocorre")
     public void falhaEmResgateTotal(){
-
+        historicoInvestimentoRepositorio.setStatus(false);
+        try{
+            investimentoService.resgateTotal(investimentoRepositorio.obter("1").getId());
+        }catch (Exception e){
+            excecaoCapturada = e;
+        }
     }
 
     @Then("o investimento não deve ser removido")
     public void investimentoNaoRemovido(){
-
+        ArrayList<Investimento> investimentos = investimentoRepositorio.obterTodos();
+        assertFalse(investimentos.isEmpty());
     }
 
     @And("o sistema deve emitir um log de falha")
     public void emicaoLogFalha(){
-
+        assertNotNull(excecaoCapturada);
+        assertTrue(excecaoCapturada.getMessage().contains("Falha ao deletar histórico."));
     }
 
     //Scenario: Resgate parcial bem-sucedido
 
     @When("realizo o resgate parcial de {double} reais do valor investido")
     public void resgateParcialQuinhetos(double valor){
+        try{
+            investimentoService.resgateParcial(investimentoRepositorio.obter("1").getId(), new BigDecimal(valor));
+        }catch (Exception e){
+            excecaoCapturada = e;
+        }
 
     }
 
     @Then("o sistema deve atualizar o valor investido para {double} reais")
     public void valorAtualizado(double valorAtualizado){
+        BigDecimal valorInvestimento = investimentoRepositorio.obter("1").getValorAtual();
+        BigDecimal valorAtualizadoBigDecimal = new BigDecimal(valorAtualizado);
+        assertEquals(0, valorAtualizadoBigDecimal.compareTo(valorInvestimento));
 
     }
 
@@ -221,54 +242,75 @@ public class RastreamentoDeInvestimentosTest {
 
     @When("realizo o resgate parcial com o valor total investido")
     public void resgateParcialTotal(){
-
+        try{
+            investimentoService.resgateParcial(investimentoRepositorio.obter("1").getId(), new BigDecimal(1000));
+        }catch (Exception e){
+            excecaoCapturada = e;
+        }
     }
 
     @Then("o sistema deve impedir a atualização do valor investido")
     public void valorNaoAtualizado(){
-
+        BigDecimal valorInvestimento = investimentoRepositorio.obter("1").getValorAtual();
+        assertEquals(0, valorInvestimento.compareTo(new BigDecimal(1000)));
     }
 
     @And("exibir aviso de tentativa de resgate total em resgate parcial")
     public void exibirAviso(){
-
+        assertNotNull(excecaoCapturada);
+        assertTrue(excecaoCapturada.getMessage().contains("Tentativa de resgate total em resgate parcial ou valor inválido."));
     }
 
     //Scenario: Deleção do histórico de valorização bem-sucedido em resgate total
 
     @Then("o sistema deve apagar o histórico de valorização daquele investimento")
     public void historicoDeletado(){
-
+        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodos();
+        assertTrue(historico.isEmpty());
     }
 
     //Scenario: Falha deleção do histórico de valorização em resgate total
 
     @When("realizo o resgate total do valor investido, mas ocorre uma falha na deleção o histórico")
     public void falhaDelecaoHistorico(){
-
+        historicoInvestimentoRepositorio.setStatus(false);
+        try{
+            investimentoService.resgateTotal(investimentoRepositorio.obter("1").getId());
+        }catch (Exception e){
+            excecaoCapturada = e;
+        }
     }
 
     @Then("o sistema deve levantar uma exceção referente à falha na deleção")
     public void levantarExcecao(){
+        assertNotNull(excecaoCapturada);
+        assertTrue(excecaoCapturada.getMessage().contains("Falha ao deletar histórico."));
 
     }
 
     //Scenario: Histórico de valorização atualizado com sucesso em resgate parcial
 
-    @Then("o sistema deve atualizar o histórico com uma nova entrada com o valor restante investido de 500 reais")
-    public void atualizacaoHistorico(){
-
+    @Then("o sistema deve atualizar o histórico com uma nova entrada com o valor restante investido de {double} reais")
+    public void atualizacaoHistorico(double valor){
+        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodos();
+        HistoricoInvestimento novaEntrada = historico.getFirst();
+        assertEquals(0, novaEntrada.getValorAtualizado().compareTo(new BigDecimal(valor)));
     }
 
     //Scenario: Falha em etapas anteriores à atualização do histórico em resgate parcial
 
     @When("realizo o resgate parcial, mas uma falha ocorre")
     public void falhaEmResgateParcial(){
-
+        try{
+            investimentoService.resgateParcial(investimentoRepositorio.obter("1").getId(), new BigDecimal(1000));
+        }catch (Exception e){
+            excecaoCapturada = e;
+        }
     }
 
     @Then("o sistema não deve atualizar o histórico com uma nova entrada")
     public void naoAtualizacaoHistorico(){
-
+        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodos();
+        assertTrue(historico.isEmpty());
     }
 }

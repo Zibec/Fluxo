@@ -27,4 +27,19 @@ public class HistoricoInvestimentoRepositorio {
     public List<HistoricoInvestimento> obterTodos(){
         return historico;
     }
+
+    public void deletarTodosPorId(String investimentoId){
+
+        if(status){
+            for(HistoricoInvestimento histInv : historico){
+                if(investimentoId.equals(histInv.getInvestimentoId())){
+                    historico.remove(histInv);
+                }
+            }
+        }
+        else{
+            throw new RuntimeException("Falha ao deletar histórico.");
+        }
+
+    }
 }
