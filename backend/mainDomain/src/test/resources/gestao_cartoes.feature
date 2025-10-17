@@ -5,7 +5,7 @@ Feature: Cadastro e gestão de cartões de crédito
 
   # 1) Cadastro obrigatório
   Scenario: Cadastro de cartão com todos os campos obrigatórios preenchidos
-    Given que o usuário informa nome, banco, bandeira, últimos 4 dígitos, limite total, data de fechamento e vencimento
+    Given que o usuário informa todos os campos obrigatórios
     When salvar o cartão
     Then o cartão deve ser cadastrado com sucesso
 

@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.List;
-import java.util.ArrayList;
 
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -92,7 +91,7 @@ public class TransacaoService {
         String novoId = UUID.randomUUID().toString();
         String descricaoReembolso = "Reembolso de: " + despesaOriginal.getDescricao();
 
-        Conta contaDaDespesaOriginal = despesaOriginal.getContaAssociada();
+        Conta contaDaDespesaOriginal = (Conta) despesaOriginal.getPagamento();
 
         Transacao reembolso = new Transacao(
                 novoId,

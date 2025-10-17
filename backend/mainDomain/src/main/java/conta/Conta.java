@@ -1,9 +1,11 @@
 package conta;
 
+import generics.FormaPagamento;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class Conta {
+public class Conta implements FormaPagamento {
 
     private final String id;
     private BigDecimal saldo;
@@ -37,7 +39,7 @@ public class Conta {
         this.saldo = saldoInicial;
     }
 
-    public void debitar(BigDecimal valor) {
+    public void realizarTransacao(BigDecimal valor) {
         if (!temSaldoSuficiente(valor)) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar o débito.");
         }

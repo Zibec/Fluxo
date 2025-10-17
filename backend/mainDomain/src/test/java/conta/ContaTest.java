@@ -5,7 +5,6 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -149,7 +148,7 @@ public class ContaTest {
     @When("realiza uma retirada de R$ {double}")
     public void realiza_uma_retirada_de_r(Double valor) {
         try {
-            this.contaAtual.debitar(BigDecimal.valueOf(valor));
+            this.contaAtual.realizarTransacao(BigDecimal.valueOf(valor));
         } catch (IllegalArgumentException e) {
             this.thrownException = e;
         }
