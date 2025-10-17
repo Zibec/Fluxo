@@ -4,7 +4,10 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import perfil.Perfil;
+import perfil.PerfilRepository;
 import transacao.StatusTransacao;
+import transacao.Tipo;
 import transacao.Transacao;
 import transacao.TransacaoRepositorio;
 import transacao.TransacaoService;
@@ -24,10 +27,15 @@ public class ContasAPagarTest {
     private Conta conta = new Conta();
     private Transacao transacao;
 
+
     private TransacaoRepositorio txRepositorio = new TransacaoRepositorio();
     private TransacaoService txService = new TransacaoService(txRepositorio);
 
     private Exception erro;
+
+    private Perfil perfil = new Perfil("0", "Pai");
+    private PerfilRepository perfilRepository = new PerfilRepository();
+
 
     // -------------------------
     // Transações Avulsas
@@ -35,13 +43,16 @@ public class ContasAPagarTest {
 
     @Given("o usuário possui uma conta com saldo {string}")
     public void oUsuarioPossuiUmaContaComSaldo(String saldo) {
+        perfilRepository.salvar(perfil);
         conta.setSaldo(new BigDecimal(saldo));
         assertEquals(new BigDecimal(saldo), conta.getSaldo());
     }
 
     @When("o usuário cria uma transação única {string} de {string}")
     public void oUsuarioCriaUmaTransacaoUnica(String descricao, String valor) {
-        transacao = new Transacao(UUID.randomUUID().toString(),
+
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
                 null, // origemAgendamentoId é null para avulsa
                 descricao,
                 new BigDecimal(valor),
@@ -49,10 +60,14 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta,
-                true);
+                true,
+                Tipo.DESPESA,
+                perfilRepository.obter("0").getId()
+        );
 
         txRepositorio.salvar(transacao);
         
+
         assertTrue(transacao.isAvulsa());
     }
 
@@ -69,6 +84,7 @@ public class ContasAPagarTest {
 
     @Given("existe uma transação única pendente de {string} com descrição {string}")
     public void existeUmaTransacaoUnicaPendente(String valor, String descricao) {
+        perfilRepository.salvar(perfil);
         transacao = new Transacao(
                 UUID.randomUUID().toString(),
                 null,
@@ -78,7 +94,9 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta,
-                true
+                true,
+                Tipo.DESPESA,
+                perfilRepository.obter("0").getId()
         );
         txRepositorio.salvar(transacao);
 
@@ -106,6 +124,7 @@ public class ContasAPagarTest {
 
     @Given("existe uma transação única pendente de {string}")
     public void existeUmaTransacaoUnicaPendenteDe(String valor) {
+        perfilRepository.salvar(perfil);
         transacao = new Transacao(
                 UUID.randomUUID().toString(),
                 null,
@@ -115,7 +134,9 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta,
-                true
+                true,
+                Tipo.DESPESA,
+                perfilRepository.obter("0").getId()
         );
         txRepositorio.salvar(transacao);
     }
@@ -157,11 +178,40 @@ public class ContasAPagarTest {
     }
 
     // -------------------------
+    // Transações Recorrentes (Agendadas)
+    // -------------------------
+
+    @Given("existe uma transação recorrente pendente de {string}")
+    public void existeUmaTransacaoRecorrentePendenteDe(String valor) {
+        perfilRepository.salvar(perfil);
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                "agendamento123",
+                "Assinatura",
+                new BigDecimal(valor),
+                LocalDate.now(),
+                StatusTransacao.PENDENTE,
+                "categoria2",
+                conta,
+                false,
+                Tipo.DESPESA,
+                perfilRepository.obter("0").getId()
+        );
+        assertFalse(transacao.isAvulsa());
+    }
+
+    @When("o usuário efetiva essa transação")
+    public void oUsuarioEfetivaEssaTransacao() {
+        transacao.efetivar();
+    }
+
+    // -------------------------
     // Notificações de Vencimento
     // -------------------------
 
     @Given("existe uma transação pendente com vencimento para amanhã")
     public void existeUmaTransacaoPendenteComVencimentoParaAmanha() {
+        perfilRepository.salvar(perfil);
         transacao = new Transacao(
                 UUID.randomUUID().toString(),
                 null,
@@ -171,7 +221,9 @@ public class ContasAPagarTest {
                 StatusTransacao.PENDENTE,
                 "categoria3",
                 conta,
-                true
+                true,
+                Tipo.DESPESA,
+                perfilRepository.obter("0").getId()
         );
         txRepositorio.salvar(transacao);
     }

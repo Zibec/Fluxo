@@ -45,7 +45,7 @@ public class AgendamentoService {
         if (!execucoesDoDia.add(chave)) return false; // já executou hoje
 
         transacaoService.criarPendenteDeAgendamento(
-                a.getId(), a.getDescricao(), a.getValor(), hoje, null, false
+                a.getId(), a.getDescricao(), a.getValor(), hoje, null, false, a.getPerfilId()
         );
 
         a.avancarProximaData();

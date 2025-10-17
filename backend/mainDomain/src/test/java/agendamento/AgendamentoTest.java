@@ -1,5 +1,7 @@
 package agendamento;
 
+import perfil.Perfil;
+import perfil.PerfilRepository;
 import transacao.*;
 import io.cucumber.java.en.*;
 
@@ -28,6 +30,9 @@ public class AgendamentoTest {
     private String agendamentoId;
     private LocalDate hoje;
     private Conta conta = new Conta();
+
+    private Perfil perfil = new Perfil("0", "Pai");
+    private PerfilRepository perfilRepository = new PerfilRepository();
 
     // ----------------- Helpers -----------------
     private static BigDecimal parseValor(String raw) {
@@ -69,7 +74,7 @@ public class AgendamentoTest {
 
         // 4) se não existir nenhuma, cria agora e retorna
         txService.criarPendenteDeAgendamento(
-                agendamentoId, ag.getDescricao(), ag.getValor(), base, conta, false
+                agendamentoId, ag.getDescricao(), ag.getValor(), base, conta, false, ag.getPerfilId()
         );
         return txRepo.encontrarPorAgendamentoEData(agendamentoId, base)
                 .orElseThrow(() -> new AssertionError("Falha ao preparar transação para atualização"));
@@ -78,9 +83,10 @@ public class AgendamentoTest {
     // ---------- Criação de transação futura ----------
     @Given("que existe uma transação para o usuário pagar que é debitada do seu cartao no dia {string}")
     public void givenCartaoDebitoNoDia(String data) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Débito do cartão",
-                new BigDecimal("600.00"), Frequencia.MENSAL, LocalDate.parse(data, BR));
+                new BigDecimal("600.00"), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
     }
 
@@ -88,7 +94,7 @@ public class AgendamentoTest {
     public void whenRegistrarParaDia(String data) {
         var ag = agService.obter(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
     }
 
     @And("o dia atual é {string}")
@@ -109,17 +115,19 @@ public class AgendamentoTest {
 
     @Given("que o próximo dia de pagamento é {string}")
     public void givenProximoDiaPagamento(String data) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Assinatura Netflix",
-                new BigDecimal("55.00"), Frequencia.MENSAL, LocalDate.parse(data, BR));
+                new BigDecimal("55.00"), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
     }
 
     @Given("já existe a transação desse pagamento agendada para o dia {string}")
     public void givenTransacaoJaAgendadaParaDia(String data) {
+        perfilRepository.salvar(perfil);
         LocalDate d = LocalDate.parse(data, BR);
         var ag = agService.obter(agendamentoId).orElseThrow();
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
         qtdAntes = (int) txRepo.listarTodas().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId())).count();
         assertEquals(1, qtdAntes, "Deveria existir exatamente 1 transação já criada");
@@ -144,12 +152,13 @@ public class AgendamentoTest {
 
     @Given("que existe uma transação para o usuário efetuar no dia {string} no valor de {string}")
     public void givenTransacaoParaEfetuarNoDia(String data, String valor) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Pagamento avulso",
-                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR));
+                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
         dataTransacaoCriada = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada, conta, false);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada, conta, false, ag.getPerfilId());
         assertTrue(txRepo.encontrarPorAgendamentoEData(agendamentoId, dataTransacaoCriada).isPresent());
     }
 
@@ -176,12 +185,13 @@ public class AgendamentoTest {
 
     @Given("que existe uma transação para o usuário pagar no dia {string} no valor de {string}")
     public void givenTransacaoParaPagarNoDia(String data, String valor) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Transferência programada",
-                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR));
+                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
         dataOriginal = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal, conta, false);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal, conta, false, ag.getPerfilId());
         assertTrue(txRepo.encontrarPorAgendamentoEData(agendamentoId, dataOriginal).isPresent());
     }
 
@@ -199,7 +209,7 @@ public class AgendamentoTest {
         txAntiga.cancelar();
         LocalDate dNova = LocalDate.parse(novaData, BR);
         var vNovo = parseValor(novoValor);
-        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova, conta, false);
+        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova, conta, false, "0");
         dataOriginal = dNova;
     }
 
@@ -215,6 +225,7 @@ public class AgendamentoTest {
 
     @Given("que a data atual é {string}")
     public void givenDataAtual(String hojeStr) {
+        perfilRepository.salvar(perfil);
         hoje = LocalDate.parse(hojeStr, BR);
     }
 
@@ -223,7 +234,7 @@ public class AgendamentoTest {
         agendamentoId = UUID.randomUUID().toString();
         BigDecimal valorPadrao = new BigDecimal("100.00");
         LocalDate inicio = LocalDate.parse(inicioStr, BR);
-        var ag = new Agendamento(agendamentoId, nomePlano, valorPadrao, Frequencia.MENSAL, inicio);
+        var ag = new Agendamento(agendamentoId, nomePlano, valorPadrao, Frequencia.MENSAL, inicio, perfilRepository.obter("0").getId());
         agService.salvar(ag);
         agService.executarSeHoje(ag, inicio);
         dataCriada = inicio;
@@ -245,9 +256,10 @@ public class AgendamentoTest {
     // ---------- Assinatura em mãos ----------
     @Given("que existe uma data de vencimento de assinatura para o dia {string}")
     public void givenVencimentoAssinaturaNoDia(String vencimento) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Assinatura Serviço",
-                new BigDecimal("100.00"), Frequencia.MENSAL, LocalDate.parse(vencimento, BR));
+                new BigDecimal("100.00"), Frequencia.MENSAL, LocalDate.parse(vencimento, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
     }
 
@@ -270,12 +282,13 @@ public class AgendamentoTest {
     // ---------- Cancelamento de assinatura ----------
     @Given("que existe uma assinatura da {string} que vence todo mês no dia {string} e esta ativa")
     public void givenAssinaturaAtivaVenceDia(String nome, String dia) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         LocalDate now = LocalDate.now();
         int diaInt = Integer.parseInt(dia);
         LocalDate prox = now.withDayOfMonth(Math.min(diaInt, now.lengthOfMonth()));
         var ag = new Agendamento(agendamentoId, nome, new BigDecimal("80.00"),
-                Frequencia.MENSAL, prox);
+                Frequencia.MENSAL, prox, perfilRepository.obter("0").getId());
         agService.salvar(ag);
         assertTrue(ag.isAtivo());
     }
@@ -313,7 +326,8 @@ public class AgendamentoTest {
                     "Agendamento inválido",
                     new BigDecimal("100.00"),
                     Frequencia.MENSAL,
-                    data
+                    data,
+                    perfilRepository.obter("0").getId()
             );
 
             // usa o "hoje" do cenário, se já tiver sido definido; senão, usa o relógio real
@@ -332,14 +346,16 @@ public class AgendamentoTest {
     // ---------- Atualização de transação (data inválida no passado) ----------
     @Given("que existe uma transação agendada para o dia {string} no valor de {string}")
     public void givenTransacaoAgendadaParaDia(String data, String valor) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Transação teste",
-                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR));
+                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
     }
 
     @Given("a data atual é {string}")
     public void givenDataAtualGenerica(String dataHoje) {
+        perfilRepository.salvar(perfil);
         hoje = LocalDate.parse(dataHoje, BR);
     }
 
@@ -387,14 +403,15 @@ public class AgendamentoTest {
     // ---------- Cancelamento de transação já executada ----------
     @Given("que existe uma transação que já foi executada no dia {string}")
     public void givenTransacaoJaExecutada(String data) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Transação executada",
-                new BigDecimal("200.00"), Frequencia.MENSAL, LocalDate.parse(data, BR));
+                new BigDecimal("200.00"), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
 
         // cria a pendente vinculada à conta usada nos testes
         LocalDate d = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
 
         // <<< GARANTE SALDO >>>
         // use o método que sua classe Conta expõe (geralmente "creditar" ou "depositar")
@@ -429,14 +446,16 @@ public class AgendamentoTest {
     // ---------- Atualização próxima data assinatura ----------
     @Given("existe uma assinatura mensal {string} configurada para o dia {string} com próxima data {string}")
     public void givenAssinaturaMensalConfigurada(String nome, String dia, String prox) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, nome, new BigDecimal("50.00"),
-                Frequencia.MENSAL, LocalDate.parse(prox, BR));
+                Frequencia.MENSAL, LocalDate.parse(prox, BR), perfilRepository.obter("0").getId());
         agService.salvar(ag);
     }
 
     @Given("a próxima data de transação é {string}")
     public void givenProximaData(String data) {
+        perfilRepository.salvar(perfil);
         var ag = agService.obter(agendamentoId).orElseThrow();
         assertEquals(LocalDate.parse(data, BR), ag.getProximaData());
     }
@@ -470,9 +489,10 @@ public class AgendamentoTest {
     // ---------- Cancelamento de assinatura inexistente ----------
     @Given("que não existe uma assinatura ativa chamada {string} com status {string}")
     public void givenAssinaturaInexistente(String nome, String status) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, nome, new BigDecimal("80.00"),
-                Frequencia.MENSAL, LocalDate.now().plusDays(5));
+                Frequencia.MENSAL, LocalDate.now().plusDays(5), perfilRepository.obter("0").getId());
         if ("cancelada".equalsIgnoreCase(status)) {
             ag.cancelar();
         }
@@ -494,6 +514,7 @@ public class AgendamentoTest {
     // ---------- Criação de transação no novo ciclo ----------
     @Given("não existe transação agendada para o dia {string}")
     public void givenNaoExisteTransacao(String data) {
+        perfilRepository.salvar(perfil);
         var tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR));
         assertTrue(tx.isEmpty(), "Não deveria existir transação na data " + data);
     }
@@ -515,6 +536,7 @@ public class AgendamentoTest {
 
     @Given("existe uma assinatura mensal {string} configurada para o dia {string}")
     public void existeUmaAssinaturaMensalConfiguradaParaODia(String nomePlano, String diaStr) {
+        perfilRepository.salvar(perfil);
         int dia = Integer.parseInt(diaStr);
         LocalDate base = (hoje != null ? hoje : LocalDate.now());
         LocalDate proxima = base.withDayOfMonth(Math.min(dia, base.lengthOfMonth()));
@@ -527,13 +549,15 @@ public class AgendamentoTest {
                 nomePlano,
                 valorPadrao,
                 Frequencia.MENSAL,
-                proxima
+                proxima,
+                perfilRepository.obter("0").getId()
         );
         agService.salvar(ag);
     }
 
     @Given("que não existe uma assinatura ativa chamada {string} \\(inexistente ou status {string}\\)")
     public void queNaoExisteUmaAssinaturaAtivaChamadaInexistenteOuStatus(String nome, String status) {
+        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
 
         // Se for "inexistente", não cria nada no repositório (simula ausência)
@@ -550,13 +574,14 @@ public class AgendamentoTest {
                 nome,
                 valorPadrao,
                 Frequencia.MENSAL,
-                proxima
+                proxima,
+                perfilRepository.obter("0").getId()
         );
         ag.cancelar();
         agService.salvar(ag);
     }
 
-    @Then("^\\s*o sistema não deve salvar o agendamento\\s*$")
+    @Then("o sistema não deve salvar o agendamento")
     public void sistemaNaoDeveSalvarAgendamento_regex() {
         assertNotNull(msgErro, "Esperado erro ao salvar agendamento no passado");
         // validação via repositório (como se fosse o banco)
@@ -581,6 +606,7 @@ public class AgendamentoTest {
     @Given("existe uma assinatura mensal configurada para o dia {string} com próxima data {string}")
     public void existeUmaAssinaturaMensalConfiguradaParaODiaComProximaData(String diaStr, String proxStr) {
         // a próxima data do cenário é a que manda
+        perfilRepository.salvar(perfil);
         LocalDate proxima = LocalDate.parse(proxStr, BR);
 
         agendamentoId = UUID.randomUUID().toString();
@@ -591,7 +617,8 @@ public class AgendamentoTest {
                 "Assinatura",          // nome padrão (o cenário não passa nome)
                 valorPadrao,
                 Frequencia.MENSAL,
-                proxima
+                proxima,
+                perfilRepository.obter("0").getId()
         );
         agService.salvar(ag);
     }

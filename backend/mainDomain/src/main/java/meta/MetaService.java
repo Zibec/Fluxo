@@ -29,7 +29,7 @@ public class MetaService {
             throw new IllegalArgumentException("Saldo insuficiente na conta principal");
         }
 
-        contaPrincipal.debitar(valorDoAporte);
+        contaPrincipal.realizarTransacao(valorDoAporte);
         meta.realizarAporte(valorDoAporte);
 
         metaRepositorio.salvar(meta);

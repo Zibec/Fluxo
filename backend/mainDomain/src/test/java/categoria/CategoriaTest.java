@@ -5,10 +5,13 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import perfil.Perfil;
+import perfil.PerfilRepository;
 import transacao.StatusTransacao;
+import transacao.Tipo;
 import transacao.Transacao;
 import transacao.TransacaoRepositorio;
-
+import conta.Conta;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
@@ -26,6 +29,9 @@ public class CategoriaTest {
     private Exception excecaoCapturada;
     private int contagemInicialDeCategorias;
 
+    private Perfil perfil = new Perfil("0", "Pai");
+    private PerfilRepository perfilRepository = new PerfilRepository();
+
     @Before
     public void setup() {
         this.categoriaRepositorio = new CategoriaRepositorio();
@@ -34,6 +40,7 @@ public class CategoriaTest {
         this.excecaoCapturada = null;
         this.categoria = null;
         this.contagemInicialDeCategorias = 0;
+        perfilRepository.salvar(perfil);
     }
 
     // Cenário: Adicionar uma nova categoria que não existe
@@ -98,8 +105,20 @@ public class CategoriaTest {
 
     @And("existe pelo menos uma transação associada à categoria {string}")
     public void existePeloMenosUmaTransacaoAssociadaACategoria(String nomeCategoria) {
+        Conta contaDeTeste = new Conta("conta-id-teste", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
+
         Transacao transacao = new Transacao(
-                UUID.randomUUID().toString(), null, "Teste", BigDecimal.TEN, LocalDate.now(), StatusTransacao.EFETIVADA, this.categoria.getId(), null, false
+                UUID.randomUUID().toString(),
+                null,
+                "Teste",
+                BigDecimal.TEN,
+                LocalDate.now(),
+                StatusTransacao.EFETIVADA,
+                this.categoria.getId(),
+                contaDeTeste,
+                false,
+                Tipo.DESPESA,
+                perfilRepository.obter("0").getId()
         );
         transacaoRepositorio.salvar(transacao);
     }

@@ -28,7 +28,7 @@ public class CartaoTest {
     }
 
     // Scenario: Cadastro de cartão com todos os campos obrigatórios preenchidos
-    @Given("que o usuário informa nome, banco, bandeira, últimos 4 dígitos, limite total, data de fechamento e vencimento")
+    @Given("que o usuário informa todos os campos obrigatórios")
     public void que_o_usuario_informa_todos_os_dados_do_cartao() {
         cartaoData.put("numero", new CartaoNumero("4987-4567-8912-3456"));
         cartaoData.put("titular", "J R Silva");
@@ -260,6 +260,9 @@ public class CartaoTest {
                 LocalDate.now().withDayOfMonth(20),
                 LocalDate.now().withDayOfMonth(27)
         );
-        assertNull(cartao.getFatura(), "Pré-condição falhou: O cartão não deveria ter uma fatura aberta.");
+
+        cartaoService.salvar(cartao);
+        Cartao cartaoSalvo = cartaoService.obter(cartao.getNumero());
+        assertNull(cartaoSalvo.getFatura(), "Pré-condição falhou: O cartão não deveria ter uma fatura aberta.");
     }
 }

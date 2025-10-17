@@ -15,6 +15,9 @@ public class TransacaoRepositorio {
 
     /** Salva (insere/atualiza) uma transação. */
     public void salvar(Transacao t) {
+        if (t.getPerfilId() == null){
+            throw new RuntimeException("É obrigatório a seleção de um perfil.");
+        }
         transacao.put(t.getId(), t);
         if (t.getOrigemAgendamentoId() != null) {
             idxAgendamentoData.put(chave(t.getOrigemAgendamentoId(), t.getData()), t.getId());
@@ -65,6 +68,17 @@ public class TransacaoRepositorio {
             idxAgendamentoData.remove(chave(removida.getOrigemAgendamentoId(), removida.getData()));
         }
 
+    }
+
+    public Optional<Transacao> obterPorId(String id) {
+        Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
+        // 'transacao' é o nome do seu Map principal, então usamos ele para buscar pelo ID.
+        return Optional.ofNullable(transacao.get(id));
+    }
+
+    public void limpar() {
+        transacao.clear();
+        idxAgendamentoData.clear();
     }
 
 }

@@ -5,7 +5,6 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -149,7 +148,7 @@ public class ContaTest {
     @When("realiza uma retirada de R$ {double}")
     public void realiza_uma_retirada_de_r(Double valor) {
         try {
-            this.contaAtual.debitar(BigDecimal.valueOf(valor));
+            this.contaAtual.realizarTransacao(BigDecimal.valueOf(valor));
         } catch (IllegalArgumentException e) {
             this.thrownException = e;
         }
@@ -159,5 +158,17 @@ public class ContaTest {
     @When("tenta realizar uma retirada de R$ {double}")
     public void tenta_realizar_uma_retirada_de_r(Double valor) {
         realiza_uma_retirada_de_r(valor);
+    }
+
+    @Then("o sistema deve recusar o cadastro e exibir a mensagem de erro")
+    public void o_sistema_deve_recusar_o_cadastro_e_exibir_a_mensagem_de_erro() {
+        assertNotNull(thrownException);
+        assertInstanceOf(IllegalArgumentException.class, thrownException);
+    }
+
+    @Then("o sistema deve recusar a alteração e exibir a mensagem de erro")
+    public void o_sistema_deve_recusar_a_alteracao_e_exibir_a_mensagem_de_erro() {
+        assertNotNull(thrownException);
+        assertInstanceOf(IllegalArgumentException.class, thrownException);
     }
 }

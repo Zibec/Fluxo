@@ -6,13 +6,13 @@ public class Investimento {
 
 
     private final String id;
+    private String nome;
     private String descricao;
     private BigDecimal valorAtual;
-    private String tipo;
 
 
 
-    public Investimento(String id, String descricao, BigDecimal valorAtual, String tipo) {
+    public Investimento(String id, String nome, String descricao, BigDecimal valorAtual) {
 
         if (valorAtual == null || valorAtual.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Valor invalido");
@@ -21,7 +21,7 @@ public class Investimento {
         this.id = id;
         this.descricao = descricao;
         this.valorAtual = valorAtual;
-        this.tipo = tipo;
+        this.nome = nome;
     }
 
     public String getId() {
@@ -40,16 +40,20 @@ public class Investimento {
         return valorAtual;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getNome() {
+        return nome;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public void atualizarValor(Double taxaSelic) {
-        this.valorAtual = this.valorAtual.multiply(new BigDecimal(1 + taxaSelic));
+    public void atualizarValor(BigDecimal taxaSelic) {
+        this.valorAtual = this.valorAtual.multiply(taxaSelic.add(new BigDecimal(1)));
+    }
+
+    public void resgatarValor(BigDecimal valor){
+        this.valorAtual = this.valorAtual.subtract(valor);
     }
 
 

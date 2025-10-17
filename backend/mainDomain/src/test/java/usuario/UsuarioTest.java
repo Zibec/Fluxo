@@ -1,5 +1,6 @@
 package usuario;
 
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -28,10 +29,11 @@ public class UsuarioTest {
         senhaAtual = "senha123";
     }
 
+
     // Scenario: Atualizar e-mail com senha atual correta (sucesso)
     @Given("que estou logado no sistema")
     public void que_estou_logado_no_sistema() {
-        assertNotNull(this.usuarioLogado, "O usuário de teste principal não foi inicializado.");
+        assertNotNull(usuarioService.obter(usuarioLogado.getId()), "O usuário de teste principal não foi inicializado.");
     }
 
     @And("informo minha senha atual corretamente")
@@ -82,7 +84,6 @@ public class UsuarioTest {
     }
 
     // Scenario: Atualizar username para um nome único (sucesso)
-
     @When("altero meu username para {string}")
     public void altero_meu_username_para(String novoUsername) {
         try {
@@ -129,7 +130,10 @@ public class UsuarioTest {
     @Given("informo a senha atual correta {string}")
     public void informo_a_senha_atual_correta(String senha) {
         usuarioLogado = new Usuario("usuario_logado", "logado@dominio.com", "senha123");
-        this.isSenhaAtualCorreta = this.usuarioLogado.verifyPassword(senha);
+        usuarioService.salvar(usuarioLogado);
+        
+        Usuario usuario = usuarioService.obter(usuarioLogado.getId());
+        this.isSenhaAtualCorreta = usuario.verifyPassword(senha);
     }
 
     @When("informo a nova senha {string}")
