@@ -36,10 +36,10 @@ public class MetaInversaTest {
         assertEquals(MetaStatus.valueOf(statusEsperado), metaInversa.getStatus());
     }
 
-    @Then("o valor amortizado inicial deve ser {string}")
-    public void valorAmortizadoInicial(String esperado) {
+    @Then("o valor amortizado inicial deve ser 0.00")
+    public void valorAmortizadoInicial() {
         MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
-        assertEquals(new BigDecimal(esperado), metaInversa.getValorAmortizado());
+        assertEquals(BigDecimal.ZERO, metaInversa.getValorAmortizado());
     }
 
     // Cenários de aporte

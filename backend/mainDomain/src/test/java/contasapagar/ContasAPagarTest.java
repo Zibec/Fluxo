@@ -122,8 +122,8 @@ public class ContasAPagarTest {
 
     @When("o usuário deleta essa transação")
     public void oUsuarioDeletaEssaTransacao() {
-        transacao = null; // simulação de exclusão
         txRepositorio.excluir(transacao.getId());
+        transacao = null; // simulação de exclusão
     }
 
     @Then("a transação não deve mais existir no sistema")

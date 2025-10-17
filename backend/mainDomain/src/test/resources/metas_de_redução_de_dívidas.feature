@@ -9,7 +9,7 @@ Feature: Gestão de Metas de Redução de Dívidas
   Scenario: Criar uma meta inversa válida
     When o usuário cria uma meta inversa com nome "Quitar Cartão" e valor alvo "1000.00"
     Then a meta deve ser criada com status "ATIVA"
-    And o valor amortizado inicial deve ser "0.00"
+    And o valor amortizado inicial deve ser 0.00
 
   Scenario: Realizar um aporte válido
     Given que existe uma meta inversa ativa de "1000.00"
