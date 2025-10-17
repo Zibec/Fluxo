@@ -69,7 +69,7 @@ public class InvestimentoService {
     public void resgateParcial(String investimentoId, BigDecimal valor){
         Investimento investimento = investimentoRepositorio.obter(investimentoId);
 
-        if(investimento.getValorAtual().compareTo(valor) == 0 || investimento.getValorAtual().compareTo(valor) < 0 || investimento.getValorAtual().doubleValue() <= 0){
+        if(investimento.getValorAtual().compareTo(valor) <= 0 || valor.doubleValue() <= 0){
             throw new RuntimeException("Tentativa de resgate total em resgate parcial ou valor inválido.");
         }
 
