@@ -9,12 +9,16 @@ import perfil.PerfilRepository;
 import transacao.StatusTransacao;
 import transacao.Tipo;
 import transacao.Transacao;
+import transacao.TransacaoRepositorio;
+import transacao.TransacaoService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
 import conta.Conta;
+import conta.ContaRepositorio;
+import conta.ContaService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,8 +27,15 @@ public class ContasAPagarTest {
     private Conta conta = new Conta();
     private Transacao transacao;
 
+
+    private TransacaoRepositorio txRepositorio = new TransacaoRepositorio();
+    private TransacaoService txService = new TransacaoService(txRepositorio);
+
+    private Exception erro;
+
     private Perfil perfil = new Perfil("0", "Pai");
     private PerfilRepository perfilRepository = new PerfilRepository();
+
 
     // -------------------------
     // Transações Avulsas
@@ -39,9 +50,10 @@ public class ContasAPagarTest {
 
     @When("o usuário cria uma transação única {string} de {string}")
     public void oUsuarioCriaUmaTransacaoUnica(String descricao, String valor) {
+
         transacao = new Transacao(
                 UUID.randomUUID().toString(),
-                null,
+                null, // origemAgendamentoId é null para avulsa
                 descricao,
                 new BigDecimal(valor),
                 LocalDate.now(),
@@ -52,12 +64,17 @@ public class ContasAPagarTest {
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
         );
+
+        txRepositorio.salvar(transacao);
+        
+
         assertTrue(transacao.isAvulsa());
     }
 
     @Then("a transação deve estar registrada com status {string}")
     public void aTransacaoDeveEstarRegistradaComStatus(String status) {
-        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), transacao.getStatus());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), t.getStatus());
     }
 
     @And("o saldo da conta deve permanecer {string}")
@@ -81,6 +98,8 @@ public class ContasAPagarTest {
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
         );
+        txRepositorio.salvar(transacao);
+
         assertEquals(StatusTransacao.PENDENTE, transacao.getStatus());
         assertTrue(transacao.isAvulsa());
     }
@@ -88,16 +107,19 @@ public class ContasAPagarTest {
     @When("o usuário altera o valor para {string}")
     public void oUsuarioAlteraOValorPara(String novoValor) {
         transacao.atualizarValor(new BigDecimal(novoValor));
+        txRepositorio.atualizar(transacao);
     }
 
     @Then("a transação deve refletir o novo valor {string}")
     public void aTransacaoDeveRefletirONovoValor(String valorEsperado) {
-        assertEquals(new BigDecimal(valorEsperado), transacao.getValor());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertEquals(new BigDecimal(valorEsperado), t.getValor());
     }
 
     @And("o status deve permanecer {string}")
     public void oStatusDevePermanecer(String status){
-        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), transacao.getStatus());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), t.getStatus());
     }
 
     @Given("existe uma transação única pendente de {string}")
@@ -116,16 +138,18 @@ public class ContasAPagarTest {
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
         );
+        txRepositorio.salvar(transacao);
     }
 
     @When("o usuário deleta essa transação")
     public void oUsuarioDeletaEssaTransacao() {
-        transacao = null; // simulação de exclusão
+        txRepositorio.excluir(transacao.getId());
     }
 
     @Then("a transação não deve mais existir no sistema")
     public void aTransacaoNaoDeveMaisExistirNoSistema() {
-        assertNull(transacao);
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertNull(t);
     }
 
     @When("o usuário marca a transação como {string}")
@@ -133,12 +157,14 @@ public class ContasAPagarTest {
         StatusTransacao statusTransacao = StatusTransacao.valueOf(status.toUpperCase());
         if (statusTransacao == StatusTransacao.EFETIVADA) {
             transacao.efetivar();
+            txRepositorio.atualizar(transacao);
         }
     }
 
     @Then("o status da transação deve ser {string}")
     public void oStatusDaTransacaoDeveSer(String status) {
-        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), transacao.getStatus());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertEquals(StatusTransacao.valueOf(status.toUpperCase()), t.getStatus());
     }
 
     @And("o valor da transação deve ser debitado da conta")
@@ -199,15 +225,24 @@ public class ContasAPagarTest {
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
         );
+        txRepositorio.salvar(transacao);
     }
 
     @When("o sistema verifica transações pendentes próximas do vencimento")
     public void oSistemaVerificaTransacoesPendentesProximasDoVencimento() {
-        assertTrue(transacao.isProximaDoVencimento());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertTrue(t.isProximaDoVencimento());
     }
 
     @Then("deve ser gerada uma notificação para o usuário")
     public void deveSerGeradaUmaNotificacaoParaOUsuario() {
-        assertTrue(transacao.isProximaDoVencimento());
+        Transacao t = txRepositorio.buscarPorId(transacao.getId()).orElse(null);
+        assertTrue(t.isProximaDoVencimento());
+    }
+
+    @Then("o sistema deve recusar a operação e exibir mensagem de erro")
+    public void oSistemaDeveRecusarAOperaçãoEExibirMensagemDeErro() {
+        assertNotNull(erro, "Esperava-se que o sistema lançasse um erro, mas nenhum foi capturado.");
+        assertEquals("Saldo insuficiente para realizar o débito.", erro.getMessage());
     }
 }

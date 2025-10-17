@@ -1,29 +1,39 @@
 Feature: Gestão de Metas de Redução de Dívidas
-  Como um usuário focado em quitar uma dívida
-  Eu quero criar e acompanhar metas inversas
-  Para que eu visualize meu progresso na redução do saldo devedor
+  Como um usuário que deseja quitar uma dívida
+  Quero criar e acompanhar uma meta inversa
+  Para que eu possa visualizar o quanto já paguei e quanto ainda falta quitar
 
-  Scenario: Criar uma meta de redução de dívida válida
-    Given que existe uma conta do tipo "Cartão de Crédito" com saldo devedor de 5000
-    When eu crio uma meta de redução de dívida de 2000 até "31/12/2025"
-    Then a meta deve ser salva com status "Em andamento"
-    And o progresso inicial deve ser 0
+  Background:
+    Given que o usuário possui uma conta com saldo "1500.00"
 
-  Scenario: Progresso da meta atualizado após pagamento
-    Given que existe uma meta de redução de dívida de 2000 vinculada ao Cartão de Crédito
-    And o saldo inicial da dívida era de 5000
-    When o saldo atual da dívida passa a ser 4000
-    Then o progresso da meta deve ser de 1000
-    And o sistema deve registrar que 50% da meta foi atingida
+  Scenario: Criar uma meta inversa válida
+    When o usuário cria uma meta inversa com nome "Quitar Cartão" e valor alvo "1000.00"
+    Then a meta deve ser criada com status "ATIVA"
+    And o valor amortizado inicial deve ser 0.00
 
-  Scenario: Conclusão da meta de redução de dívida
-    Given que existe uma meta de redução de dívida de 2000 vinculada ao Cartão de Crédito
-    When o saldo atual da dívida passa a ser 3000
-    Then a meta deve ser marcada como "Concluída"
-    And o sistema deve gerar uma notificação de parabéns
+  Scenario: Realizar um aporte válido
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário realiza um aporte de "400.00" para amortizar a dívida
+    Then o valor amortizado deve ser "400.00"
+    And o progresso deve ser "0.40"
 
-  Scenario: Tentativa de criar meta para conta que não é dívida
-    Given que existe uma conta do tipo "Conta Corrente" com saldo positivo
-    When eu tento criar uma meta de redução de dívida vinculada a esta conta
-    Then o sistema deve impedir a criação da meta
-    And deve exibir uma mensagem de erro "A meta só pode ser criada para contas de dívida"
+  Scenario: Concluir meta ao atingir o valor da dívida
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário realiza um aporte de "1000.00"
+    Then o status da meta deve mudar para "CONCLUIDA"
+    And o progresso deve ser "1.00"
+
+  Scenario: Realizar aporte inválido (valor nulo)
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário tenta realizar um aporte de valor nulo
+    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser positivo."
+
+  Scenario: Realizar aporte inválido (valor negativo)
+    Given que existe uma meta inversa ativa de "1000.00"
+    When o usuário tenta realizar um aporte de "-50.00"
+    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser positivo."
+
+  Scenario: Verificar progresso proporcional
+    Given que existe uma meta inversa ativa de "1200.00"
+    When o usuário realiza um aporte de "300.00"
+    Then o progresso deve ser "0.25"
