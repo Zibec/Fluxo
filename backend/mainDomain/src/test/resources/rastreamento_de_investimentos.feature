@@ -38,3 +38,54 @@ Feature: Rastreamento de Investimentos
     And a taxa selic diária é de 0.01 (1%)
     When o job de atualização de rendimento é executado, mas ocorre uma falha no registro de histórico
     Then o sistema deve gerar um log de erro indicando falha ao registrar histórico
+
+  #O sistema deve poder realizar tanto o resgate parcial, como o resgate total do valor investido para um investimento.
+  # Caso o tipo de resgate seja total, o investimento deve ser removido do sistema.
+
+  Scenario: Resgate total bem-sucedido
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate total do valor investido
+    Then o investimento deve ser removido do sistema
+
+  Scenario: Falha em etapas anteriores do resgate total
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate total do valor investido, mas uma falha ocorre
+    Then o investimento não deve ser removido
+    And o sistema deve emitir um log de falha
+
+  #Caso o tipo de resgate seja parcial, deve ter seu valor atualizado no sistema.
+
+  Scenario: Resgate parcial bem-sucedido
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate parcial de 500 reais do valor investido
+    Then o sistema deve atualizar o valor investido para 500 reais
+
+  Scenario: Tentativa de resgate total em resgate parcial
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate parcial com o valor total investido
+    Then o sistema deve impedir a atualização do valor investido
+    And exibir aviso de tentativa de resgate total em resgate parcial
+
+  #Caso o tipo de resgate seja total, o histórico de valorização do investimento resgatado, deve ser completamente apagado
+  Scenario: Deleção do histórico de valorização bem-sucedido em resgate total
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate total do valor investido
+    Then o sistema deve apagar o histórico de valorização daquele investimento
+
+  Scenario: Falha deleção do histórico de valorização em resgate total
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate total do valor investido, mas ocorre uma falha na deleção o histórico
+    Then o sistema deve levantar uma exceção referente à falha na deleção
+    And o sistema deve emitir um log de falha
+
+  #Caso o tipo de resgate seja parcial, o histórico de valorização deve ser mantido e uma nova entrada com o valor
+  #restante investido deve ser adicionada.
+  Scenario: Histórico de valorização atualizado com sucesso em resgate parcial
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate parcial de 500 reais do valor investido
+    Then o sistema deve atualizar o histórico com uma nova entrada com o valor restante investido de 500 reais
+
+  Scenario: Falha em etapas anteriores à atualização do histórico em resgate parcial
+    Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
+    When realizo o resgate parcial, mas uma falha ocorre
+    Then o sistema não deve atualizar o histórico com uma nova entrada

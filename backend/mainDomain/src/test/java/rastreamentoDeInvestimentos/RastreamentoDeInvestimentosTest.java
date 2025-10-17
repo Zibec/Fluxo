@@ -175,4 +175,100 @@ public class RastreamentoDeInvestimentosTest {
         assertNotNull(excecaoCapturada);
         assertTrue(excecaoCapturada.getMessage().contains("Falha ao salvar histórico"));
     }
+
+    //Scenario: Resgate total bem-sucedido
+
+    @When("realizo o resgate total do valor investido")
+    public void resgateTotaldoValor(){
+
+    }
+
+    @Then("o investimento deve ser removido do sistema")
+    public void investimentoRemovido(){
+
+    }
+
+    //Scenario: Falha em etapas anteriores do resgate total
+
+    @When("realizo o resgate total do valor investido, mas uma falha ocorre")
+    public void falhaEmResgateTotal(){
+
+    }
+
+    @Then("o investimento não deve ser removido")
+    public void investimentoNaoRemovido(){
+
+    }
+
+    @And("o sistema deve emitir um log de falha")
+    public void emicaoLogFalha(){
+
+    }
+
+    //Scenario: Resgate parcial bem-sucedido
+
+    @When("realizo o resgate parcial de {double} reais do valor investido")
+    public void resgateParcialQuinhetos(double valor){
+
+    }
+
+    @Then("o sistema deve atualizar o valor investido para {double} reais")
+    public void valorAtualizado(double valorAtualizado){
+
+    }
+
+    //Scenario: Tentativa de resgate total em resgate parcial
+
+    @When("realizo o resgate parcial com o valor total investido")
+    public void resgateParcialTotal(){
+
+    }
+
+    @Then("o sistema deve impedir a atualização do valor investido")
+    public void valorNaoAtualizado(){
+
+    }
+
+    @And("exibir aviso de tentativa de resgate total em resgate parcial")
+    public void exibirAviso(){
+
+    }
+
+    //Scenario: Deleção do histórico de valorização bem-sucedido em resgate total
+
+    @Then("o sistema deve apagar o histórico de valorização daquele investimento")
+    public void historicoDeletado(){
+
+    }
+
+    //Scenario: Falha deleção do histórico de valorização em resgate total
+
+    @When("realizo o resgate total do valor investido, mas ocorre uma falha na deleção o histórico")
+    public void falhaDelecaoHistorico(){
+
+    }
+
+    @Then("o sistema deve levantar uma exceção referente à falha na deleção")
+    public void levantarExcecao(){
+
+    }
+
+    //Scenario: Histórico de valorização atualizado com sucesso em resgate parcial
+
+    @Then("o sistema deve atualizar o histórico com uma nova entrada com o valor restante investido de 500 reais")
+    public void atualizacaoHistorico(){
+
+    }
+
+    //Scenario: Falha em etapas anteriores à atualização do histórico em resgate parcial
+
+    @When("realizo o resgate parcial, mas uma falha ocorre")
+    public void falhaEmResgateParcial(){
+
+    }
+
+    @Then("o sistema não deve atualizar o histórico com uma nova entrada")
+    public void naoAtualizacaoHistorico(){
+
+    }
 }
