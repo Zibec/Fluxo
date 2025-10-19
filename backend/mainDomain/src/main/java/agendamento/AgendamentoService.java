@@ -23,7 +23,7 @@ public class AgendamentoService {
         agRepo.salvar(a);
     }
 
-    /** Versão com validação parametrizada pelo 'hoje' do cenário. */
+
     public void salvarValidandoNaoNoPassado(Agendamento a, LocalDate hoje) {
         Objects.requireNonNull(a, "Agendamento obrigatório");
         Objects.requireNonNull(hoje, "Hoje obrigatório");
@@ -42,14 +42,14 @@ public class AgendamentoService {
         if (!a.isAtivo() || !Objects.equals(a.getProximaData(), hoje)) return false;
 
         String chave = a.getId() + "#" + hoje;
-        if (!execucoesDoDia.add(chave)) return false; // já executou hoje
+        if (!execucoesDoDia.add(chave)) return false;
 
         transacaoService.criarPendenteDeAgendamento(
                 a.getId(), a.getDescricao(), a.getValor(), hoje, null, false, a.getPerfilId()
         );
 
         a.avancarProximaData();
-        agRepo.salvar(a); // persiste a nova próxima data
+        agRepo.salvar(a);
         return true;
     }
 }

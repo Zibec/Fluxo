@@ -44,25 +44,25 @@ public class Agendamento {
     public void cancelar() { this.ativo = false; this.proximaData = null; }
 
     public void avancarProximaData() {
-        if (!this.ativo) return; // ou trate como preferir
+        if (!this.ativo) return;
         if (this.proximaData == null) return;
 
         switch (this.frequencia) {
             case MENSAL -> {
-                // guarda o dia desejado (p.ex., 31)
+                //guarda o dia desejado
                 int diaDesejado = this.proximaData.getDayOfMonth();
 
-                // soma 1 mês
+                //soma 1 mês
                 LocalDate candidata = this.proximaData.plusMonths(1);
 
-                // limita ao último dia do mês destino
+                //limita ao último dia do mês destino
                 int ultimoDiaMes = candidata.lengthOfMonth();
                 this.proximaData = candidata.withDayOfMonth(Math.min(diaDesejado, ultimoDiaMes));
             }
             case SEMANAL -> this.proximaData = this.proximaData.plusWeeks(1);
             case DIARIA  -> this.proximaData = this.proximaData.plusDays(1);
             case ANUAL   -> {
-                // ano bissexto: 29/02 pode cair para 28/02 em ano não bissexto
+                //ano bissexto: 29/02 pode cair para 28/02 em ano não bissexto
                 int dia = this.proximaData.getDayOfMonth();
                 int mes = this.proximaData.getMonthValue();
                 LocalDate candidata = this.proximaData.plusYears(1);

@@ -59,9 +59,9 @@ public class OrcamentoTest {
     private OrcamentoChave ultimaChaveVerificada;
     private BigDecimal ultimoTotalCalculado;
 
-    // ==========================================================
+
     //  HISTÓRIA 1.1 — CRIAR / DUPLICIDADE / ATUALIZAR
-    // ==========================================================
+
 
     @Given("que existe a categoria {string} para um usuário autenticado como {string}")
     public void existeCategoriaUsuario(String categoria, String usuario) {
@@ -105,7 +105,7 @@ public class OrcamentoTest {
         var chave = new OrcamentoChave(usuario, ym, categoria);
         repo.salvarNovo(chave, new Orcamento(valor)); // já existente
 
-        // guarda no contexto para os @Then/@And
+        //guarda no contexto para os @Then/@And
         this.categoria = categoria;
         this.anoMes = ym;
     }
@@ -133,7 +133,7 @@ public class OrcamentoTest {
         Assertions.assertNotNull(erro, "Era esperado erro");
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
         var opt = repo.obterOrcamento(chave);
-        // No cenário de duplicidade, o original deve continuar existindo
+        //No cenário de duplicidade, o original deve continuar existindo
         Assertions.assertTrue(opt.isPresent(), "O orçamento original deveria continuar salvo");
     }
 
@@ -175,9 +175,9 @@ public class OrcamentoTest {
         Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
 
-    // ==========================================================
+
     //  HISTÓRIA 1.2 — NOTIFICAÇÕES (80%, 100%, excedeu)
-    // ==========================================================
+
 
     @Given("que existe uma categoria {string} com gasto limite de {string} para o mês {string}")
     public void existeCategoriaComLimiteParaOMes(String categoria, String valorMoeda, String mesAno) {
@@ -243,9 +243,9 @@ public class OrcamentoTest {
         Assertions.assertTrue(notificador.ultima().isEmpty(), "Não era para notificar");
     }
 
-    // ==========================================================
+
     //  HISTÓRIA 1.3 — VALIDAÇÃO (positivo/negativo)
-    // ==========================================================
+
 
     @When("o usuário tenta definir um orçamento de {string} para a categoria {string} no mês {string}")
     public void usuarioTentaDefinirValor(String valorMoeda, String categoria, String mesAno) {
@@ -274,9 +274,9 @@ public class OrcamentoTest {
         );
     }
 
-    // ==========================================================
+
     //  HISTÓRIA 1.4 — CÁLCULO DE PROGRESSO (total + %)
-    // ==========================================================
+
 
     @Then("o sistema deve mostrar que o total gasto para {string} em {string} é de {string}")
     public void sistemaDeveMostrarQueOTotalGastoParaEmEDe(String categoria, String mesAno, String esperado) {
@@ -319,7 +319,7 @@ public class OrcamentoTest {
                 "Progresso diferente do esperado");
     }
 
-    // ---------- Helpers & utilidades ----------
+    // Helpers & utilidades
 
     private static BigDecimal parseMoedaBR(String s) {
         String limpo = s.trim();
