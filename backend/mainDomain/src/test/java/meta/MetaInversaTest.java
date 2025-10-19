@@ -5,10 +5,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import conta.Conta;
+import conta.ContaRepositorio;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import metaInversa.MetaInversa;
 import metaInversa.MetaInversaRepositorio;
+import metaInversa.MetaInversaService;
 import metaInversa.MetaInversaStatus;
 import io.cucumber.java.en.Then;
 
@@ -18,7 +20,9 @@ public class MetaInversaTest {
     private MetaInversa meta;
     private Exception excecao;
 
+    private ContaRepositorio contaRepo = new ContaRepositorio();
     private MetaInversaRepositorio mIRepo = new MetaInversaRepositorio();
+    private MetaInversaService mIService = new MetaInversaService(mIRepo, contaRepo);
 
     // Cenário base
     @Given("que o usuário possui uma conta com saldo {string}")
@@ -29,7 +33,7 @@ public class MetaInversaTest {
 
     @When("o usuário cria uma meta inversa com nome {string} e valor alvo {string}")
     public void usuarioCriaMeta(String nomeMeta, String valorDivida) {
-        this.meta = new MetaInversa("1", nomeMeta, new BigDecimal(valorDivida), conta, LocalDate.now().plusMonths(3));
+        this.meta = new MetaInversa("1", nomeMeta, new BigDecimal(valorDivida), conta.getId(), LocalDate.now().plusMonths(3));
         mIRepo.salvar(meta);
     }
 
@@ -48,15 +52,15 @@ public class MetaInversaTest {
     // Cenários de aporte
     @Given("que existe uma meta inversa ativa de {string}")
     public void existeMetaAtiva(String valorDivida) {
-        this.meta = new MetaInversa("1", "Meta Dívida", new BigDecimal(valorDivida), conta, LocalDate.now().plusMonths(1));
+        this.meta = new MetaInversa("1", "Meta Dívida", new BigDecimal(valorDivida), conta.getId(), LocalDate.now().plusMonths(1));
         mIRepo.salvar(meta);
     }
 
     @When("o usuário realiza um aporte de {string} para amortizar a dívida")
     public void usuarioRealizaAporte(String valor) {
-        MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
-        metaInversa.realizarAporte(new BigDecimal(valor));
-        mIRepo.salvar(metaInversa);
+        
+        mIService.realizarAporte(meta.getId(), new BigDecimal(valor));
+        
     }
 
     @Then("o valor amortizado deve ser {string}")
@@ -74,9 +78,8 @@ public class MetaInversaTest {
     // Cenário de conclusão
     @When("o usuário realiza um aporte de {string}")
     public void usuarioRealizaAporteGenerico(String valor) {
-        MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
-        metaInversa.realizarAporte(new BigDecimal(valor));
-        mIRepo.salvar(metaInversa);
+        mIService.realizarAporte(meta.getId(), new BigDecimal(valor));
+        
     }
 
     @Then("o status da meta deve mudar para {string}")
@@ -88,9 +91,8 @@ public class MetaInversaTest {
     // Cenários de exceção
     @When("o usuário tenta realizar um aporte de valor nulo")
     public void aporteNulo() {
-        MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
         try {
-            metaInversa.realizarAporte(null);
+            mIService.realizarAporte(meta.getId(), null);
         } catch (Exception e) {
             this.excecao = e;
         }
@@ -98,9 +100,8 @@ public class MetaInversaTest {
 
     @When("o usuário tenta realizar um aporte de {string}")
     public void aporteNegativo(String valor) {
-        MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
         try {
-            metaInversa.realizarAporte(new BigDecimal(valor));
+            mIService.realizarAporte(meta.getId(), new BigDecimal(valor));
         } catch (Exception e) {
             this.excecao = e;
         }
