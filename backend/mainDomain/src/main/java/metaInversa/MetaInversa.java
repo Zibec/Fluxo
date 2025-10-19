@@ -11,15 +11,15 @@ public class MetaInversa {
     private String nome;
     private BigDecimal valorDivida;
     private BigDecimal valorAcumulado;
-    private Conta contaAssociada;
+    private String contaAssociadaId;
     private LocalDate dataLimite;
     private MetaInversaStatus status;
 
-    public MetaInversa(String id, String nome, BigDecimal valorDivida, Conta contaAssociada, LocalDate dataLimite) {
+    public MetaInversa(String id, String nome, BigDecimal valorDivida, String contaAssociada, LocalDate dataLimite) {
         this.id = id;
         this.nome = nome;
         this.valorDivida = valorDivida;
-        this.contaAssociada = contaAssociada;
+        this.contaAssociadaId = contaAssociada;
         this.dataLimite = dataLimite;
         this.valorAcumulado = BigDecimal.ZERO; // opcionalmente pode iniciar zerado
         this.status = MetaInversaStatus.ATIVA;
@@ -34,7 +34,6 @@ public class MetaInversa {
             throw new IllegalArgumentException("Valor do aporte deve ser positivo.");
         }
         this.valorAcumulado = this.valorAcumulado.add(valorDoAporte);
-        this.contaAssociada.realizarTransacao(valorDoAporte);
 
         if (this.valorAcumulado.compareTo(this.valorDivida) >= 0) {
             conluirMeta();
@@ -58,8 +57,8 @@ public class MetaInversa {
         return valorAcumulado;
     }
 
-    public Conta getContaAssociada() {
-        return contaAssociada;
+    public String getContaAssociadaId() {
+        return contaAssociadaId;
     }
 
     public LocalDate getDataLimite() {
