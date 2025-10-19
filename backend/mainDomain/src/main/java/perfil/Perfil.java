@@ -2,7 +2,7 @@ package perfil;
 
 public class Perfil {
 
-    private String id;
+    private final String id;
     private String nome;
 
     public Perfil(String id, String nome) {
