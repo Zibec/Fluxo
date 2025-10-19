@@ -1,4 +1,4 @@
-package meta;
+package metaInversa;
 
 import java.util.HashMap;
 import java.util.Map;

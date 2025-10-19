@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import conta.Conta;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
+import metaInversa.MetaInversa;
+import metaInversa.MetaInversaRepositorio;
+import metaInversa.MetaInversaStatus;
 import io.cucumber.java.en.Then;
 
 public class MetaInversaTest {
@@ -33,7 +36,7 @@ public class MetaInversaTest {
     @Then("a meta deve ser criada com status {string}")
     public void metaDeveTerStatus(String statusEsperado) {
         MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
-        assertEquals(MetaStatus.valueOf(statusEsperado), metaInversa.getStatus());
+        assertEquals(MetaInversaStatus.valueOf(statusEsperado), metaInversa.getStatus());
     }
 
     @Then("o valor amortizado inicial deve ser 0.00")
@@ -79,7 +82,7 @@ public class MetaInversaTest {
     @Then("o status da meta deve mudar para {string}")
     public void statusMetaDeveMudarPara(String statusEsperado) {
         MetaInversa metaInversa = mIRepo.obter("1").orElse(null);
-        assertEquals(MetaStatus.valueOf(statusEsperado), metaInversa.getStatus());
+        assertEquals(MetaInversaStatus.valueOf(statusEsperado), metaInversa.getStatus());
     }
 
     // Cenários de exceção

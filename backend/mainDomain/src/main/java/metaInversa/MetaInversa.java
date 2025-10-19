@@ -1,4 +1,4 @@
-package meta;
+package metaInversa;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,7 +13,7 @@ public class MetaInversa {
     private BigDecimal valorAcumulado;
     private Conta contaAssociada;
     private LocalDate dataLimite;
-    private MetaStatus status;
+    private MetaInversaStatus status;
 
     public MetaInversa(String id, String nome, BigDecimal valorDivida, Conta contaAssociada, LocalDate dataLimite) {
         this.id = id;
@@ -22,11 +22,11 @@ public class MetaInversa {
         this.contaAssociada = contaAssociada;
         this.dataLimite = dataLimite;
         this.valorAcumulado = BigDecimal.ZERO; // opcionalmente pode iniciar zerado
-        this.status = MetaStatus.ATIVA;
+        this.status = MetaInversaStatus.ATIVA;
     }
 
     private void conluirMeta() {
-        this.status = MetaStatus.CONCLUIDA;
+        this.status = MetaInversaStatus.CONCLUIDA;
     }
 
     public void realizarAporte(BigDecimal valorDoAporte) {
@@ -66,7 +66,7 @@ public class MetaInversa {
         return dataLimite;
     }
 
-    public MetaStatus getStatus() {
+    public MetaInversaStatus getStatus() {
         return this.status;
     }
 
