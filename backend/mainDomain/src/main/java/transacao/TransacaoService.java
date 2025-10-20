@@ -142,29 +142,4 @@ public class TransacaoService {
 
         repo.salvar(t);
     }
-
-    public static void main(String[] args) {
-        TransacaoService service = new TransacaoService(
-                new TransacaoRepositorio(),
-                new ContaRepositorio(),
-                new CartaoRepositorio()
-        );
-
-        Perfil p = new Perfil("perfil1", "Usuário Teste");
-        Conta conta = new Conta();
-
-        Transacao t = service.criarPendenteDeAgendamento(
-                "agendamento1",
-                "Compra no supermercado",
-                new BigDecimal("150.00"),
-                LocalDate.now(),
-                conta,
-                false,
-                p.getId()
-        );
-
-        Transacao t2 = service.registrarReembolso(new BigDecimal("50.00"), t.getId());
-
-        System.out.println("Transação criada: " + t2.getDescricao() + " - " + t2.getValor());
-    }
 }
