@@ -4,13 +4,13 @@ Feature: Automação e Agendamento de transações
     Esta funcionalidade automatiza a criação de transações e gerencia contas futuras.
 
 #Contas bancarias
-    Scenario: Criação de transações bancárias
+    Scenario: Agendamento de transações bancárias
         Given que existe uma transação para o usuário pagar que é debitada do seu cartao no dia "16/09/2025"
         When o usuário precisa registrar essa transação para o dia "16/09/2025"
         And o dia atual é "10/09/2025"
         Then o usuário verá que o sistema salvou como "agendada" para o dia "16/09/2025" uma transferência que será realizada
 
-    Scenario: Criação de transação com data no passado (rejeição)
+    Scenario: Agendamento de transação com data no passado (rejeição)
         Given que a data atual é "20/09/2025"
         When o usuário tenta agendar uma transação para o dia "10/09/2025"
         Then o sistema não deve salvar o agendamento

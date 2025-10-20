@@ -89,7 +89,7 @@ public class AgendamentoTest {
                 .orElseThrow(() -> new AssertionError("Falha ao preparar transação para atualização"));
     }
 
-    //Criação de transação futura
+    //Agendamento de transação futura
     @Given("que existe uma transação para o usuário pagar que é debitada do seu cartao no dia {string}")
     public void givenCartaoDebitoNoDia(String data) {
         agendamentoId = UUID.randomUUID().toString();
