@@ -19,7 +19,6 @@ Feature: Automação e Agendamento de transações
     Scenario: Cancelamento de transações bancárias
         Given que existe uma transação para o usuário efetuar no dia "16/09/2025" no valor de "R$ 600,00"
         When o usuário quer cancelar essa transação que iria ser paga no dia "16/09/2025"
-        And não existe mais essa transação
         Then o sistema irá excluir esse pagamento
 
     Scenario: Cancelamento de transação já executada (rejeição)

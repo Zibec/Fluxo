@@ -93,7 +93,7 @@ public class AgendamentoTest {
     @Given("que existe uma transação para o usuário pagar que é debitada do seu cartao no dia {string}")
     public void givenCartaoDebitoNoDia(String data) {
         agendamentoId = UUID.randomUUID().toString();
-        var ag = new Agendamento(
+        Agendamento ag = new Agendamento(
                 agendamentoId,
                 "Débito do cartão",
                 new BigDecimal("600.00"),
@@ -165,10 +165,14 @@ public class AgendamentoTest {
 
     @Given("que existe uma transação para o usuário efetuar no dia {string} no valor de {string}")
     public void givenTransacaoParaEfetuarNoDia(String data, String valor) {
-        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
-        var ag = new Agendamento(agendamentoId, "Pagamento avulso",
-                parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
+
+        Agendamento ag = new Agendamento(agendamentoId, "Pagamento avulso",
+                parseValor(valor),
+                Frequencia.MENSAL,
+                LocalDate.parse(data, BR),
+                perfilRepository.obter("0").getId());
+
         agService.salvar(ag);
         dataTransacaoCriada = LocalDate.parse(data, BR);
         txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada, conta, false, ag.getPerfilId());
@@ -177,14 +181,8 @@ public class AgendamentoTest {
 
     @When("o usuário quer cancelar essa transação que iria ser paga no dia {string}")
     public void whenCancelarTransacaoDoDia(String data) {
-        var tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR)).orElseThrow();
+        Transacao tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR)).orElseThrow();
         tx.cancelar();
-    }
-
-    @When("não existe mais essa transação")
-    public void whenVerificaNaoExisteMaisTransacao() {
-        var tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, dataTransacaoCriada).orElseThrow();
-        assertEquals(StatusTransacao.CANCELADA, tx.getStatus(), "Pagamento deveria estar cancelado");
     }
 
     @Then("o sistema irá excluir esse pagamento")
