@@ -1,7 +1,7 @@
 # Fluxo 
 
 <p align="center">
-  <img src="URL_DA_SUA_LOGO_AQUI" alt="Logo do Fluxo" width="200"/>
+  <img width="621" height="662" alt="LogoFluxo" src="https://github.com/user-attachments/assets/f0f23b0e-d540-498b-b4a3-4b33f89caf6e" />
 </p>
 
 <p align="center">
