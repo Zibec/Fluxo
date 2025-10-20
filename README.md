@@ -12,7 +12,7 @@
   <strong>Status:</strong> ⚠️ Projeto Acadêmico em Desenvolvimento ⚠️
 </p>
 <p align="center">
-  Projeto desenvolvido para a disciplina de [NOME DA DISCIPLINA] - [NOME DA INSTITUIÇÃO].
+  Projeto desenvolvido para a disciplina de Requisitos, Projeto de software e Validação - Cesar School.
 </p>
 
 ---
@@ -26,7 +26,6 @@ O "Fluxo" foi concebido para resolver um problema comum: a falta de clareza e co
 * **Gestão de Orçamentos:** Crie limites por categoria e acompanhe seu progresso.
 * **Metas de Economia (Poupança):** Defina objetivos claros e acompanhe os aportes.
 * **Metas de Redução de Dívidas:** Crie metas "inversas" para focar na amortização de dívidas.
-* **Perfis Familiares:** Permite que gastos sejam associados a diferentes membros da família, sem misturar os saldos.
 * **Agendamento de Transações:** Automatize o lançamento de contas recorrentes.
 
 ---
@@ -68,8 +67,8 @@ Toda a concepção, planejamento e prototipação do projeto podem ser acessados
 Este projeto está sendo construído por 6 pessoas incríveis:
 
 * **[Felipe Matias]** - ([Zibec](https://github.com/zibec))
-* **[Lucas Ferreira]** - ([@github-colega](https://github.com/github-colega))
-* **[Felipe França]** - ([@github-colega](https://github.com/github-colega))
-* **[Gabriel Landim]** - ([@github-colega](https://github.com/github-colega))
-* **[Luis Gustavo]** - ([@github-colega](https://github.com/github-colega))
-* **[Pedro Sampaio]** - ([@github-colega](https://github.com/github-colega))
+* **[Lucas Ferreira]** - ([Seconds4dacay](https://github.com/seconds4decay))
+* **[Felipe França]** - ([FelipeARFranca](https://github.com/FelipeARFranca))
+* **[Gabriel Landim]** - ([GabrielQLandim](https://github.com/GabrielQlandim))
+* **[Luis Gustavo]** - ([Luis-Gustavo-Melo](https://github.com/Luis-Gustavo-Melo))
+* **[Pedro Sampaio]** - ([PedrooSam](https://github.com/PedrooSam))
