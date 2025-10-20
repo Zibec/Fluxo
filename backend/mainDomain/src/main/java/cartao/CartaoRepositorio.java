@@ -20,4 +20,15 @@ public class CartaoRepositorio {
         var cartao = cartoes.get(numero);
         return cartao;
     }
+
+    public Cartao obterPorId(CartaoId cartaoId) {
+        notNull(cartaoId, "O ID do cartão não pode ser nulo");
+
+        for (Cartao cartao : cartoes.values()) {
+            if (cartao.getId().equals(cartaoId)) {
+                return cartao;
+            }
+        }
+        return null;
+    }
 }

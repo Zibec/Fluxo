@@ -1,4 +1,4 @@
-package patrimonio;
+package divida;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -115,7 +115,7 @@ public class CategoriaTest {
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
                 this.categoria.getId(),
-                contaDeTeste,
+                contaDeTeste.getId(),
                 false,
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()

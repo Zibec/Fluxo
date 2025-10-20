@@ -7,16 +7,16 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class SnapshotPatrimonioRepositorio {
+public class PatrimonioRepositorio {
 
-    private final Map<String, SnapshotPatrimonio> snapshots = new HashMap<>();
+    private final Map<String, Patrimonio> snapshots = new HashMap<>();
 
-    public void salvar(SnapshotPatrimonio snapshot) {
+    public void salvar(Patrimonio snapshot) {
         notNull(snapshot, "O snapshot não pode ser nulo");
         snapshots.put(snapshot.getId(), snapshot);
     }
 
-    public List<SnapshotPatrimonio> obterTodos() {
+    public List<Patrimonio> obterTodos() {
         return new ArrayList<>(snapshots.values());
     }
 

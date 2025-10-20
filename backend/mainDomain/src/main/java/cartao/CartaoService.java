@@ -18,4 +18,9 @@ public class CartaoService {
         notNull(numero, "O número do cartão não pode ser nulo");
         return cartaoRepositorio.obter(numero);
     }
+
+    public Cartao obterPorId(CartaoId cartaoId) {
+        notNull(cartaoId, "O ID do cartão não pode ser nulo");
+        return cartaoRepositorio.obterPorId(cartaoId);
+    }
 }

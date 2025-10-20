@@ -1,5 +1,6 @@
 package contasapagar;
 
+import cartao.CartaoRepositorio;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -29,12 +30,19 @@ public class ContasAPagarTest {
 
 
     private TransacaoRepositorio txRepositorio = new TransacaoRepositorio();
-    private TransacaoService txService = new TransacaoService(txRepositorio);
+    private ContaRepositorio contaRepositorio = new ContaRepositorio();
+    private CartaoRepositorio cartaoRepositorio = new CartaoRepositorio();
+
+    private TransacaoService txService = new TransacaoService(txRepositorio, contaRepositorio, cartaoRepositorio);
 
     private Exception erro;
 
     private Perfil perfil = new Perfil("0", "Pai");
     private PerfilRepository perfilRepository = new PerfilRepository();
+
+    public ContasAPagarTest() {
+        contaRepositorio.salvar(conta);
+    }
 
 
     // -------------------------
@@ -59,7 +67,7 @@ public class ContasAPagarTest {
                 LocalDate.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
-                conta,
+                conta.getId(),
                 true,
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
@@ -93,7 +101,7 @@ public class ContasAPagarTest {
                 LocalDate.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
-                conta,
+                conta.getId(),
                 true,
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
@@ -133,7 +141,7 @@ public class ContasAPagarTest {
                 LocalDate.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
-                conta,
+                conta.getId(),
                 true,
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
@@ -156,7 +164,7 @@ public class ContasAPagarTest {
     public void oUsuarioMarcaATransacaoComo(String status) {
         StatusTransacao statusTransacao = StatusTransacao.valueOf(status.toUpperCase());
         if (statusTransacao == StatusTransacao.EFETIVADA) {
-            transacao.efetivar();
+            txService.efetivarTransacao(transacao.getId());
             txRepositorio.atualizar(transacao);
         }
     }
@@ -192,7 +200,7 @@ public class ContasAPagarTest {
                 LocalDate.now(),
                 StatusTransacao.PENDENTE,
                 "categoria2",
-                conta,
+                conta.getId(),
                 false,
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()
@@ -202,7 +210,7 @@ public class ContasAPagarTest {
 
     @When("o usuário efetiva essa transação")
     public void oUsuarioEfetivaEssaTransacao() {
-        transacao.efetivar();
+        txService.efetivarTransacao(transacao.getId());
     }
 
     // -------------------------
@@ -220,7 +228,7 @@ public class ContasAPagarTest {
                 LocalDate.now().plusDays(1),
                 StatusTransacao.PENDENTE,
                 "categoria3",
-                conta,
+                conta.getId(),
                 true,
                 Tipo.DESPESA,
                 perfilRepository.obter("0").getId()

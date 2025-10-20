@@ -1,28 +1,20 @@
-package fatura;
-
-import cartao.Cartao;
+package cartao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Fatura {
-    private final String id;
     private final Cartao cartao;
 
     private BigDecimal valorTotal;
     private LocalDate dataVencimento;
     private String status;
 
-    public Fatura(String id, Cartao cartao, LocalDate dataVencimento) {
-        this.id = id;
+    public Fatura(Cartao cartao, LocalDate dataVencimento) {
         this.cartao = cartao;
         this.valorTotal = BigDecimal.ZERO;
         this.dataVencimento = dataVencimento;
         this.status = "ABERTA";
-    }
-
-    public String getId() {
-        return id;
     }
 
     public Cartao getCartao() {

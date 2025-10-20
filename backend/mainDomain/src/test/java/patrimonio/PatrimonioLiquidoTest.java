@@ -2,6 +2,10 @@ package patrimonio;
 
 import conta.Conta;
 import conta.ContaRepositorio;
+import divida.Divida;
+import divida.DividaRepositorio;
+import investimento.Investimento;
+import investimento.InvestimentoRepositorio;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -20,11 +24,11 @@ public class PatrimonioLiquidoTest {
     private ContaRepositorio contaRepositorio;
     private InvestimentoRepositorio investimentoRepositorio;
     private DividaRepositorio dividaRepositorio;
-    private SnapshotPatrimonioRepositorio snapshotRepositorio;
+    private PatrimonioRepositorio snapshotRepositorio;
     private PatrimonioService patrimonioService;
 
     private BigDecimal resultadoPatrimonio;
-    private List<SnapshotPatrimonio> historicoResultado;
+    private List<Patrimonio> historicoResultado;
     private String mensagemDeErro;
     private LocalDate dataDoTeste;
 
@@ -33,7 +37,7 @@ public class PatrimonioLiquidoTest {
         contaRepositorio = new ContaRepositorio();
         investimentoRepositorio = new InvestimentoRepositorio();
         dividaRepositorio = new DividaRepositorio();
-        snapshotRepositorio = new SnapshotPatrimonioRepositorio();
+        snapshotRepositorio = new PatrimonioRepositorio();
         patrimonioService = new PatrimonioService(
                 contaRepositorio,
                 investimentoRepositorio,
@@ -60,7 +64,7 @@ public class PatrimonioLiquidoTest {
 
     @Given("tenho um {string} com valor de R$ {double}")
     public void tenho_um_investimento_com_valor_de(String nomeInvestimento, Double valor) {
-        Investimento investimento = new Investimento(nomeInvestimento, BigDecimal.valueOf(valor));
+        Investimento investimento = new Investimento("0",nomeInvestimento,"teste", BigDecimal.valueOf(valor));
         investimentoRepositorio.salvar(investimento);
     }
 
@@ -99,7 +103,7 @@ public class PatrimonioLiquidoTest {
             LocalDate data = LocalDate.parse(linha.get("Data"));
             String valorLimpo = linha.get("Valor").replaceAll("[^\\d,]", "").replace(",", ".");
             BigDecimal valor = new BigDecimal(valorLimpo);
-            snapshotRepositorio.salvar(new SnapshotPatrimonio(data, valor));
+            snapshotRepositorio.salvar(new Patrimonio(data, valor));
         }
     }
 
@@ -125,10 +129,10 @@ public class PatrimonioLiquidoTest {
 
     @Then("um registro histórico do patrimônio deve ser salvo com a data de hoje e o valor de R$ {double}")
     public void um_registro_historico_do_patrimonio_deve_ser_salvo(Double valorEsperado) {
-        List<SnapshotPatrimonio> historico = snapshotRepositorio.obterTodos();
+        List<Patrimonio> historico = snapshotRepositorio.obterTodos();
         Assertions.assertEquals(1, historico.size());
 
-        SnapshotPatrimonio snapshotSalvo = historico.get(0);
+        Patrimonio snapshotSalvo = historico.get(0);
         Assertions.assertEquals(this.dataDoTeste, snapshotSalvo.getData());
         Assertions.assertEquals(0, BigDecimal.valueOf(valorEsperado).compareTo(snapshotSalvo.getValor()));
     }

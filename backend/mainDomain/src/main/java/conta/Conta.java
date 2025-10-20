@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class Conta implements FormaPagamento {
 
-    private final String id;
+    private final ContaId id;
     private BigDecimal saldo;
 
     private String nome;
@@ -15,21 +15,20 @@ public class Conta implements FormaPagamento {
     private String banco;
 
     public Conta() {
-        this.id = UUID.randomUUID().toString();
+        this.id = new ContaId(UUID.randomUUID().toString());
         this.saldo = BigDecimal.ZERO;
     }
 
     public Conta(String nome, String tipo, String banco) {
-        this.id = UUID.randomUUID().toString();
+        this.id = new ContaId(UUID.randomUUID().toString());
         this.saldo = BigDecimal.ZERO;
         this.nome = nome;
         this.tipo = tipo;
         this.banco = banco;
-
     }
 
     public Conta(String nome, String tipo, String banco, BigDecimal saldoInicial) {
-        this.id = UUID.randomUUID().toString();
+        this.id = new ContaId(UUID.randomUUID().toString());
         this.nome = nome;
         this.tipo = tipo;
         this.banco = banco;
@@ -57,7 +56,7 @@ public class Conta implements FormaPagamento {
         return this.saldo.compareTo(valor) >= 0;
     }
 
-    public String getId() {
+    public ContaId getId() {
         return id;
     }
 

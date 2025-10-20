@@ -1,4 +1,4 @@
-package patrimonio;
+package divida;
 
 import java.math.BigDecimal;
 import java.util.UUID;

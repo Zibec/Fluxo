@@ -1,5 +1,7 @@
 package agendamento;
 
+import cartao.CartaoRepositorio;
+import conta.ContaRepositorio;
 import perfil.Perfil;
 import perfil.PerfilRepository;
 import transacao.*;
@@ -21,18 +23,23 @@ public class AgendamentoTest {
     private final DateTimeFormatter BR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final TransacaoRepositorio txRepo = new TransacaoRepositorio();
+    private final ContaRepositorio contaRepo = new ContaRepositorio();
+    private final CartaoRepositorio cartaoRepo = new CartaoRepositorio();
 
-    private final TransacaoService txService = new TransacaoService(txRepo);
-
+    private final TransacaoService txService = new TransacaoService(txRepo, contaRepo, cartaoRepo);
 
     private final AgendamentoRepositorio agRepo = new AgendamentoRepositorio();
     private final AgendamentoService agService = new AgendamentoService(agRepo, txService);
     private String agendamentoId;
     private LocalDate hoje;
-    private Conta conta = new Conta();
+    private Conta conta = new Conta("conta-teste-id", "Conta de Teste", "Banco Teste", new BigDecimal("1000.00"));
 
     private Perfil perfil = new Perfil("0", "Pai");
     private PerfilRepository perfilRepository = new PerfilRepository();
+
+    public AgendamentoTest() {
+        contaRepo.salvar(conta);
+    }
 
     //Helpers
     private static BigDecimal parseValor(String raw) {
@@ -419,7 +426,7 @@ public class AgendamentoTest {
 
         //efetiva (agora com saldo suficiente)
         var tx = txRepo.encontrarPorAgendamentoEData(agendamentoId, d).orElseThrow();
-        tx.efetivar();
+        txService.efetivarTransacao(tx.getId());
     }
 
     @When("o usuário tenta cancelar essa transação executada")

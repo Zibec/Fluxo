@@ -34,7 +34,7 @@ public class MetaInversaTest {
 
     @When("o usuário cria uma meta inversa com nome {string} e valor alvo {string}")
     public void usuarioCriaMeta(String nomeMeta, String valorDivida) {
-        this.meta = new MetaInversa("1", nomeMeta, new BigDecimal(valorDivida), conta.getId(), LocalDate.now().plusMonths(3));
+        this.meta = new MetaInversa("1", nomeMeta, new BigDecimal(valorDivida), conta.getId().getId(), LocalDate.now().plusMonths(3));
         mIRepo.salvar(meta);
     }
 
@@ -53,7 +53,7 @@ public class MetaInversaTest {
     // Cenários de aporte
     @Given("que existe uma meta inversa ativa de {string}")
     public void existeMetaAtiva(String valorDivida) {
-        this.meta = new MetaInversa("1", "Meta Dívida", new BigDecimal(valorDivida), conta.getId(), LocalDate.now().plusMonths(1));
+        this.meta = new MetaInversa("1", "Meta Dívida", new BigDecimal(valorDivida), conta.getId().getId(), LocalDate.now().plusMonths(1));
         mIRepo.salvar(meta);
     }
 

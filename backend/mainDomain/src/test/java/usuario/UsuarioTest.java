@@ -33,7 +33,8 @@ public class UsuarioTest {
     // Scenario: Atualizar e-mail com senha atual correta (sucesso)
     @Given("que estou logado no sistema")
     public void que_estou_logado_no_sistema() {
-        assertNotNull(usuarioService.obter(usuarioLogado.getId()), "O usuário de teste principal não foi inicializado.");
+        Usuario usuario = usuarioService.obter(usuarioLogado.getId());
+        assertNotNull(usuarioService.obter(usuario.getId()), "O usuário de teste principal não foi inicializado.");
     }
 
     @And("informo minha senha atual corretamente")
@@ -43,9 +44,10 @@ public class UsuarioTest {
 
     @When("altero meu e-mail para {string}")
     public void altero_meu_e_mail_para(String novoEmail) {
+        Usuario usuario = usuarioService.obter(usuarioLogado.getId());
         if(isSenhaAtualCorreta) {
             try {
-                usuarioLogado.changeEmail(usuarioLogado.getEmail(), novoEmail, "senha123",usuarioService);
+                usuarioService.changeEmail(usuario, usuario.getEmail(), novoEmail, "senha123");
             } catch (Exception e) {
                 this.thrownException = e;
             }
@@ -53,7 +55,7 @@ public class UsuarioTest {
         }
 
         try {
-            usuarioLogado.changeEmail(usuarioLogado.getEmail(), novoEmail, "senhaErrada",usuarioService);
+            usuarioService.changeEmail(usuario, usuario.getEmail(), novoEmail, "senhaErrada");
         } catch (Exception e) {
             this.thrownException = e;
         }
@@ -63,7 +65,7 @@ public class UsuarioTest {
     @Then("o sistema deve atualizar o e-mail com sucesso")
     public void o_sistema_deve_atualizar_o_e_mail_com_sucesso() {
         assertNull(thrownException, "Uma exceção foi lançada inesperadamente.");
-        assertTrue(usuarioLogado.getEmail().equals("novoemail@dominio.com") || usuarioLogado.getEmail().equals("valido@dominio.com") || usuarioLogado.getEmail().equals("unico@dominio.com"));
+        assertTrue(usuarioLogado.getEmail().getEndereco().equals("novoemail@dominio.com") || usuarioLogado.getEmail().getEndereco().equals("valido@dominio.com") || usuarioLogado.getEmail().equals("unico@dominio.com"));
     }
 
     // Scenario: Falha ao atualizar e-mail com senha atual incorreta
@@ -133,7 +135,7 @@ public class UsuarioTest {
         usuarioService.salvar(usuarioLogado);
         
         Usuario usuario = usuarioService.obter(usuarioLogado.getId());
-        this.isSenhaAtualCorreta = usuario.verifyPassword(senha);
+        this.isSenhaAtualCorreta = usuario.getPassword().verify(senha);
     }
 
     @When("informo a nova senha {string}")
@@ -155,22 +157,24 @@ public class UsuarioTest {
 
     @Then("o sistema deve atualizar a senha com sucesso")
     public void o_sistema_deve_atualizar_a_senha_com_sucesso() {
+        Usuario usuario = usuarioService.obter(usuarioLogado.getId());
+
         if (!isSenhaAtualCorreta) {
             fail("A senha atual deveria estar correta para este cenário de sucesso.");
         }
         try {
-            usuarioLogado.changePassword(senhaAtual, this.novaSenha);
+            usuarioService.changePassword(usuario,senhaAtual, this.novaSenha);
             senhaAtual = this.novaSenha;
         } catch (Exception e) {
             this.thrownException = e;
         }
-        assertTrue(usuarioLogado.verifyPassword(this.novaSenha));
+        assertTrue(usuario.getPassword().verify(this.novaSenha));
     }
 
     // Scenario: Falha ao alterar senha com senha atual incorreta
     @Given("informo a senha atual incorreta {string}")
     public void informo_a_senha_atual_incorreta(String senha) {
-        this.isSenhaAtualCorreta = this.usuarioLogado.verifyPassword(senha);
+        this.isSenhaAtualCorreta = this.usuarioLogado.getPassword().verify(senha);
     }
 
     @Then("o sistema deve exibir uma mensagem de erro de senha atual inválida")

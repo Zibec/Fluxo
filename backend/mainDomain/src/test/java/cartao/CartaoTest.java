@@ -1,6 +1,5 @@
 package cartao;
 
-import fatura.Fatura;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -55,7 +54,7 @@ public class CartaoTest {
 
     @Then("o cartão deve ser cadastrado com sucesso")
     public void o_cartao_deve_ser_cadastrado_com_sucesso() {
-        Cartao cartaoSalvo = cartaoRepositorio.obter((CartaoNumero) cartaoData.get("numero"));
+        Cartao cartaoSalvo = cartaoRepositorio.obter(cartao.getNumero());
         assertNotNull(cartaoSalvo);
         assertEquals(cartao.getNumero(), cartaoSalvo.getNumero());
     }

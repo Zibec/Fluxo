@@ -59,7 +59,7 @@ public class GestaoDePerfisTest {
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
-                contaRepositorio.obter(contaDeTeste.getId()).get(),
+                contaRepositorio.obter(contaDeTeste.getId().getId()).get().getId(),
                 true,
                 Tipo.DESPESA,
                 "0"
@@ -117,7 +117,7 @@ public class GestaoDePerfisTest {
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
-                contaRepositorio.obter(contaDeTeste.getId()).get(),
+                contaRepositorio.obter(contaDeTeste.getId().getId()).get().getId(),
                 true,
                 Tipo.DESPESA,
                 null

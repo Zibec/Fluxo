@@ -1,6 +1,9 @@
 package patrimonio;
 
 import conta.ContaRepositorio;
+import divida.DividaRepositorio;
+import investimento.InvestimentoRepositorio;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth; // Adicionado import
@@ -12,12 +15,12 @@ public class PatrimonioService {
     private final ContaRepositorio contaRepositorio;
     private final InvestimentoRepositorio investimentoRepositorio;
     private final DividaRepositorio dividaRepositorio;
-    private final SnapshotPatrimonioRepositorio snapshotRepositorio;
+    private final PatrimonioRepositorio snapshotRepositorio;
 
     public PatrimonioService(ContaRepositorio contaRepositorio,
                              InvestimentoRepositorio investimentoRepositorio,
                              DividaRepositorio dividaRepositorio,
-                             SnapshotPatrimonioRepositorio snapshotRepositorio) {
+                             PatrimonioRepositorio snapshotRepositorio) {
         this.contaRepositorio = notNull(contaRepositorio, "contaRepositorio não pode ser nulo.");
         this.investimentoRepositorio = notNull(investimentoRepositorio, "investimentoRepositorio não pode ser nulo.");
         this.dividaRepositorio = notNull(dividaRepositorio, "dividaRepositorio não pode ser nulo.");
@@ -51,13 +54,13 @@ public class PatrimonioService {
 
         if (isUltimoDiaDoMes) {
             BigDecimal valorAtual = calcularPatrimonioLiquido();
-            SnapshotPatrimonio snapshot = new SnapshotPatrimonio(data, valorAtual);
+            Patrimonio snapshot = new Patrimonio(data, valorAtual);
             snapshotRepositorio.salvar(snapshot);
         }
         // Se não for o último dia, ele simplesmente não faz nada.
     }
 
-    public List<SnapshotPatrimonio> obterHistoricoDePatrimonio() {
+    public List<Patrimonio> obterHistoricoDePatrimonio() {
         return snapshotRepositorio.obterTodos();
     }
 }

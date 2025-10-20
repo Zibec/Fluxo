@@ -1,5 +1,8 @@
 package orcamento;
 
+import cartao.CartaoRepositorio;
+import cartao.CartaoService;
+import conta.ContaRepositorio;
 import io.cucumber.java.en.*;
 import org.junit.jupiter.api.Assertions;
 import transacao.TransacaoRepositorio;
@@ -20,8 +23,8 @@ public class OrcamentoTest {
     private static class FakeTransacaoService extends TransacaoService {
         private final Map<OrcamentoChave, BigDecimal> acumulado = new HashMap<>();
 
-        public FakeTransacaoService(TransacaoRepositorio repositorio) {
-            super(repositorio);
+        public FakeTransacaoService(TransacaoRepositorio repositorio, ContaRepositorio contaRepo, CartaoRepositorio cartaoRepo) {
+            super(repositorio, contaRepo, cartaoRepo);
         }
 
         public void set(OrcamentoChave k, BigDecimal v) {
@@ -38,7 +41,9 @@ public class OrcamentoTest {
     }
 
     private final TransacaoRepositorio transacaoRepoParaTeste = new TransacaoRepositorio();
-    private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService(transacaoRepoParaTeste);
+    private final ContaRepositorio contaRepoParaTeste = new ContaRepositorio();
+    private final CartaoRepositorio cartaoRepoParaTeste = new CartaoRepositorio();
+    private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService(transacaoRepoParaTeste, contaRepoParaTeste, cartaoRepoParaTeste);
 
     private final OrcamentoService service = new OrcamentoService(repo, fakeTransacaoService);
 

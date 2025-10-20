@@ -57,7 +57,7 @@ public class ContaTest {
     public void a_conta_deve_ser_cadastrada_com_sucesso() {
         assertNull(thrownException);
         assertNotNull(contaAtual);
-        assertTrue(contaService.obter(contaAtual.getId()).isPresent(), "A conta deveria estar salva no repositório.");
+        assertTrue(contaService.obter(contaAtual.getId().getId()).isPresent(), "A conta deveria estar salva no repositório.");
     }
 
     @When("tentar salvar a conta")

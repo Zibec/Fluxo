@@ -45,4 +45,8 @@ public class InvestimentoRepositorio {
 
     }
 
+    public void limpar() {
+        investimentos.clear();
+    }
+
 }

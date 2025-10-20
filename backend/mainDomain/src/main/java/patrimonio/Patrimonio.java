@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class SnapshotPatrimonio {
+public class Patrimonio {
     private final String id;
     private final LocalDate data;
     private final BigDecimal valor;
 
-    public SnapshotPatrimonio(LocalDate data, BigDecimal valor) {
+    public Patrimonio(LocalDate data, BigDecimal valor) {
         this.id = UUID.randomUUID().toString();
         this.data = data;
         this.valor = valor;

@@ -1,19 +1,16 @@
 package cartao;
 
-import fatura.Fatura;
 import generics.FormaPagamento;
-import transacao.StatusTransacao;
-import transacao.Transacao;
-import transacao.TransacaoRepositorio;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Date;
+import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class Cartao implements FormaPagamento {
+    private CartaoId id;
     private final CartaoNumero numero;
     private String titular;
     private YearMonth validade;
@@ -28,6 +25,7 @@ public class Cartao implements FormaPagamento {
     private LocalDate dataVencimentoFatura;
 
     public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura) {
+        this.id = new CartaoId(UUID.randomUUID().toString());
         this.numero = numero;
         this.titular = titular;
         this.validade = validade;
@@ -39,6 +37,7 @@ public class Cartao implements FormaPagamento {
     }
 
     public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo) {
+        this.id = new CartaoId(UUID.randomUUID().toString());
         this.numero = numero;
         this.titular = titular;
         this.validade = validade;
@@ -49,6 +48,9 @@ public class Cartao implements FormaPagamento {
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
 
+    public CartaoId getId() {
+        return id;
+    }
     public CartaoNumero getNumero() {
         return numero;
     }
@@ -109,7 +111,7 @@ public class Cartao implements FormaPagamento {
 
     public void realizarTransacao(BigDecimal valor) {
         if (fatura == null) {
-            fatura = new Fatura( String.valueOf(contador) + System.currentTimeMillis(), this, dataVencimentoFatura);
+            fatura = new Fatura(this, dataVencimentoFatura);
         }
 
         if(getLimiteDisponivel().compareTo(valor) < 0) {

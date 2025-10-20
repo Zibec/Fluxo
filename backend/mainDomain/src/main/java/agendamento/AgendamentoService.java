@@ -1,5 +1,6 @@
 package agendamento;
 
+import conta.Conta;
 import transacao.TransacaoService;
 
 import java.time.LocalDate;
@@ -45,7 +46,7 @@ public class AgendamentoService {
         if (!execucoesDoDia.add(chave)) return false;
 
         transacaoService.criarPendenteDeAgendamento(
-                a.getId(), a.getDescricao(), a.getValor(), hoje, null, false, a.getPerfilId()
+                a.getId(), a.getDescricao(), a.getValor(), hoje, new Conta(), false, a.getPerfilId()
         );
 
         a.avancarProximaData();

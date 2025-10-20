@@ -13,7 +13,7 @@ public class ContaRepositorio {
 
     public void salvar(Conta conta) {
         notNull(conta, "A conta não pode ser nula");
-        contas.put(conta.getId(), conta);
+        contas.put(conta.getId().getId(), conta);
     }
 
     public Optional<Conta> obter(String contaId) {
