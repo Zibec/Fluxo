@@ -26,12 +26,12 @@ Feature: Gestão de Metas de Redução de Dívidas
   Scenario: Realizar aporte inválido (valor nulo)
     Given que existe uma meta inversa ativa de "1000.00"
     When o usuário tenta realizar um aporte de valor nulo
-    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser positivo."
+    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser um número positivo."
 
   Scenario: Realizar aporte inválido (valor negativo)
     Given que existe uma meta inversa ativa de "1000.00"
     When o usuário tenta realizar um aporte de "-50.00"
-    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser positivo."
+    Then o sistema deve lançar uma exceção com a mensagem "Valor do aporte deve ser um número positivo."
 
   Scenario: Verificar progresso proporcional
     Given que existe uma meta inversa ativa de "1200.00"

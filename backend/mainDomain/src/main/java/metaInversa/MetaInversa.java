@@ -31,7 +31,7 @@ public class MetaInversa {
 
     public void realizarAporte(BigDecimal valorDoAporte) {
         if (valorDoAporte == null || valorDoAporte.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do aporte deve ser positivo.");
+            throw new IllegalArgumentException("Valor do aporte deve ser um número positivo.");
         }
         this.valorAcumulado = this.valorAcumulado.add(valorDoAporte);
 
