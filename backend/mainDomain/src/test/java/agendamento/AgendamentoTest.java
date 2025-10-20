@@ -10,6 +10,7 @@ import io.cucumber.java.en.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.UUID;
 
 import conta.Conta;
@@ -92,14 +93,19 @@ public class AgendamentoTest {
     @Given("que existe uma transação para o usuário pagar que é debitada do seu cartao no dia {string}")
     public void givenCartaoDebitoNoDia(String data) {
         agendamentoId = UUID.randomUUID().toString();
-        var ag = new Agendamento(agendamentoId, "Débito do cartão",
-                new BigDecimal("600.00"), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
+        var ag = new Agendamento(
+                agendamentoId,
+                "Débito do cartão",
+                new BigDecimal("600.00"),
+                Frequencia.MENSAL,
+                LocalDate.parse(data, BR),
+                perfilRepository.obter("0").getId());
         agService.salvar(ag);
     }
 
     @When("o usuário precisa registrar essa transação para o dia {string}")
     public void whenRegistrarParaDia(String data) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        Agendamento ag = agService.obter(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(data, BR);
         txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
     }
@@ -111,8 +117,8 @@ public class AgendamentoTest {
 
     @Then("o usuário verá que o sistema salvou como {string} para o dia {string} uma transferência que será realizada")
     public void thenTransacaoSalvaComo(String statusEsperado, String data) {
-        var d = LocalDate.parse(data, BR);
-        var txOpt = txRepo.encontrarPorAgendamentoEData(agendamentoId, d);
+        LocalDate d = LocalDate.parse(data, BR);
+        Optional<Transacao> txOpt = txRepo.encontrarPorAgendamentoEData(agendamentoId, d);
         assertTrue(txOpt.isPresent(), "Transação deveria existir para a data agendada");
         assertEquals(mapStatus(statusEsperado), txOpt.get().getStatus());
     }
