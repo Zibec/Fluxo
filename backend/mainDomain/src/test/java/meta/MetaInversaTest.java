@@ -29,6 +29,7 @@ public class MetaInversaTest {
     public void queUsuarioPossuiConta(String saldo) {
         this.conta = new Conta();
         this.conta.setSaldo(new BigDecimal(saldo));
+        contaRepo.salvar(conta);
     }
 
     @When("o usuário cria uma meta inversa com nome {string} e valor alvo {string}")
