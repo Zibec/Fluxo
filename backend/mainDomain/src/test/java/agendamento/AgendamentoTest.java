@@ -39,6 +39,7 @@ public class AgendamentoTest {
 
     public AgendamentoTest() {
         contaRepo.salvar(conta);
+        perfilRepository.salvar(perfil);
     }
 
     //Helpers
@@ -90,7 +91,6 @@ public class AgendamentoTest {
     //Criação de transação futura
     @Given("que existe uma transação para o usuário pagar que é debitada do seu cartao no dia {string}")
     public void givenCartaoDebitoNoDia(String data) {
-        perfilRepository.salvar(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Débito do cartão",
                 new BigDecimal("600.00"), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obter("0").getId());
