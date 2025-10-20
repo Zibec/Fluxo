@@ -31,17 +31,17 @@ public class InvestimentoService {
     }
     public Investimento obter(String investimentoId){
         notNull(investimentoId, "Investimento não pode ser nulo");
-        return investimentoRepositorio.obter(investimentoId);
+        return investimentoRepositorio.obterInvestimento(investimentoId);
     }
 
     public void atualizar(String investimentoId, Investimento investimento){
         notNull(investimentoId, "O id não pode ser nulo");
         notNull(investimento, "O investimento não pode ser nulo");
-        investimentoRepositorio.atualizar(investimentoId, investimento);
+        investimentoRepositorio.atualizarInvestimento(investimentoId, investimento);
     }
 
     public void atualizarRendimento (Investimento investimento){
-        TaxaSelic taxaSelic = taxaSelicRepository.obter();
+        TaxaSelic taxaSelic = taxaSelicRepository.obterTaxaSelic();
 
         if (taxaSelic == null) {
             throw new RuntimeException("Taxa Selic não disponível.");
@@ -60,14 +60,14 @@ public class InvestimentoService {
 
     public void resgateTotal(String investimentoId){
 
-        historicoInvestimentoRepositorio.deletarTodosPorId(investimentoId);
+        historicoInvestimentoRepositorio.deletarTodosHistoricosPorId(investimentoId);
 
-        investimentoRepositorio.deletar(investimentoId);
+        investimentoRepositorio.deletarInvestimento(investimentoId);
 
     }
 
     public void resgateParcial(String investimentoId, BigDecimal valor){
-        Investimento investimento = investimentoRepositorio.obter(investimentoId);
+        Investimento investimento = investimentoRepositorio.obterInvestimento(investimentoId);
 
         if(investimento.getValorAtual().compareTo(valor) <= 0 || valor.doubleValue() <= 0){
             throw new RuntimeException("Tentativa de resgate total em resgate parcial ou valor inválido.");

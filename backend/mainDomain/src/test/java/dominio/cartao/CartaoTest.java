@@ -1,5 +1,7 @@
-package cartao;
+package dominio.cartao;
 
+import cartao.*;
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -22,7 +24,7 @@ public class CartaoTest {
     private Fatura faturaAntesDaAcao;
 
     public CartaoTest() {
-        this.cartaoRepositorio = new CartaoRepositorio();
+        this.cartaoRepositorio = new Repositorio();
         this.cartaoService = new CartaoService(cartaoRepositorio);
     }
 
@@ -54,7 +56,7 @@ public class CartaoTest {
 
     @Then("o cartão deve ser cadastrado com sucesso")
     public void o_cartao_deve_ser_cadastrado_com_sucesso() {
-        Cartao cartaoSalvo = cartaoRepositorio.obter(cartao.getNumero());
+        Cartao cartaoSalvo = cartaoRepositorio.obterCartao(cartao.getNumero());
         assertNotNull(cartaoSalvo);
         assertEquals(cartao.getNumero(), cartaoSalvo.getNumero());
     }

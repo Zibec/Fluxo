@@ -22,9 +22,9 @@ public class MetaInversaService {
         notNull(metaId, "O ID da meta não pode ser nulo");
         notNull(valorDoAporte, "Valor do aporte deve ser um número positivo.");
 
-        MetaInversa meta = metaRepositorio.obter(metaId).orElseThrow(() -> new IllegalArgumentException("Meta não encontrada com o ID: " + metaId));
+        MetaInversa meta = metaRepositorio.obterMetaInversa(metaId).orElseThrow(() -> new IllegalArgumentException("Meta não encontrada com o ID: " + metaId));
 
-        Conta conta = contaRepositorio.obter(meta.getContaAssociadaId()).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada com o ID: " + meta.getContaAssociadaId()));;
+        Conta conta = contaRepositorio.obterConta(meta.getContaAssociadaId()).orElseThrow(() -> new IllegalArgumentException("Conta não encontrada com o ID: " + meta.getContaAssociadaId()));;
 
         if (!conta.temSaldoSuficiente(valorDoAporte)) {
             throw new IllegalArgumentException("Saldo insuficiente na conta principal");
@@ -33,7 +33,7 @@ public class MetaInversaService {
         conta.realizarTransacao(valorDoAporte);
         meta.realizarAporte(valorDoAporte);
 
-        metaRepositorio.salvar(meta);
+        metaRepositorio.salvarMetaInversa(meta);
         contaRepositorio.salvar(conta);
     }
 }

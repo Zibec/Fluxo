@@ -1,8 +1,9 @@
-package rastreamentoDeInvestimentos;
+package dominio.rastreamentoDeInvestimentos;
 
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
+import infraestrutura.persistencia.memoria.Repositorio;
 import investimento.Investimento;
 import investimento.InvestimentoRepositorio;
 import investimento.InvestimentoService;
@@ -25,7 +26,7 @@ public class RastreamentoDeInvestimentosTest {
     private InvestimentoService investimentoService;
     private JobScheduler jobScheduler;
     private InvestimentoRepositorio investimentoRepositorio;
-    private TaxaSelicRepository taxaSelicRepository = new TaxaSelicRepository(null);
+    private TaxaSelicRepository taxaSelicRepository = new Repositorio();
     private TaxaSelicService taxaSelicService = new TaxaSelicService(selicApiClient, taxaSelicRepository);
     private Exception excecaoCapturada;
 
@@ -50,7 +51,7 @@ public class RastreamentoDeInvestimentosTest {
     //Checar via repositório se a taxa foi armazenada
     @Then("a taxa Selic diária é armazenada no sistema")
     public void taxaSelicArmazenada(){
-        assertNotNull(taxaSelicRepository.obter());
+        assertNotNull(taxaSelicRepository.obterTaxaSelic());
     }
 
     //Scenario: Falha ao consultar a API externa
@@ -69,7 +70,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("a texa Selic não é atualizada naquele dia")
     public void taxaNaoAtualizada(){
-        assertNull(taxaSelicRepository.obter());
+        assertNull(taxaSelicRepository.obterTaxaSelic());
     }
 
     @And("o sistema deve registrar um log de erro")
@@ -86,9 +87,9 @@ public class RastreamentoDeInvestimentosTest {
     public void criarInvestimento(double valor){
         BigDecimal valorBigDecimal = BigDecimal.valueOf(valor);
         investimento = new Investimento("1", "Investimento A", "Desc" , valorBigDecimal);
-        historicoInvestimentoRepositorio = new HistoricoInvestimentoRepositorio();
+        historicoInvestimentoRepositorio = new Repositorio();
         selicApiClient.setStatus(true);
-        investimentoRepositorio = new InvestimentoRepositorio();
+        investimentoRepositorio = new Repositorio();
 
         //taxaSelicRepository = new TaxaSelicRepository(null);
 
@@ -103,8 +104,8 @@ public class RastreamentoDeInvestimentosTest {
     public void taxaSelicUmPorcento(Double double1, Integer int1){
         taxaSelicService.atualizarTaxaSelic();
         double a = 1;
-        assertNotNull(taxaSelicRepository.obter().getValor());
-        assertEquals(new BigDecimal(double1), taxaSelicRepository.obter().getValor());
+        assertNotNull(taxaSelicRepository.obterTaxaSelic().getValor());
+        assertEquals(new BigDecimal(double1), taxaSelicRepository.obterTaxaSelic().getValor());
     }
 
     @When("o job de atualização de rendimento é executado")
@@ -120,7 +121,7 @@ public class RastreamentoDeInvestimentosTest {
 
     // Fazer a verificação pelo repositório
     public void verificarValorAtualizado(double esperado){
-        double valorAtualizado = investimentoRepositorio.obter(investimento.getId()).getValorAtual().doubleValue();
+        double valorAtualizado = investimentoRepositorio.obterInvestimento(investimento.getId()).getValorAtual().doubleValue();
         assertEquals(esperado, valorAtualizado, 0.001);
     }
 
@@ -136,7 +137,7 @@ public class RastreamentoDeInvestimentosTest {
     @Then("o investimento não deve ser atualizado")
     public void investimentoNaoAtualizado() {
         double valorAntes = 1000;
-        double valorAtual = investimentoRepositorio.obter(investimento.getId()).getValorAtual().doubleValue();
+        double valorAtual = investimentoRepositorio.obterInvestimento(investimento.getId()).getValorAtual().doubleValue();
         assertEquals(valorAntes, valorAtual, 0.001);
     }
 
@@ -152,8 +153,8 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("deve existir um registro no histórico com a data atual e o valor {double}")
     public void verificarHistorico(Double esperado){
-        assertFalse(historicoInvestimentoRepositorio.obterTodos().isEmpty());
-        HistoricoInvestimento h = historicoInvestimentoRepositorio.obterTodos().getFirst();
+        assertFalse(historicoInvestimentoRepositorio.obterTodosHistoricos().isEmpty());
+        HistoricoInvestimento h = historicoInvestimentoRepositorio.obterTodosHistoricos().getFirst();
         assertEquals(esperado, h.getValorAtualizado().doubleValue(), 0.001);
     }
 
@@ -181,7 +182,7 @@ public class RastreamentoDeInvestimentosTest {
     @When("realizo o resgate total do valor investido")
     public void resgateTotaldoValor(){
         try{
-            investimentoService.resgateTotal(investimentoRepositorio.obter("1").getId());
+            investimentoService.resgateTotal(investimentoRepositorio.obterInvestimento("1").getId());
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -200,7 +201,7 @@ public class RastreamentoDeInvestimentosTest {
     public void falhaEmResgateTotal(){
         historicoInvestimentoRepositorio.setStatus(false);
         try{
-            investimentoService.resgateTotal(investimentoRepositorio.obter("1").getId());
+            investimentoService.resgateTotal(investimentoRepositorio.obterInvestimento("1").getId());
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -223,7 +224,7 @@ public class RastreamentoDeInvestimentosTest {
     @When("realizo o resgate parcial de {double} reais do valor investido")
     public void resgateParcialQuinhetos(double valor){
         try{
-            investimentoService.resgateParcial(investimentoRepositorio.obter("1").getId(), new BigDecimal(valor));
+            investimentoService.resgateParcial(investimentoRepositorio.obterInvestimento("1").getId(), new BigDecimal(valor));
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -232,7 +233,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o sistema deve atualizar o valor investido para {double} reais")
     public void valorAtualizado(double valorAtualizado){
-        BigDecimal valorInvestimento = investimentoRepositorio.obter("1").getValorAtual();
+        BigDecimal valorInvestimento = investimentoRepositorio.obterInvestimento("1").getValorAtual();
         BigDecimal valorAtualizadoBigDecimal = new BigDecimal(valorAtualizado);
         assertEquals(0, valorAtualizadoBigDecimal.compareTo(valorInvestimento));
 
@@ -243,7 +244,7 @@ public class RastreamentoDeInvestimentosTest {
     @When("realizo o resgate parcial com o valor total investido")
     public void resgateParcialTotal(){
         try{
-            investimentoService.resgateParcial(investimentoRepositorio.obter("1").getId(), new BigDecimal(1000));
+            investimentoService.resgateParcial(investimentoRepositorio.obterInvestimento("1").getId(), new BigDecimal(1000));
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -251,7 +252,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o sistema deve impedir a atualização do valor investido")
     public void valorNaoAtualizado(){
-        BigDecimal valorInvestimento = investimentoRepositorio.obter("1").getValorAtual();
+        BigDecimal valorInvestimento = investimentoRepositorio.obterInvestimento("1").getValorAtual();
         assertEquals(0, valorInvestimento.compareTo(new BigDecimal(1000)));
     }
 
@@ -265,7 +266,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o sistema deve apagar o histórico de valorização daquele investimento")
     public void historicoDeletado(){
-        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodos();
+        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodosHistoricos();
         assertTrue(historico.isEmpty());
     }
 
@@ -275,7 +276,7 @@ public class RastreamentoDeInvestimentosTest {
     public void falhaDelecaoHistorico(){
         historicoInvestimentoRepositorio.setStatus(false);
         try{
-            investimentoService.resgateTotal(investimentoRepositorio.obter("1").getId());
+            investimentoService.resgateTotal(investimentoRepositorio.obterInvestimento("1").getId());
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -292,7 +293,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o sistema deve atualizar o histórico com uma nova entrada com o valor restante investido de {double} reais")
     public void atualizacaoHistorico(double valor){
-        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodos();
+        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodosHistoricos();
         HistoricoInvestimento novaEntrada = historico.getFirst();
         assertEquals(0, novaEntrada.getValorAtualizado().compareTo(new BigDecimal(valor)));
     }
@@ -302,7 +303,7 @@ public class RastreamentoDeInvestimentosTest {
     @When("realizo o resgate parcial, mas uma falha ocorre")
     public void falhaEmResgateParcial(){
         try{
-            investimentoService.resgateParcial(investimentoRepositorio.obter("1").getId(), new BigDecimal(1000));
+            investimentoService.resgateParcial(investimentoRepositorio.obterInvestimento("1").getId(), new BigDecimal(1000));
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -310,7 +311,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o sistema não deve atualizar o histórico com uma nova entrada")
     public void naoAtualizacaoHistorico(){
-        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodos();
+        List<HistoricoInvestimento> historico = historicoInvestimentoRepositorio.obterTodosHistoricos();
         assertTrue(historico.isEmpty());
     }
 }

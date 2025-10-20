@@ -1,9 +1,10 @@
-package patrimonio;
+package dominio.patrimonio;
 
 import conta.Conta;
 import conta.ContaRepositorio;
 import divida.Divida;
 import divida.DividaRepositorio;
+import infraestrutura.persistencia.memoria.Repositorio;
 import investimento.Investimento;
 import investimento.InvestimentoRepositorio;
 import io.cucumber.datatable.DataTable;
@@ -12,6 +13,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+import patrimonio.Patrimonio;
+import patrimonio.PatrimonioRepositorio;
+import patrimonio.PatrimonioService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -34,10 +38,10 @@ public class PatrimonioLiquidoTest {
 
     @Before
     public void setup() {
-        contaRepositorio = new ContaRepositorio();
-        investimentoRepositorio = new InvestimentoRepositorio();
-        dividaRepositorio = new DividaRepositorio();
-        snapshotRepositorio = new PatrimonioRepositorio();
+        contaRepositorio = new Repositorio();
+        investimentoRepositorio = new Repositorio();
+        dividaRepositorio = new Repositorio();
+        snapshotRepositorio = new Repositorio();
         patrimonioService = new PatrimonioService(
                 contaRepositorio,
                 investimentoRepositorio,
@@ -76,9 +80,9 @@ public class PatrimonioLiquidoTest {
 
     @Given("meu patrimônio líquido atual é de R$ {double}")
     public void meu_patrimonio_liquido_atual_e_de(Double valorPatrimonio) {
-        contaRepositorio.limpar();
-        investimentoRepositorio.limpar();
-        dividaRepositorio.limpar();
+        contaRepositorio.limparConta();
+        investimentoRepositorio.limparInvestimento();
+        dividaRepositorio.limparDivida();
         que_eu_tenho_uma_conta_com_saldo("Conta Única", valorPatrimonio);
     }
 
@@ -103,7 +107,7 @@ public class PatrimonioLiquidoTest {
             LocalDate data = LocalDate.parse(linha.get("Data"));
             String valorLimpo = linha.get("Valor").replaceAll("[^\\d,]", "").replace(",", ".");
             BigDecimal valor = new BigDecimal(valorLimpo);
-            snapshotRepositorio.salvar(new Patrimonio(data, valor));
+            snapshotRepositorio.salvarPatrimonio(new Patrimonio(data, valor));
         }
     }
 
@@ -129,7 +133,7 @@ public class PatrimonioLiquidoTest {
 
     @Then("um registro histórico do patrimônio deve ser salvo com a data de hoje e o valor de R$ {double}")
     public void um_registro_historico_do_patrimonio_deve_ser_salvo(Double valorEsperado) {
-        List<Patrimonio> historico = snapshotRepositorio.obterTodos();
+        List<Patrimonio> historico = snapshotRepositorio.obterTodosPatrimonios();
         Assertions.assertEquals(1, historico.size());
 
         Patrimonio snapshotSalvo = historico.get(0);
@@ -147,7 +151,7 @@ public class PatrimonioLiquidoTest {
 
     @Then("nenhum registro histórico de patrimônio deve ser salvo")
     public void nenhum_registro_historico_de_patrimonio_deve_ser_salvo() {
-        Assertions.assertTrue(snapshotRepositorio.obterTodos().isEmpty());
+        Assertions.assertTrue(snapshotRepositorio.obterTodosPatrimonios().isEmpty());
     }
 
     @Then("um gráfico de linhas deve ser exibido com os dados do histórico")

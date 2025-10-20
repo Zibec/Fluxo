@@ -1,5 +1,9 @@
-package categoria;
+package dominio.categoria;
 
+import categoria.Categoria;
+import categoria.CategoriaRepositorio;
+import categoria.CategoriaService;
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -30,23 +34,23 @@ public class CategoriaTest {
     private int contagemInicialDeCategorias;
 
     private Perfil perfil = new Perfil("0", "Pai");
-    private PerfilRepository perfilRepository = new PerfilRepository();
+    private PerfilRepository perfilRepository = new Repositorio();
 
     @Before
     public void setup() {
-        this.categoriaRepositorio = new CategoriaRepositorio();
-        this.transacaoRepositorio = new TransacaoRepositorio();
+        this.categoriaRepositorio = new Repositorio();
+        this.transacaoRepositorio = new Repositorio();
         this.categoriaService = new CategoriaService(this.categoriaRepositorio, this.transacaoRepositorio);
         this.excecaoCapturada = null;
         this.categoria = null;
         this.contagemInicialDeCategorias = 0;
-        perfilRepository.salvar(perfil);
+        perfilRepository.salvarPerfil(perfil);
     }
 
     // Cenário: Adicionar uma nova categoria que não existe
     @Given("que não existe uma categoria chamada {string} no sistema")
     public void queNaoExisteUmaCategoriaChamada(String nome) {
-        assertFalse(categoriaRepositorio.obterPorNome(nome).isPresent());
+        assertFalse(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent());
     }
 
     @When("o usuário insere o nome {string} e salva")
@@ -62,7 +66,7 @@ public class CategoriaTest {
 
     @Then("a categoria {string} deve aparecer na lista de categorias")
     public void aCategoriaDeveAparecerNaLista(String nome) {
-        assertTrue(categoriaRepositorio.obterPorNome(nome).isPresent());
+        assertTrue(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent());
     }
 
     // --- Cenários de Categoria Existente ---
@@ -100,7 +104,7 @@ public class CategoriaTest {
 
     @And("não existe nenhuma transação associada à categoria {string}")
     public void naoExisteNenhumaTransacaoAssociadaACategoria(String nomeCategoria) {
-        assertFalse(transacaoRepositorio.existePorCategoriaId(this.categoria.getId()));
+        assertFalse(transacaoRepositorio.existeTransacaoPorCategoriaId(this.categoria.getId()));
     }
 
     @And("existe pelo menos uma transação associada à categoria {string}")
@@ -118,16 +122,16 @@ public class CategoriaTest {
                 contaDeTeste.getId(),
                 false,
                 Tipo.DESPESA,
-                perfilRepository.obter("0").getId()
+                perfilRepository.obterPerfil("0").getId()
         );
-        transacaoRepositorio.salvar(transacao);
+        transacaoRepositorio.salvarTransacao(transacao);
     }
 
     @When("o usuário escolhe deletar a categoria {string}")
     public void oUsuarioEscolheDeletarACategoria(String nomeCategoria) {
         try {
             // Lógica para lidar com deleção de categoria existente ou não existente
-            Optional<Categoria> catParaDeletar = categoriaRepositorio.obterPorNome(nomeCategoria);
+            Optional<Categoria> catParaDeletar = categoriaRepositorio.obterCategoriaPorNome(nomeCategoria);
             if (catParaDeletar.isPresent()) {
                 categoriaService.deletar(catParaDeletar.get().getId());
             } else {
@@ -143,11 +147,11 @@ public class CategoriaTest {
     @Then("a categoria {string} deve ser removida da lista")
     public void aCategoriaDeveSerRemovidaDaLista(String nome) {
         assertNull(excecaoCapturada, "Uma exceção foi lançada quando não deveria: " + excecaoCapturada);
-        assertFalse(categoriaRepositorio.obterPorNome(nome).isPresent(), "A categoria não foi removida.");
+        assertFalse(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent(), "A categoria não foi removida.");
     }
 
     @And("a categoria {string} deve continuar na lista")
     public void aCategoriaDeveContinuarNaLista(String nome) {
-        assertTrue(categoriaRepositorio.obterPorNome(nome).isPresent(), "A categoria foi removida, mas não deveria.");
+        assertTrue(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent(), "A categoria foi removida, mas não deveria.");
     }
 }

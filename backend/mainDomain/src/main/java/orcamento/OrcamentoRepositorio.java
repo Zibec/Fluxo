@@ -6,34 +6,13 @@ import java.util.Optional;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class OrcamentoRepositorio {
+public interface OrcamentoRepositorio {
 
-    private Map<OrcamentoChave, Orcamento> orcamentos = new HashMap<>();
+    void salvarOrcamento(OrcamentoChave chave, Orcamento orcamento);
 
-    public void salvarNovo(OrcamentoChave chave, Orcamento orcamento) {
-        notNull(chave, "A achave não pode ser nula");
-        notNull(orcamento, "O orcamento não pode ser nulo");
+    void atualizarOrcamento(OrcamentoChave chave, Orcamento orcamento);
 
-        if(orcamentos.putIfAbsent(chave,orcamento) != null){
-            throw new IllegalStateException("Já existe um orçamento para essa chave");
-        }
-    }
+    Optional<Orcamento> obterOrcamento(OrcamentoChave chave);
 
-    public void atualizarOrcamento(OrcamentoChave chave, Orcamento orcamento) {
-        notNull(chave, "A achave não pode ser nula");
-        notNull(orcamento, "O orcamento não pode ser nulo");
-
-        if(orcamentos.replace(chave,orcamento) == null){
-            throw new IllegalStateException("Não existe um orçamento para essa chave");
-        }
-    }
-
-    public Optional<Orcamento> obterOrcamento(OrcamentoChave chave) {
-        notNull(chave, "A chave do orcamento não pode ser nula");
-        return Optional.ofNullable((orcamentos.get(chave)));
-    }
-
-    public void limpar() {
-        orcamentos.clear();
-    }
+    void limparOrcamento();
 }

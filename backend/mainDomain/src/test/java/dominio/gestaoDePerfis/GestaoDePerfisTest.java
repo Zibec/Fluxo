@@ -1,41 +1,30 @@
-package gestaoDePerfis;
+package dominio.gestaoDePerfis;
 
 import conta.Conta;
 import conta.ContaRepositorio;
-import historicoInvestimento.HistoricoInvestimento;
-import historicoInvestimento.HistoricoInvestimentoRepositorio;
-import historicoInvestimento.HistoricoInvestimentoService;
-import investimento.Investimento;
-import investimento.InvestimentoRepositorio;
-import investimento.InvestimentoService;
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.*;
-import jobScheduler.JobScheduler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import perfil.Perfil;
 import perfil.PerfilRepository;
-import selicApiClient.SelicApiClient;
-import taxaSelic.TaxaSelicRepository;
-import taxaSelic.TaxaSelicService;
 import transacao.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.rmi.server.ExportException;
 import java.time.LocalDate;
-import java.util.*;
 
 public class GestaoDePerfisTest {
 
     private static final Log log = LogFactory.getLog(GestaoDePerfisTest.class);
     private Perfil perfil;
-    private PerfilRepository perfilRepository = new PerfilRepository();
+    private PerfilRepository perfilRepository = new Repositorio();
     private Transacao transacao;
-    private TransacaoRepositorio transacaoRepositorio = new TransacaoRepositorio();
+    private TransacaoRepositorio transacaoRepositorio = new Repositorio();
     private Exception excecaoCapturada = null;
     private Conta contaDeTeste;
-    private ContaRepositorio contaRepositorio = new ContaRepositorio();
+    private ContaRepositorio contaRepositorio = new Repositorio();
     //Regra de negócio: Ao criar uma nova despesa, deve ser obrigatório selecionar qual perfil realizou o gasto. A transação no banco deve conter referência ao perfil que a realizou.
 
     //Cenário: Registrar gasto associado a um perfil com sucesso
@@ -43,10 +32,10 @@ public class GestaoDePerfisTest {
     @Given("que existe um perfil {string}")
     public void criarPerfil(String nome){
         perfil = new Perfil("0", nome);
-        perfilRepository.salvar(perfil);
+        perfilRepository.salvarPerfil(perfil);
         contaDeTeste = new Conta("conta-teste-id", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
         contaRepositorio.salvar(contaDeTeste);
-        transacaoRepositorio = new TransacaoRepositorio();
+        transacaoRepositorio = new Repositorio();
 
     }
 
@@ -59,14 +48,14 @@ public class GestaoDePerfisTest {
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
-                contaRepositorio.obter(contaDeTeste.getId().getId()).get().getId(),
+                contaRepositorio.obterConta(contaDeTeste.getId().getId()).get().getId(),
                 true,
                 Tipo.DESPESA,
                 "0"
         );
 
         try {
-            transacaoRepositorio.salvar(transacao);
+            transacaoRepositorio.salvarTransacao(transacao);
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -78,7 +67,7 @@ public class GestaoDePerfisTest {
         String perfilid = null;
         transacao = null;
         boolean transacaoRegistradaComPerfil = false;
-        for (Perfil per : perfilRepository.obterTodos()){
+        for (Perfil per : perfilRepository.obterTodosPerfis()){
             if (per.getNome().equals("Filho")){
                 perfilid = per.getId();
             }
@@ -86,7 +75,7 @@ public class GestaoDePerfisTest {
 
         assertNotNull(perfilid);
 
-        for (Transacao tr : transacaoRepositorio.listarTodas()) {
+        for (Transacao tr : transacaoRepositorio.listarTodasTransacoes()) {
             if (tr.getPerfilId().equals(perfilid)){
                 transacao = tr;
             }
@@ -101,9 +90,9 @@ public class GestaoDePerfisTest {
 
     @Given("que existem perfis cadastrados")
     public void criarPerfis(){
-        perfilRepository.salvar(new Perfil("0", "Pai"));
-        perfilRepository.salvar(new Perfil("1", "Mãe"));
-        perfilRepository.salvar(new Perfil("2", "Filho"));
+        perfilRepository.salvarPerfil(new Perfil("0", "Pai"));
+        perfilRepository.salvarPerfil(new Perfil("1", "Mãe"));
+        perfilRepository.salvarPerfil(new Perfil("2", "Filho"));
         contaDeTeste = new Conta("conta-teste-id", "Conta de Teste", "Banco Teste", BigDecimal.ZERO);
         contaRepositorio.salvar(contaDeTeste);
     }
@@ -117,14 +106,14 @@ public class GestaoDePerfisTest {
                 new BigDecimal(valor),
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
-                contaRepositorio.obter(contaDeTeste.getId().getId()).get().getId(),
+                contaRepositorio.obterConta(contaDeTeste.getId().getId()).get().getId(),
                 true,
                 Tipo.DESPESA,
                 null
         );
 
         try {
-            transacaoRepositorio.salvar(transacao);
+            transacaoRepositorio.salvarTransacao(transacao);
         }catch (Exception e){
             excecaoCapturada = e;
         }
@@ -133,7 +122,7 @@ public class GestaoDePerfisTest {
 
     @Then("o sistema deve impedir o registro da transacao no sistema")
     public void impedirResistro(){
-        boolean repoVazio = transacaoRepositorio.listarTodas().isEmpty();
+        boolean repoVazio = transacaoRepositorio.listarTodasTransacoes().isEmpty();
         assertTrue(repoVazio);
     }
 

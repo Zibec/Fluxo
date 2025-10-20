@@ -35,7 +35,7 @@ public class AgendamentoService {
     }
 
     public Optional<Agendamento> obter(String id) {
-        return agRepo.obter(id);
+        return agRepo.obterAgendamento(id);
     }
 
     /** Executa se hoje == próximaData; cria transação e avança próximaData. */

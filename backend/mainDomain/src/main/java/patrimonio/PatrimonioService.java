@@ -28,7 +28,7 @@ public class PatrimonioService {
     }
 
     public BigDecimal calcularPatrimonioLiquido() {
-        BigDecimal totalContas = contaRepositorio.listarTodas().stream()
+        BigDecimal totalContas = contaRepositorio.listarTodasContas().stream()
                 .map(conta -> conta.getSaldo())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -36,7 +36,7 @@ public class PatrimonioService {
                 .map(investimento -> investimento.getValorAtual())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalDividas = dividaRepositorio.obterTodos().stream()
+        BigDecimal totalDividas = dividaRepositorio.obterTodosDivida().stream()
                 .map(divida -> divida.getValorDevedor())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -55,12 +55,12 @@ public class PatrimonioService {
         if (isUltimoDiaDoMes) {
             BigDecimal valorAtual = calcularPatrimonioLiquido();
             Patrimonio snapshot = new Patrimonio(data, valorAtual);
-            snapshotRepositorio.salvar(snapshot);
+            snapshotRepositorio.salvarPatrimonio(snapshot);
         }
         // Se não for o último dia, ele simplesmente não faz nada.
     }
 
     public List<Patrimonio> obterHistoricoDePatrimonio() {
-        return snapshotRepositorio.obterTodos();
+        return snapshotRepositorio.obterTodosPatrimonios();
     }
 }

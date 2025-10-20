@@ -16,11 +16,11 @@ public class CartaoService {
 
     public Cartao obter(CartaoNumero numero) {
         notNull(numero, "O número do cartão não pode ser nulo");
-        return cartaoRepositorio.obter(numero);
+        return cartaoRepositorio.obterCartao(numero);
     }
 
     public Cartao obterPorId(CartaoId cartaoId) {
         notNull(cartaoId, "O ID do cartão não pode ser nulo");
-        return cartaoRepositorio.obterPorId(cartaoId);
+        return cartaoRepositorio.obterCartaoPorId(cartaoId);
     }
 }

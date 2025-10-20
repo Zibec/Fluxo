@@ -5,41 +5,13 @@ import investimento.Investimento;
 import java.sql.Array;
 import java.util.*;
 
-public class HistoricoInvestimentoRepositorio {
+public interface HistoricoInvestimentoRepositorio {
 
-    private List<HistoricoInvestimento> historico = new ArrayList<>();
-    private boolean status;
+    void setStatus(boolean status);
 
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
+    void salvar(HistoricoInvestimento historicoInvestimento);
 
-    public void salvar(HistoricoInvestimento historicoInvestimento){
-        if(status){
-            historico.add(historicoInvestimento);
-        }
-        else{
-            throw new RuntimeException("Falha ao salvar histórico");
-        }
+    List<HistoricoInvestimento> obterTodosHistoricos();
 
-    }
-
-    public List<HistoricoInvestimento> obterTodos(){
-        return historico;
-    }
-
-    public void deletarTodosPorId(String investimentoId){
-
-        if(status){
-            for(HistoricoInvestimento histInv : historico){
-                if(investimentoId.equals(histInv.getInvestimentoId())){
-                    historico.remove(histInv);
-                }
-            }
-        }
-        else{
-            throw new RuntimeException("Falha ao deletar histórico.");
-        }
-
-    }
+    void deletarTodosHistoricosPorId(String investimentoId);
 }

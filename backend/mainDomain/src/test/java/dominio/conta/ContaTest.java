@@ -1,5 +1,9 @@
-package conta;
+package dominio.conta;
 
+import conta.Conta;
+import conta.ContaRepositorio;
+import conta.ContaService;
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -24,7 +28,7 @@ public class ContaTest {
     private boolean camposObrigatoriosInformados;
 
     public ContaTest() {
-        this.contaRepositorio = new ContaRepositorio();
+        this.contaRepositorio = new Repositorio();
         this.contaService = new ContaService(this.contaRepositorio);
     }
 

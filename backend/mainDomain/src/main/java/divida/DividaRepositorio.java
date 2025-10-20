@@ -7,20 +7,11 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class DividaRepositorio {
+public interface DividaRepositorio {
 
-    private final Map<String, Divida> dividas = new HashMap<>();
+    void salvar(Divida divida);
 
-    public void salvar(Divida divida) {
-        notNull(divida, "A dívida não pode ser nula");
-        dividas.put(divida.getId(), divida);
-    }
+    List<Divida> obterTodosDivida();
 
-    public List<Divida> obterTodos() {
-        return new ArrayList<>(dividas.values());
-    }
-
-    public void limpar() {
-        dividas.clear();
-    }
+    void limparDivida();
 }

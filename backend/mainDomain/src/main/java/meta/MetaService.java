@@ -22,7 +22,7 @@ public class MetaService {
         notNull(valorDoAporte, "O valor do aporte não pode ser nulo");
         notNull(contaPrincipal, "A conta principal não pode ser nula");
 
-        Meta meta = metaRepositorio.obter(metaId)
+        Meta meta = metaRepositorio.obterMeta(metaId)
                 .orElseThrow(() -> new IllegalArgumentException("Meta não encontrada com o ID: " + metaId));
 
         if (!contaPrincipal.temSaldoSuficiente(valorDoAporte)) {
@@ -43,21 +43,21 @@ public class MetaService {
 
     public Optional<Meta> obter(String id) {
         notNull(id, "O número do cartão não pode ser nulo");
-        return metaRepositorio.obter(id);
+        return metaRepositorio.obterMeta(id);
     }
 
     public Optional<Meta> obterPorNome(String nomeMeta) {
         notNull(nomeMeta, "O nome da meta não pode ser nulo");
-        return metaRepositorio.obterPorNome(nomeMeta);
+        return metaRepositorio.obterMetaPorNome(nomeMeta);
     }
 
     public void deletar(String metaId) {
         notNull(metaId, "O ID da meta não pode ser nulo");
 
-        if (metaRepositorio.obter(metaId).isEmpty()) {
+        if (metaRepositorio.obterMeta(metaId).isEmpty()) {
             throw new IllegalArgumentException("Meta não encontrada com o ID: " + metaId);
         }
 
-        metaRepositorio.deletar(metaId);
+        metaRepositorio.deletarMeta(metaId);
     }
 }

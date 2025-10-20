@@ -7,30 +7,15 @@ import java.util.List;
 import java.util.ArrayList;
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class ContaRepositorio {
+public interface ContaRepositorio {
 
-    private final Map<String, Conta> contas = new HashMap<>();
+    void salvar(Conta conta);
 
-    public void salvar(Conta conta) {
-        notNull(conta, "A conta não pode ser nula");
-        contas.put(conta.getId().getId(), conta);
-    }
+    Optional<Conta> obterConta(String contaId);
 
-    public Optional<Conta> obter(String contaId) {
-        notNull(contaId, "O ID da conta não pode ser nulo");
-        return Optional.ofNullable(contas.get(contaId));
-    }
+    boolean contaExistente(String nome);
 
-    public boolean contaExistente(String nome) {
-        notNull(nome, "O nome da conta não pode ser nulo");
-        return contas.values().stream().anyMatch(c -> c.getNome().equals(nome));
-    }
+    List<Conta> listarTodasContas();
 
-    public List<Conta> listarTodas() {
-        return new ArrayList<>(contas.values());
-    }
-
-    public void limpar() {
-        contas.clear();
-    }
+    void limparConta();
 }

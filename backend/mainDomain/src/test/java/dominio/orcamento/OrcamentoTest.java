@@ -1,9 +1,14 @@
-package orcamento;
+package dominio.orcamento;
 
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import conta.ContaRepositorio;
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.*;
+import orcamento.Orcamento;
+import orcamento.OrcamentoChave;
+import orcamento.OrcamentoRepositorio;
+import orcamento.OrcamentoService;
 import org.junit.jupiter.api.Assertions;
 import transacao.TransacaoRepositorio;
 import transacao.TransacaoService;
@@ -18,7 +23,7 @@ import java.util.Optional;
 
 public class OrcamentoTest {
 
-    private final OrcamentoRepositorio repo = new OrcamentoRepositorio();
+    private final OrcamentoRepositorio repo = new Repositorio();
 
     private static class FakeTransacaoService extends TransacaoService {
         private final Map<OrcamentoChave, BigDecimal> acumulado = new HashMap<>();
@@ -40,9 +45,9 @@ public class OrcamentoTest {
         }
     }
 
-    private final TransacaoRepositorio transacaoRepoParaTeste = new TransacaoRepositorio();
-    private final ContaRepositorio contaRepoParaTeste = new ContaRepositorio();
-    private final CartaoRepositorio cartaoRepoParaTeste = new CartaoRepositorio();
+    private final TransacaoRepositorio transacaoRepoParaTeste = new Repositorio();
+    private final ContaRepositorio contaRepoParaTeste = new Repositorio();
+    private final CartaoRepositorio cartaoRepoParaTeste = new Repositorio();
     private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService(transacaoRepoParaTeste, contaRepoParaTeste, cartaoRepoParaTeste);
 
     private final OrcamentoService service = new OrcamentoService(repo, fakeTransacaoService);
@@ -108,7 +113,7 @@ public class OrcamentoTest {
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
         var chave = new OrcamentoChave(usuario, ym, categoria);
-        repo.salvarNovo(chave, new Orcamento(valor)); // já existente
+        repo.salvarOrcamento(chave, new Orcamento(valor)); // já existente
 
         //guarda no contexto para os @Then/@And
         this.categoria = categoria;
@@ -148,7 +153,7 @@ public class OrcamentoTest {
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
         var chave = new OrcamentoChave(usuario, ym, categoria);
-        repo.salvarNovo(chave, new Orcamento(valor));
+        repo.salvarOrcamento(chave, new Orcamento(valor));
         this.categoria = categoria;
         this.anoMes = ym;
     }
@@ -192,7 +197,7 @@ public class OrcamentoTest {
 
         var valor = parseMoedaBR(valorMoeda);
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        repo.salvarNovo(chave, new Orcamento(valor));
+        repo.salvarOrcamento(chave, new Orcamento(valor));
         notificador.limpar();
     }
 

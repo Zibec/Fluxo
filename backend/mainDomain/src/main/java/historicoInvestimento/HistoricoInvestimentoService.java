@@ -21,7 +21,7 @@ public class HistoricoInvestimentoService {
     }
 
     public List<HistoricoInvestimento> obterTodos (){
-        return historicoInvestimentoRepositorio.obterTodos();
+        return historicoInvestimentoRepositorio.obterTodosHistoricos();
     }
 
 }

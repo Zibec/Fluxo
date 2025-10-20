@@ -1,11 +1,13 @@
-package meta;
+package dominio.meta;
 
 import conta.Conta;
 import conta.ContaRepositorio;
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.And;
+import meta.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -16,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MetaTest {
 
-    private MetaRepositorio metaRepositorio = new MetaRepositorio();
-    private ContaRepositorio contaRepositorio = new ContaRepositorio();
+    private MetaRepositorio metaRepositorio = new Repositorio();
+    private ContaRepositorio contaRepositorio = new Repositorio();
     private MetaService metaService = new MetaService(metaRepositorio, contaRepositorio);
 
     private Meta meta;
@@ -29,7 +31,7 @@ public class MetaTest {
     public void queEuTenhoUmaMetaDePoupancaComSaldoAtualDe(String nomeMeta, Double saldoInicialMeta) {
         String id = UUID.randomUUID().toString();
 
-        this.meta = new Meta(id,TipoMeta.POUPANCA, nomeMeta, new BigDecimal("5000.00"), LocalDate.now().plusYears(1));
+        this.meta = new Meta(id, TipoMeta.POUPANCA, nomeMeta, new BigDecimal("5000.00"), LocalDate.now().plusYears(1));
         this.meta.setSaldoAcumulado(new BigDecimal(saldoInicialMeta)); // Ajusta o saldo inicial para o teste
         metaService.salvar(this.meta);
     }
@@ -80,7 +82,7 @@ public class MetaTest {
 
     @And("o saldo da meta {string} deve permanecer R$ {double}")
     public void oSaldoDaMetaDevePermanecer(String nomeMeta, Double saldoMeta) {
-        Meta metaNaoAlterada = metaRepositorio.obter(this.meta.getId()).get();
+        Meta metaNaoAlterada = metaRepositorio.obterMeta(this.meta.getId()).get();
 
         assertEquals(0, new BigDecimal(saldoMeta).compareTo(metaNaoAlterada.getSaldoAcumulado()),
                 "O saldo da meta não deveria ter mudado, mas mudou.");
@@ -89,7 +91,7 @@ public class MetaTest {
     //cenario 3
     @Given("que não existe uma meta de poupança chamada {string}")
     public void que_nao_existe_uma_meta_de_poupanca_chamada(String nomeMeta) {
-        assertTrue(metaRepositorio.obterPorNome(nomeMeta).isEmpty(), "Pré-condição falhou: Uma meta com este nome já existe.");
+        assertTrue(metaRepositorio.obterMetaPorNome(nomeMeta).isEmpty(), "Pré-condição falhou: Uma meta com este nome já existe.");
     }
 
     @When("o usuário cria uma nova meta de poupança chamada {string} com valor alvo de R$ {double} e prazo de {int} meses")
@@ -107,7 +109,7 @@ public class MetaTest {
 
     @Then("uma meta chamada {string} deve existir no sistema")
     public void uma_meta_chamada_deve_existir_no_sistema(String nomeMeta) {
-        Meta metaSalva = metaRepositorio.obter(this.meta.getId())
+        Meta metaSalva = metaRepositorio.obterMeta(this.meta.getId())
                 .orElseThrow(() -> new AssertionError("A meta deveria ter sido salva, mas não foi encontrada."));
 
         assertEquals(nomeMeta, metaSalva.getDescricao());
@@ -146,7 +148,7 @@ public class MetaTest {
 
     @Then("a meta {string} não deve mais existir no sistema")
     public void a_meta_nao_deve_mais_existir_no_sistema(String nomeMeta) {
-        Optional<Meta> resultadoBusca = metaRepositorio.obter(this.meta.getId());
+        Optional<Meta> resultadoBusca = metaRepositorio.obterMeta(this.meta.getId());
         assertTrue(resultadoBusca.isEmpty(), "A meta não foi excluída corretamente e ainda foi encontrada no sistema.");
     }
 }

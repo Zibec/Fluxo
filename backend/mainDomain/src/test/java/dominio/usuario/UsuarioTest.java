@@ -1,10 +1,14 @@
-package usuario;
+package dominio.usuario;
 
+import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import usuario.Usuario;
+import usuario.UsuarioRepositorio;
+import usuario.UsuarioService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +24,7 @@ public class UsuarioTest {
     private Exception thrownException;
 
     public UsuarioTest() {
-        usuarioRepositorio = new UsuarioRepositorio();
+        usuarioRepositorio = new Repositorio();
         usuarioService = new UsuarioService(usuarioRepositorio);
         usuarioLogado = new Usuario("usuario_logado", "logado@dominio.com", "senha123");
         usuarioService.salvar(usuarioLogado);

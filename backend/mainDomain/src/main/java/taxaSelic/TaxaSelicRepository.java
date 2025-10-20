@@ -2,18 +2,8 @@ package taxaSelic;
 
 import java.math.BigDecimal;
 
-public class TaxaSelicRepository {
-    private TaxaSelic taxaSelic;
+public interface TaxaSelicRepository {
+    void salvar(TaxaSelic taxaSelic);
 
-    public void salvar(TaxaSelic taxaSelic){
-        this.taxaSelic = taxaSelic;
-    }
-
-    public TaxaSelic obter(){
-        return taxaSelic;
-    }
-
-    public TaxaSelicRepository(TaxaSelic taxaSelic) {
-        this.taxaSelic = taxaSelic;
-    }
+    TaxaSelic obterTaxaSelic();
 }

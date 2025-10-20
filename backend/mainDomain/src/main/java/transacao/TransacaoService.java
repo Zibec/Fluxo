@@ -35,7 +35,7 @@ public class TransacaoService {
      * Idempotente por (agendamentoId, data): se já existe, retorna a existente.
      */
     public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data, Conta conta, boolean avulsa, String perfilId) {
-        Optional<Transacao> existente = repo.encontrarPorAgendamentoEData(agendamentoId, data);
+        Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
         if (existente.isPresent()) {
             return existente.get(); // idempotência: não duplica
         }
@@ -52,7 +52,7 @@ public class TransacaoService {
                 Tipo.DESPESA,
                 perfilId
         );
-        repo.salvar(t);
+        repo.salvarTransacao(t);
         return t;
     }
 
@@ -61,7 +61,7 @@ public class TransacaoService {
         notNull(mes, "O mês não pode ser nulo.");
 
         // Busca todas as transações (em um sistema real, isso seria otimizado)
-        List<Transacao> todasTransacoes = repo.listarTodas();
+        List<Transacao> todasTransacoes = repo.listarTodasTransacoes();
 
         // Soma todas as DESPESAS da categoria no mês especificado
         BigDecimal totalDespesas = todasTransacoes.stream()
@@ -91,7 +91,7 @@ public class TransacaoService {
             throw new IllegalArgumentException("O ID da despesa original não pode ser nulo");
         }
 
-        Transacao despesaOriginal = repo.obterPorId(idDespesaOriginal)
+        Transacao despesaOriginal = repo.obterTransacaoPorId(idDespesaOriginal)
                 .orElseThrow(() -> new IllegalArgumentException("Despesa original não encontrada"));
 
         if (valorReembolso.compareTo(despesaOriginal.getValor()) > 0) {
@@ -101,7 +101,7 @@ public class TransacaoService {
         String novoId = UUID.randomUUID().toString();
         String descricaoReembolso = "Reembolso de: " + despesaOriginal.getDescricao();
 
-        Conta contaDaDespesaOriginal = contaRepo.obter(despesaOriginal.getPagamentoId().getId())
+        Conta contaDaDespesaOriginal = contaRepo.obterConta(despesaOriginal.getPagamentoId().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Conta da despesa original não encontrada"));
 
         Transacao reembolso = new Transacao(
@@ -119,27 +119,27 @@ public class TransacaoService {
         );
 
         reembolso.setTransacaoOriginalId(idDespesaOriginal);
-        repo.salvar(reembolso);
+        repo.salvarTransacao(reembolso);
         return reembolso;
     }
 
     public void efetivarTransacao(String transacaoId) {
-        Transacao t = repo.obterPorId(transacaoId)
+        Transacao t = repo.obterTransacaoPorId(transacaoId)
                 .orElseThrow(() -> new IllegalArgumentException("Transação não encontrada"));
 
         t.efetivar();
         if (t.getPagamentoId() instanceof ContaId) {
-            Conta conta = contaRepo.obter(t.getPagamentoId().getId())
+            Conta conta = contaRepo.obterConta(t.getPagamentoId().getId())
                     .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
             conta.realizarTransacao(t.getValor());
             contaRepo.salvar(conta);
         } else {
-            Cartao cartao = cartaoRepositorio.obterPorId((CartaoId) t.getPagamentoId());
+            Cartao cartao = cartaoRepositorio.obterCartaoPorId((CartaoId) t.getPagamentoId());
 
             cartao.realizarTransacao(t.getValor());
             cartaoRepositorio.salvar(cartao);
         }
 
-        repo.salvar(t);
+        repo.salvarTransacao(t);
     }
 }

@@ -18,7 +18,7 @@ public class ContaService {
 
     public Optional<Conta> obter(String contaId) {
         notNull(contaId, "O ID da conta não pode ser nulo");
-        return contaRepositorio.obter(contaId);
+        return contaRepositorio.obterConta(contaId);
     }
 
     public boolean contaExistente(String nome) {

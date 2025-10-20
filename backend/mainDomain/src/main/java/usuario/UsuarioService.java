@@ -10,11 +10,11 @@ public class UsuarioService {
     }
 
     public void salvar(Usuario usuario) {
-        usuarioRepositorio.salvar(usuario);
+        usuarioRepositorio.salvarUsuario(usuario);
     }
 
     public Usuario obter(String usuarioId) {
-        return usuarioRepositorio.obter(usuarioId)
+        return usuarioRepositorio.obterUsuario(usuarioId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
     }
 

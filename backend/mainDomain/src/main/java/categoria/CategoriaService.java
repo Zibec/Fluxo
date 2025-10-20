@@ -23,22 +23,22 @@ public class CategoriaService {
 
     public Optional<Categoria> obterPorNome(String nome) {
         notNull(nome, "O nome da categoria não pode ser nulo.");
-        return categoriaRepositorio.obterPorNome(nome);
+        return categoriaRepositorio.obterCategoriaPorNome(nome);
     }
 
     public void deletar(String id) {
         notNull(id, "O ID da categoria não pode ser nulo.");
 
-        if (categoriaRepositorio.obter(id).isEmpty()) {
+        if (categoriaRepositorio.obterCategoria(id).isEmpty()) {
             throw new IllegalArgumentException("Categoria não encontrada");
         }
 
         // VERIFICAÇÃO DE SEGURANÇA: A categoria está em uso?
-        if (transacaoRepositorio.existePorCategoriaId(id)) {
+        if (transacaoRepositorio.existeTransacaoPorCategoriaId(id)) {
             throw new IllegalStateException("Categoria não pode ser excluída pois está em uso");
         }
 
         // Se a verificação passar, a exclusão é permitida
-        categoriaRepositorio.deletar(id);
+        categoriaRepositorio.deletarCategoria(id);
     }
 }

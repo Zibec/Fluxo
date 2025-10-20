@@ -2,45 +2,16 @@ package perfil;
 
 import java.util.ArrayList;
 
-public class PerfilRepository {
+public interface PerfilRepository {
 
-    private ArrayList<Perfil> perfis = new ArrayList<Perfil>();
+    void salvarPerfil(Perfil perfil);
 
-    public void salvar(Perfil perfil){
-        perfis.add(perfil);
-    }
+    Perfil obterPerfil(String id);
 
-    public Perfil obter(String id){
-        for (Perfil per : perfis){
-            if (id.equals(per.getId())){
-                return per;
-            }
-        }
+    ArrayList<Perfil> obterTodosPerfis();
 
-        return null;
-    }
+    void alterarPerfil(String id,Perfil perfil);
 
-    public ArrayList<Perfil> obterTodos(){
-        return perfis;
-    }
-
-    public void alterar(String id,Perfil perfil){
-        for (Perfil per : perfis){
-            if (id.equals(per.getId())){
-                per = perfil;
-                return;
-            }
-        }
-
-        throw new RuntimeException("Perfil não encontrado.");
-    }
-
-    public void deletar(String id){
-        for (Perfil perf : perfis){
-            if (id.equals(perf.getId())){
-                perfis.remove(perf);
-            }
-        }
-    }
+    void deletarPerfil(String id);
 
 }

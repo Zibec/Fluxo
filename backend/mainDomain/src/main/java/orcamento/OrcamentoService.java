@@ -16,7 +16,7 @@ public class OrcamentoService {
 
     public void criarOrcamentoMensal(String usuarioId, String categoriaid, YearMonth anoMes, BigDecimal limite){
         var chave = new OrcamentoChave(usuarioId, anoMes, categoriaid);
-        orcamentoRepositorio.salvarNovo(chave, new Orcamento(limite));
+        orcamentoRepositorio.salvarOrcamento(chave, new Orcamento(limite));
     }
 
     public void atualizarOrcamentoMensal(String usuarioId, String categoriaid, YearMonth anoMes, BigDecimal limite){
