@@ -20,7 +20,7 @@ public class MetaInversaService {
 
     public void realizarAporte(String metaId, BigDecimal valorDoAporte) {
         notNull(metaId, "O ID da meta não pode ser nulo");
-        notNull(valorDoAporte, "O valor do aporte não pode ser nulo");
+        notNull(valorDoAporte, "Valor do aporte deve ser um número positivo.");
 
         MetaInversa meta = metaRepositorio.obter(metaId).orElseThrow(() -> new IllegalArgumentException("Meta não encontrada com o ID: " + metaId));
 
