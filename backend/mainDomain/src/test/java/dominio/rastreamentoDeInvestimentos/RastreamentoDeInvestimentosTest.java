@@ -47,7 +47,11 @@ public class RastreamentoDeInvestimentosTest {
     // Fazer com um mock configurável da API. Quando funcionando oferecer o valor e quando não raise exception
     @When("o sistema consulta a API externa do Banco Central")
     public void sistemaConsultaApi(){
-        taxaSelicService.atualizarTaxaSelic();
+        try{
+            taxaSelicService.atualizarTaxaSelic();
+        }catch (Exception e) {
+            excecaoCapturada = e;
+        }
     }
 
     //Checar via repositório se a taxa foi armazenada
@@ -59,15 +63,9 @@ public class RastreamentoDeInvestimentosTest {
     //Scenario: Falha ao consultar a API externa
 
 
-    @When("o sistema consulta a API externa do Banco Central, mas a API não está disponível")
+    @And ("a API não está disponível")
     public void apiNaoDisponivel(){
         selicApiClient.setStatus(false);
-
-        try{
-            taxaSelicService.atualizarTaxaSelic();
-        }catch (Exception e) {
-            excecaoCapturada = e;
-        }
     }
 
     @Then("a texa Selic não é atualizada naquele dia")
@@ -163,16 +161,10 @@ public class RastreamentoDeInvestimentosTest {
 
     //Scenario: Falha ao registrar histórico
 
-    @When("o job de atualização de rendimento é executado, mas ocorre uma falha no registro de histórico")
-    public void executarJobRendimentoFalhaHistorico(){
+    @And("o banco de dados de histórico está fora do ar")
+    public void historicoForaDoAr(){
         historicoInvestimentoRepositorio.setStatus(false);
-        try{
-            jobScheduler.executarJob();
-        } catch (Exception e){
-            excecaoCapturada = e;
-        }
     }
-
 
     @Then("o sistema deve gerar um log de erro indicando falha ao registrar histórico")
     public void logErroHistorico(){
@@ -199,16 +191,6 @@ public class RastreamentoDeInvestimentosTest {
     }
 
     //Scenario: Falha em etapas anteriores do resgate total
-
-    @When("realizo o resgate total do valor investido, mas uma falha ocorre")
-    public void falhaEmResgateTotal(){
-        historicoInvestimentoRepositorio.setStatus(false);
-        try{
-            investimentoService.resgateTotal(investimentoService.obterInvestimento("1").getId());
-        }catch (Exception e){
-            excecaoCapturada = e;
-        }
-    }
 
     @Then("o investimento não deve ser removido")
     public void investimentoNaoRemovido(){
@@ -275,15 +257,6 @@ public class RastreamentoDeInvestimentosTest {
 
     //Scenario: Falha deleção do histórico de valorização em resgate total
 
-    @When("realizo o resgate total do valor investido, mas ocorre uma falha na deleção o histórico")
-    public void falhaDelecaoHistorico(){
-        historicoInvestimentoRepositorio.setStatus(false);
-        try{
-            investimentoService.resgateTotal(investimentoService.obterInvestimento("1").getId());
-        }catch (Exception e){
-            excecaoCapturada = e;
-        }
-    }
 
     @Then("o sistema deve levantar uma exceção referente à falha na deleção")
     public void levantarExcecao(){
@@ -303,7 +276,7 @@ public class RastreamentoDeInvestimentosTest {
 
     //Scenario: Falha em etapas anteriores à atualização do histórico em resgate parcial
 
-    @When("realizo o resgate parcial, mas uma falha ocorre")
+    @When("realizo o resgate parcial, mas uma falha ocorre durante o resgate")
     public void falhaEmResgateParcial(){
         try{
             investimentoService.resgateParcial(investimentoService.obterInvestimento("1").getId(), new BigDecimal(1000));
