@@ -43,6 +43,10 @@ public class ContasAPagarTest {
 
     private Exception erro;
 
+    public ContasAPagarTest() {
+        this.conta = new Conta();
+    }
+
 
     // -------------------------
     // Transações Avulsas
@@ -51,7 +55,6 @@ public class ContasAPagarTest {
     @Given("o usuário possui uma conta com saldo {string}")
     public void oUsuarioPossuiUmaContaComSaldo(String saldo) {
         perfilService.salvarPerfil(perfil);
-        conta = new Conta();
         conta.setSaldo(new BigDecimal(saldo));
         contaService.salvar(conta);
         assertEquals(new BigDecimal(saldo), conta.getSaldo());
