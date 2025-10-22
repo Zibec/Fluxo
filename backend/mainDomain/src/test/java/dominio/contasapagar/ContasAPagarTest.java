@@ -30,6 +30,8 @@ public class ContasAPagarTest {
     private Conta conta;
     private Transacao transacao;
 
+    private Perfil perfil = new Perfil("0", "Pai");
+    private PerfilRepository perfilRepository = new Repositorio();
 
     private TransacaoRepositorio txRepositorio = new Repositorio();
     private ContaRepositorio contaRepositorio = new Repositorio();
@@ -37,12 +39,9 @@ public class ContasAPagarTest {
 
     private TransacaoService txService = new TransacaoService(txRepositorio, contaRepositorio, cartaoRepositorio);
     private ContaService contaService = new ContaService(contaRepositorio);
-    private PerfilService perfilService = new PerfilService(null);
+    private PerfilService perfilService = new PerfilService(perfilRepository);
 
     private Exception erro;
-
-    private Perfil perfil = new Perfil("0", "Pai");
-    private PerfilRepository perfilRepository = new Repositorio();
 
 
     // -------------------------
