@@ -20,8 +20,12 @@ public class HistoricoInvestimentoService {
         historicoInvestimentoRepositorio.salvar(historicoInvestimento);
     }
 
-    public List<HistoricoInvestimento> obterTodos (){
+    public List<HistoricoInvestimento> obterTodosHistoricos (){
         return historicoInvestimentoRepositorio.obterTodosHistoricos();
+    }
+
+    public void deletarTodosHistoricosPorId(String investimentoId){
+        historicoInvestimentoRepositorio.deletarTodosHistoricosPorId(investimentoId);
     }
 
 }

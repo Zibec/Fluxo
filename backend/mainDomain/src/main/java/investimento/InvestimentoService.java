@@ -10,6 +10,7 @@ import taxaSelic.TaxaSelicService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -29,7 +30,7 @@ public class InvestimentoService {
         notNull(investimento, "Invesimento não pode ser nulo");
         investimentoRepositorio.salvar(investimento);
     }
-    public Investimento obter(String investimentoId){
+    public Investimento obterInvestimento(String investimentoId){
         notNull(investimentoId, "Investimento não pode ser nulo");
         return investimentoRepositorio.obterInvestimento(investimentoId);
     }
@@ -38,6 +39,19 @@ public class InvestimentoService {
         notNull(investimentoId, "O id não pode ser nulo");
         notNull(investimento, "O investimento não pode ser nulo");
         investimentoRepositorio.atualizarInvestimento(investimentoId, investimento);
+    }
+
+    public ArrayList<Investimento> obterTodos(){
+        return investimentoRepositorio.obterTodos();
+    }
+
+    public void deletarInvestimento(String investimentoId){
+        notNull(investimentoId, "O id não pode ser nulo");
+        investimentoRepositorio.deletarInvestimento(investimentoId);
+    }
+
+    public void limparInvestimento(){
+        investimentoRepositorio.limparInvestimento();
     }
 
     public void atualizarRendimento (Investimento investimento){
