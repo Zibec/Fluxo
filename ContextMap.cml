@@ -25,7 +25,7 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
             
             Repository ContaRepositorio {
                 void salvar(@Conta conta);
-                Optional<Conta> obter(String contaId);
+                @Conta obter(String contaId);
                 boolean contaExistente(String nome);
                 List<@Conta> listarTodas();
                 void limpar();
@@ -34,7 +34,7 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
 
         Service ContaService {
             void salvar(@Conta conta);
-            Optional<Conta> obter(String contaId);
+            @Conta obter(String contaId);
             boolean contaExistente(String nome);
         }
 
@@ -117,7 +117,7 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
             LocalDate data 
             -Tipo tipo 
             String transacaoOriginalId
-            FormaPagamentoId pagamentoId
+            -FormaPagamentoId pagamentoId
             boolean avulsa
             String perfilId
 
@@ -129,13 +129,13 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
 
             Repository TransacaoRepositorio {
                 void salvar(@Transacao t);
-                Optional<@Transacao> encontrarPorAgendamentoEData(String agendamentoId, LocalDate data);
+                @Transacao encontrarPorAgendamentoEData(String agendamentoId, LocalDate data);
                 boolean existePorCategoriaId(String categoriaId);
                 List<@Transacao> listarTodas();
                 String chave(String agendamentoId, LocalDate data);
                 void atualizar(@Transacao t);
                 void excluir(String id);
-                Optional<@Transacao> obterPorId(String id);
+                @Transacao obterPorId(String id);
                 void limpar();
             }
 
@@ -175,8 +175,8 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
 
             Repository CategoriaRepositorio {
                 void salvar(@Categoria categoria);
-                Optional<@Categoria> obterPorNome(String nome);
-                Optional<@Categoria> obter(String id);
+                @Categoria obterPorNome(String nome);
+                @Categoria obter(String id);
                 void deletar(String id);
                 int contagem();
             }
@@ -184,7 +184,7 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
 
         Service CategoriaService {
             void salvar(@Categoria categoria);
-            Optional<@Categoria> obterPorNome(String nome);
+            @Categoria obterPorNome(String nome);
             void deletar(String id);
         }
     }
@@ -207,8 +207,8 @@ BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
 
             Repository MetaRepositorio {
                 void salvar(@Meta meta);
-                Optional<@Meta> obter(String metaId);
-                Optional<@Meta> obterPorNome(String nomeMeta);
+                @Meta obter(String metaId);
+                @Meta obterPorNome(String nomeMeta);
                 void deletar(String metaId); 
             }
 
@@ -227,8 +227,8 @@ BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
         Service MetaService {
             void realizarAporte(String metaId, BigDecimal valorDoAporte, @Conta contaPrincipal);
             void salvar(@Meta meta);
-            Optional<@Meta> obter(String metaId);
-            Optional<@Meta> obterPorNome(String nomeMeta);
+            @Meta obter(String metaId);
+            @Meta obterPorNome(String nomeMeta);
             void deletar(String metaId); 
         }
     }
@@ -248,8 +248,8 @@ BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
 
             Repository MetaInversaRepositorio{
                 void salvar(@MetaInversa metaInversa);
-                Optional<@MetaInversa> obter(String metaId);
-                Optional<@MetaInversa> obterPorNome(String nomeMeta)
+                @MetaInversa obter(String metaId);
+                @MetaInversa obterPorNome(String nomeMeta)
                 void deletar(String metaId);
                 void limpar();
             }
@@ -284,7 +284,7 @@ BoundedContext AutomacaoEAgendamentos implements AutomacaoEAgendamentos {
 
             Repository AgendamentoRepositorio {
                 void salvar(@Agendamento a);
-                Optional<@Agendamento> obter(String id);
+                @Agendamento obter(String id);
             }
         }
 
@@ -298,7 +298,7 @@ BoundedContext AutomacaoEAgendamentos implements AutomacaoEAgendamentos {
         Service AgendamentoService {
             void salvar(@Agendamento a);
             void salvarValidandoNaoNoPassado(@Agendamento a, LocalDate hoje);
-            Optional<@Agendamento> obter(String id);
+            @Agendamento obter(String id);
             boolean executarSeHoje(@Agendamento a, LocalDate hoje);
         }
     }
@@ -359,7 +359,7 @@ BoundedContext PatrimonioEInvestimentos implements PatrimonioEInvestimentos{
 
         Service HistoricoInvestimentoService {
             void salvar (@HistoricoInvestimento historicoInvestimento);
-            List<HistoricoInvestimento> obterTodos ();
+            List<@HistoricoInvestimento> obterTodos ();
         }
     }
 
@@ -410,8 +410,8 @@ BoundedContext PatrimonioEInvestimentos implements PatrimonioEInvestimentos{
             BigDecimal valor
 
             Repository PatrimonioRepositorio {
-                void salvar(@SnapshotPatrimonio snapshot);
-                List<@SnapshotPatrimonio> obterTodos();
+                void salvar(@Patrimonio snapshot);
+                List<@Patrimonio> obterTodos();
                 void limpar();
             }
         } 
@@ -442,7 +442,7 @@ BoundedContext UsuarioEConfiguracoes implements UsuarioEConfiguracoes{
 
             Repository UsuarioRepositorio {
                 void salvar(@Usuario usuario);
-                Optional<@Usuario> obter(String contaId);
+                @Usuario obter(String contaId);
                 boolean emailExistente(String email);
                 boolean usernameExistente(String username);
             }
@@ -481,8 +481,8 @@ BoundedContext UsuarioEConfiguracoes implements UsuarioEConfiguracoes{
 
         Service UsuarioService {
             void salvar(@Usuario usuario);
-            Usuario obter(String contaId);
-            boolean emailExistente(String email);
+            @Usuario obter(String Id);
+            boolean emailExistente(String Email);
             boolean usernameExistente(String username);
         }
 
