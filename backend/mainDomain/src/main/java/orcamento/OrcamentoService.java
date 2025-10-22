@@ -3,6 +3,8 @@ package orcamento;
 import transacao.TransacaoService; // Importe o TransacaoService
 import java.math.BigDecimal;
 import java.time.YearMonth;
+import java.util.Optional;
+
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class OrcamentoService {
@@ -14,12 +16,15 @@ public class OrcamentoService {
         this.transacaoService = notNull(transacaoService);
     }
 
+    public void salvarOrcamento(OrcamentoChave chave, Orcamento orcamento){
+        orcamentoRepositorio.salvarOrcamento(chave, orcamento);
+    }
     public void criarOrcamentoMensal(String usuarioId, String categoriaid, YearMonth anoMes, BigDecimal limite){
         var chave = new OrcamentoChave(usuarioId, anoMes, categoriaid);
         orcamentoRepositorio.salvarOrcamento(chave, new Orcamento(limite));
     }
 
-    public void atualizarOrcamentoMensal(String usuarioId, String categoriaid, YearMonth anoMes, BigDecimal limite){
+    public void atualizarOrcamento(String usuarioId, String categoriaid, YearMonth anoMes, BigDecimal limite){
         var chave = new OrcamentoChave(usuarioId, anoMes, categoriaid);
         orcamentoRepositorio.atualizarOrcamento(chave, new Orcamento(limite));
     }
@@ -32,5 +37,12 @@ public class OrcamentoService {
         var totalGasto = transacaoService.calcularGastosConsolidadosPorCategoria(categoriaid, anoMes);
 
         return orcamento.getLimite().subtract(totalGasto);
+    }
+
+    public Optional<Orcamento> obterOrcamento(OrcamentoChave chave){
+        return orcamentoRepositorio.obterOrcamento(chave);
+    }
+    public void limparOrcamento(){
+        orcamentoRepositorio.limparOrcamento();
     }
 }

@@ -34,7 +34,7 @@ public class AgendamentoService {
         agRepo.salvar(a);
     }
 
-    public Optional<Agendamento> obter(String id) {
+    public Optional<Agendamento> obterAgendamento(String id) {
         return agRepo.obterAgendamento(id);
     }
 

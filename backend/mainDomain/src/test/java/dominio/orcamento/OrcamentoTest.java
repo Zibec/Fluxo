@@ -102,20 +102,19 @@ public class OrcamentoTest {
     public void deveVerOrcamentoSalvoParaCategoriaMesValor(String categoriaEsperada, String mesAno, String valorEsperado) {
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoriaEsperada);
-        var opt = repo.obterOrcamento(chave);
+        var opt = service.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não foi salvo");
         Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
 
     @Given("existe um orçamento de {string} para {string} em {string}")
     public void existeUmOrcamento(String valorMoeda, String categoria, String mesAno) {
-        if (this.usuario == null) this.usuario = "Gabriel"; // <- padroniza o usuário para a chave
+        if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
-        var chave = new OrcamentoChave(usuario, ym, categoria);
-        repo.salvarOrcamento(chave, new Orcamento(valor)); // já existente
+        service.criarOrcamentoMensal(usuario, categoria, ym, valor);
 
-        //guarda no contexto para os @Then/@And
+
         this.categoria = categoria;
         this.anoMes = ym;
     }
@@ -142,7 +141,7 @@ public class OrcamentoTest {
     public void orcamentoNaoDeveSerSalvo() {
         Assertions.assertNotNull(erro, "Era esperado erro");
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        var opt = repo.obterOrcamento(chave);
+        var opt = service.obterOrcamento(chave);
         //No cenário de duplicidade, o original deve continuar existindo
         Assertions.assertTrue(opt.isPresent(), "O orçamento original deveria continuar salvo");
     }
@@ -152,8 +151,7 @@ public class OrcamentoTest {
         if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
-        var chave = new OrcamentoChave(usuario, ym, categoria);
-        repo.salvarOrcamento(chave, new Orcamento(valor));
+        service.criarOrcamentoMensal(usuario, categoria, ym, valor);
         this.categoria = categoria;
         this.anoMes = ym;
     }
@@ -162,13 +160,8 @@ public class OrcamentoTest {
     public void usuarioAtualizaEsseOrcamentoPara(String novoValorMoeda) {
         if (this.usuario == null) this.usuario = "Gabriel";
         var novoValor = parseMoedaBR(novoValorMoeda);
-        var chave = new OrcamentoChave(usuario, anoMes, categoria);
         try {
-            if (repo.obterOrcamento(chave).isEmpty()) {
-                mensagemSistema = "Não existe um orçamento para essa chave";
-                return;
-            }
-            repo.atualizarOrcamento(chave, new Orcamento(novoValor)); // método void
+            service.atualizarOrcamento(usuario, categoria, anoMes, novoValor);
             mensagemSistema = "Atualizado com sucesso";
         } catch (Throwable t) {
             erro = t;
@@ -180,7 +173,7 @@ public class OrcamentoTest {
     public void usuarioDeveVerOrcamentoSalvoComValor(String valorEsperado) {
         if (this.usuario == null) this.usuario = "Gabriel";
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        var opt = repo.obterOrcamento(chave);
+        var opt = service.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não encontrado após atualizar");
         Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
@@ -196,8 +189,7 @@ public class OrcamentoTest {
         this.anoMes = parseAnoMes(mesAno);
 
         var valor = parseMoedaBR(valorMoeda);
-        var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        repo.salvarOrcamento(chave, new Orcamento(valor));
+        service.criarOrcamentoMensal(usuario, categoria, this.anoMes, valor);
         notificador.limpar();
     }
 
@@ -221,7 +213,7 @@ public class OrcamentoTest {
         var chave = new OrcamentoChave(usuario, ym, categoria);
 
         var antes = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
-        var orc = repo.obterOrcamento(chave).orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
+        var orc = service.obterOrcamento(chave).orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
         var limite = orc.getLimite();
 
         var valor = parseMoedaBR(valorDespesa);
@@ -279,7 +271,7 @@ public class OrcamentoTest {
         Assertions.assertNotNull(erro, "Era esperado falhar valor negativo");
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
         Assertions.assertTrue(
-                repo.obterOrcamento(chave).isEmpty(),
+                service.obterOrcamento(chave).isEmpty(),
                 "Não deveria haver orçamento salvo para a chave"
         );
     }
@@ -313,7 +305,7 @@ public class OrcamentoTest {
         Assertions.assertNotNull(ultimaChaveVerificada,
                 "Chame primeiro o passo que valida o total gasto (ele seleciona o orçamento).");
 
-        var orc = repo.obterOrcamento(ultimaChaveVerificada)
+        var orc = service.obterOrcamento(ultimaChaveVerificada)
                 .orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
         BigDecimal limite = orc.getLimite();
 

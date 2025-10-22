@@ -70,18 +70,18 @@ public class AgendamentoTest {
     }
 
     private Transacao ensureTransacaoParaAtualizar() {
-        var ag = agService.obter(agendamentoId).orElseThrow(() ->
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow(() ->
                 new AssertionError("Agendamento não encontrado"));
 
         //1) data-base preferencial: a que foi criada no Given do cenário
         LocalDate base = (this.dataTxAgendada != null) ? this.dataTxAgendada : ag.getProximaData();
 
         //2) tenta achar pela data-base
-        var txOpt = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, base);
+        var txOpt = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, base);
         if (txOpt.isPresent()) return txOpt.get();
 
         //3) fallback: pega QUALQUER transação já ligada a este agendamento
-        var qualquer = txRepo.listarTodasTransacoes().stream()
+        var qualquer = txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
                 .findFirst();
         if (qualquer.isPresent()) return qualquer.get();
@@ -90,7 +90,7 @@ public class AgendamentoTest {
         txService.criarPendenteDeAgendamento(
                 agendamentoId, ag.getDescricao(), ag.getValor(), base, conta, false, ag.getPerfilId()
         );
-        return txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, base)
+        return txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, base)
                 .orElseThrow(() -> new AssertionError("Falha ao preparar transação para atualização"));
     }
 
@@ -110,7 +110,7 @@ public class AgendamentoTest {
 
     @When("o usuário precisa registrar essa transação para o dia {string}")
     public void whenRegistrarParaDia(String data) {
-        Agendamento ag = agService.obter(agendamentoId).orElseThrow();
+        Agendamento ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(data, BR);
         txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
     }
@@ -123,7 +123,7 @@ public class AgendamentoTest {
     @Then("o usuário verá que o sistema salvou como {string} para o dia {string} uma transferência que será realizada")
     public void thenTransacaoSalvaComo(String statusEsperado, String data) {
         LocalDate d = LocalDate.parse(data, BR);
-        Optional<Transacao> txOpt = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, d);
+        Optional<Transacao> txOpt = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d);
         assertTrue(txOpt.isPresent(), "Transação deveria existir para a data agendada");
         assertEquals(mapStatus(statusEsperado), txOpt.get().getStatus());
     }
@@ -144,9 +144,9 @@ public class AgendamentoTest {
     public void givenTransacaoJaAgendadaParaDia(String data) {
         perfilRepository.salvarPerfil(perfil);
         LocalDate d = LocalDate.parse(data, BR);
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
-        qtdAntes = (int) txRepo.listarTodasTransacoes().stream()
+        qtdAntes = (int) txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId())).count();
         assertEquals(1, qtdAntes, "Deveria existir exatamente 1 transação já criada");
     }
@@ -154,13 +154,13 @@ public class AgendamentoTest {
     @When("o agendamento tentar executar novamente em {int}\\/{int}\\/{int}")
     public void whenExecutarNovamenteEm(Integer dia, Integer mes, Integer ano) {
         LocalDate dataTentativa = LocalDate.of(ano, mes, dia);
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         agService.executarSeHoje(ag, dataTentativa);
     }
 
     @Then("nenhuma nova transação deve ser criada")
     public void thenNaoCriaNovaTransacao() {
-        int qtdDepois = (int) txRepo.listarTodasTransacoes().stream()
+        int qtdDepois = (int) txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId())).count();
         assertEquals(qtdAntes, qtdDepois, "Não deveria criar nova transação no mesmo dia");
     }
@@ -181,18 +181,18 @@ public class AgendamentoTest {
         agService.salvar(ag);
         dataTransacaoCriada = LocalDate.parse(data, BR);
         txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada, conta, false, ag.getPerfilId());
-        assertTrue(txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataTransacaoCriada).isPresent());
+        assertTrue(txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataTransacaoCriada).isPresent());
     }
 
     @When("o usuário quer cancelar essa transação que iria ser paga no dia {string}")
     public void whenCancelarTransacaoDoDia(String data) {
-        Transacao tx = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR)).orElseThrow();
+        Transacao tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR)).orElseThrow();
         tx.cancelar();
     }
 
     @Then("o sistema irá excluir esse pagamento")
     public void thenPagamentoExcluido() {
-        var tx = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataTransacaoCriada).orElseThrow();
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataTransacaoCriada).orElseThrow();
         assertEquals(StatusTransacao.CANCELADA, tx.getStatus());
     }
 
@@ -208,19 +208,19 @@ public class AgendamentoTest {
         agService.salvar(ag);
         dataOriginal = LocalDate.parse(data, BR);
         txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal, conta, false, ag.getPerfilId());
-        assertTrue(txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal).isPresent());
+        assertTrue(txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal).isPresent());
     }
 
     @When("o usuario tem essa transação que será paga no dia {string} no valor de {string}")
     public void whenUsuarioTemTransacaoNoDiaValor(String data, String valor) {
-        var tx = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR));
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR));
         assertTrue(tx.isPresent(), "Transação esperada não encontrada");
         assertEquals(parseValor(valor), tx.get().getValor());
     }
 
     @When("necessita atualizar o dia e\\/ou o valor da transaferência para {string} no novo valor de {string}")
     public void whenAtualizaDiaOuValorPara(String novaData, String novoValor) {
-        var txAntiga = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal)
+        var txAntiga = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal)
                 .orElseThrow(() -> new AssertionError("Transação original não encontrada"));
         txAntiga.cancelar();
         LocalDate dNova = LocalDate.parse(novaData, BR);
@@ -231,7 +231,7 @@ public class AgendamentoTest {
 
     @Then("o sistema irá atualizar esse pagamento")
     public void thenPagamentoAtualizado() {
-        var txNova = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal).orElseThrow();
+        var txNova = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal).orElseThrow();
         assertEquals(StatusTransacao.PENDENTE, txNova.getStatus());
         assertNotEquals(StatusTransacao.EFETIVADA, txNova.getStatus());
     }
@@ -259,13 +259,13 @@ public class AgendamentoTest {
     @Then("deve ser criada uma data de transação no dia {string}")
     public void thenCriaTransacaoNaData(String dataEsperada) {
         LocalDate d = LocalDate.parse(dataEsperada, BR);
-        var tx = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, d);
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d);
         assertTrue(tx.isPresent(), "Deveria existir a transação da data inicial");
     }
 
     @Then("a próxima data de transação deve ser {string}")
     public void thenProximaDataDeveSer(String proximaEsperada) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         assertEquals(LocalDate.parse(proximaEsperada, BR), ag.getProximaData());
     }
 
@@ -282,7 +282,7 @@ public class AgendamentoTest {
     @When("o usuário tem essa assinatura para pagar no dia {string}")
     public void whenTemAssinaturaParaDia(String dia) {
         hoje = LocalDate.parse(dia, BR);
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         agService.executarSeHoje(ag, hoje);
     }
 
@@ -290,7 +290,7 @@ public class AgendamentoTest {
     public void thenAgendaPagamentoParaDia(String dia) {
         LocalDate d = LocalDate.parse(dia, BR);
         assertTrue(
-                txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, d).isPresent(),
+                txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d).isPresent(),
                 "Deveria existir transação agendada para " + dia
         );
     }
@@ -311,20 +311,20 @@ public class AgendamentoTest {
 
     @When("o usuário quer cancelar essa assinatura")
     public void whenCancelaAssinatura() {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         ag.cancelar();
     }
 
     @Then("o status deve ser {string}")
     public void thenStatusDeveSer(String esperado) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         boolean ativoEsperado = !"cancelada".equalsIgnoreCase(esperado);
         assertEquals(ativoEsperado, ag.isAtivo());
     }
 
     @Then("não deve existir próxima data de execução")
     public void thenSemProximaData() {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         assertNull(ag.getProximaData(), "Após cancelar, a próxima data deve ser nula");
     }
 
@@ -397,7 +397,7 @@ public class AgendamentoTest {
         assertNotNull(msgErro, "Esperado erro ao tentar reagendar para data no passado");
 
         //e a data da transação NÃO pode ter mudado
-        var tx = txRepo.listarTodasTransacoes().stream()
+        var tx = txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
                 .findFirst().orElseThrow();
         assertEquals(dataAntesReagendamento, tx.getData(), "A data da transação não deveria ter sido alterada");
@@ -434,13 +434,13 @@ public class AgendamentoTest {
         conta.creditar(new BigDecimal("1000.00"));   // ou: conta.depositar(...)
 
         //efetiva (agora com saldo suficiente)
-        var tx = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, d).orElseThrow();
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d).orElseThrow();
         txService.efetivarTransacao(tx.getId());
     }
 
     @When("o usuário tenta cancelar essa transação executada")
     public void whenCancelaTransacaoExecutada() {
-        var tx = txRepo.listarTodasTransacoes().stream()
+        var tx = txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
                 .findFirst().orElseThrow();
         try {
@@ -452,7 +452,7 @@ public class AgendamentoTest {
 
     @Then("o sistema deve informar que não é possível cancelar uma transação já executada")
     public void thenNaoCancelaExecutada() {
-        var tx = txRepo.listarTodasTransacoes().stream()
+        var tx = txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()))
                 .findFirst().orElseThrow();
         assertEquals(StatusTransacao.EFETIVADA, tx.getStatus());
@@ -471,19 +471,19 @@ public class AgendamentoTest {
     @Given("a próxima data de transação é {string}")
     public void givenProximaData(String data) {
         perfilRepository.salvarPerfil(perfil);
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         assertEquals(LocalDate.parse(data, BR), ag.getProximaData());
     }
 
     @When("o sistema executa a cobrança no dia {string}")
     public void whenExecutaCobranca(String data) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         agService.executarSeHoje(ag, LocalDate.parse(data, BR));
     }
 
     @Then("a próxima data de transação deve ser {string}  # ou {int}\\/{int} em ano bissexto")
     public void thenProximaDataDeveSerOu(String esperado, Integer dia, Integer mes) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
 
         LocalDate esperado1 = LocalDate.parse(esperado, BR);
 
@@ -516,13 +516,13 @@ public class AgendamentoTest {
 
     @When("o usuário tenta cancelar essa assinatura")
     public void whenCancelaAssinaturaInexistente() {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         if (ag.isAtivo()) ag.cancelar();
     }
 
     @Then("o sistema deve informar que não há assinatura ativa para cancelar")
     public void thenNaoHaAssinaturaAtiva() {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         assertFalse(ag.isAtivo(), "Assinatura não deveria estar ativa");
     }
 
@@ -530,20 +530,20 @@ public class AgendamentoTest {
     @Given("não existe transação agendada para o dia {string}")
     public void givenNaoExisteTransacao(String data) {
         perfilRepository.salvarPerfil(perfil);
-        var tx = txRepo.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR));
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDate.parse(data, BR));
         assertTrue(tx.isEmpty(), "Não deveria existir transação na data " + data);
     }
 
     @When("o agendamento executar em {string}")
     public void whenAgendamentoExecutar(String data) {
-        var ag = agService.obter(agendamentoId).orElseThrow();
+        var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         agService.executarSeHoje(ag, LocalDate.parse(data, BR));
     }
 
     @Then("deve ser criada exatamente uma transação para o dia {string}")
     public void thenCriaExatamenteUma(String data) {
         LocalDate d = LocalDate.parse(data, BR);
-        var txs = txRepo.listarTodasTransacoes().stream()
+        var txs = txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()) && d.equals(t.getData()))
                 .toList();
         assertEquals(1, txs.size(), "Deveria existir exatamente uma transação nessa data");
@@ -601,7 +601,7 @@ public class AgendamentoTest {
         assertNotNull(msgErro, "Esperado erro ao salvar agendamento no passado");
         //validação via repositório (como se fosse o banco)
         assertTrue(
-                agRepo.obterAgendamento(agendamentoId).isEmpty(),
+                agService.obterAgendamento(agendamentoId).isEmpty(),
                 "Agendamento não deveria ter sido salvo no repositório"
         );
     }

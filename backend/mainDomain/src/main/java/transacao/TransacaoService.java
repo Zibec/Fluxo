@@ -144,7 +144,7 @@ public class TransacaoService {
         repo.salvarTransacao(t);
     }
 
-    void salvarTransacao(Transacao t){
+    public void salvarTransacao(Transacao t){
         if (t.getPerfilId() == null){
             throw new RuntimeException("É obrigatório a seleção de um perfil.");
         }
@@ -155,16 +155,16 @@ public class TransacaoService {
         repo.salvarTransacao(t);
     }
 
-    Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data){
+    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data){
         return repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
     }
 
-    boolean existeTransacaoPorCategoriaId(String categoriaId){
+    public boolean existeTransacaoPorCategoriaId(String categoriaId){
         Objects.requireNonNull(categoriaId, "ID da Categoria não pode ser nulo");
         return repo.existeTransacaoPorCategoriaId(categoriaId);
     }
 
-    List<Transacao> listarTodasTransacoes(){
+    public List<Transacao> listarTodasTransacoes(){
         return repo.listarTodasTransacoes();
     }
 
@@ -177,11 +177,11 @@ public class TransacaoService {
         return repo.buscarTransacaoPorId(id);
     }
 
-    void atualizarTransacao(Transacao t){
+    public void atualizarTransacao(Transacao t){
         repo.atualizarTransacao(t);
     }
 
-    void excluirTransacao(String id){
+    public void excluirTransacao(String id){
         Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
 
         Transacao removida = transacao.remove(id);
@@ -196,7 +196,7 @@ public class TransacaoService {
         repo.excluirTransacao(id);
     }
 
-    Optional<Transacao> obterTransacaoPorId(String id){
+    public Optional<Transacao> obterTransacaoPorId(String id){
         Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
         return repo.obterTransacaoPorId(id);
     }
