@@ -5,6 +5,8 @@ import generics.FormaPagamento;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static org.apache.commons.lang3.Validate.notNull;
+
 public class Conta implements FormaPagamento {
 
     private final ContaId id;
@@ -22,7 +24,9 @@ public class Conta implements FormaPagamento {
     public Conta(String nome, String tipo, String banco) {
         this.id = new ContaId(UUID.randomUUID().toString());
         this.saldo = BigDecimal.ZERO;
+        notNull(nome);
         this.nome = nome;
+        notNull(tipo);
         this.tipo = tipo;
         this.banco = banco;
     }

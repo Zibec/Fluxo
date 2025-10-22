@@ -11,6 +11,8 @@ public class CartaoService {
 
     public void salvar(Cartao cartao) {
         notNull(cartao, "O cartão não pode ser nulo");
+        notNull(cartao.getNumero(), "O número do cartão não pode ser nulo");
+
         cartaoRepositorio.salvar(cartao);
     }
 

@@ -1,16 +1,1 @@
-categoria\CategoriaTest.class
 RunCucumberTest.class
-patrimonio\PatrimonioLiquidoTest.class
-contasapagar\ContasAPagarTest.class
-reembolso\ReembolsoTest.class
-orcamento\OrcamentoTest$Notificador.class
-rastreamentoDeInvestimentos\RastreamentoDeInvestimentosTest$2.class
-usuario\UsuarioTest.class
-rastreamentoDeInvestimentos\RastreamentoDeInvestimentosTest.class
-orcamento\OrcamentoTest$FakeTransacaoService.class
-meta\MetaTest.class
-conta\ContaTest.class
-rastreamentoDeInvestimentos\RastreamentoDeInvestimentosTest$1.class
-cartao\CartaoTest.class
-orcamento\OrcamentoTest.class
-agendamento\AgendamentoTest.class

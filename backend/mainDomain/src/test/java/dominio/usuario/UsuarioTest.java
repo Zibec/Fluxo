@@ -135,6 +135,7 @@ public class UsuarioTest {
     // Scenario: Alterar senha com senha atual correta (sucesso)
     @Given("informo a senha atual correta {string}")
     public void informo_a_senha_atual_correta(String senha) {
+        usuarioRepositorio.deletarUsuario(usuarioLogado.getId());
         usuarioLogado = new Usuario("usuario_logado", "logado@dominio.com", "senha123");
         usuarioService.salvar(usuarioLogado);
         

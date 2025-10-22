@@ -10,6 +10,14 @@ public class UsuarioService {
     }
 
     public void salvar(Usuario usuario) {
+        if(usuarioRepositorio.usernameExistente(usuario.getUsername())) {
+            throw new IllegalArgumentException("Usuario esse username já existe");
+        }
+
+        if(usuarioRepositorio.emailExistente(usuario.getEmail().getEndereco())) {
+            throw new IllegalArgumentException("Usuario com esse email já existe");
+        }
+
         usuarioRepositorio.salvarUsuario(usuario);
     }
 

@@ -18,18 +18,21 @@ public class Cartao implements FormaPagamento {
 
     private BigDecimal limite;
     private BigDecimal saldo;
-
-    private static int contador = 0;
     private Fatura fatura = null;
     private LocalDate dataFechamentoFatura;
     private LocalDate dataVencimentoFatura;
 
     public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura) {
         this.id = new CartaoId(UUID.randomUUID().toString());
+        notNull(numero);
         this.numero = numero;
+        notNull(titular);
         this.titular = titular;
+        notNull(validade);
         this.validade = validade;
+        notNull(cvv);
         this.cvv = cvv;
+        notNull(limite);
         this.limite = limite;
         this.saldo = BigDecimal.ZERO;
         this.dataFechamentoFatura = dataFechamentoFatura;
@@ -38,10 +41,15 @@ public class Cartao implements FormaPagamento {
 
     public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo) {
         this.id = new CartaoId(UUID.randomUUID().toString());
+        notNull(numero);
         this.numero = numero;
+        notNull(titular);
         this.titular = titular;
+        notNull(validade);
         this.validade = validade;
+        notNull(cvv);
         this.cvv = cvv;
+        notNull(limite);
         this.limite = limite;
         this.saldo = saldo;
         this.dataFechamentoFatura = dataFechamentoFatura;

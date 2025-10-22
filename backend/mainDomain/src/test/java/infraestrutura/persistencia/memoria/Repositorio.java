@@ -531,6 +531,11 @@ public class Repositorio implements
         usuarios.put(usuario.getId(), usuario);
     }
 
+    public void deletarUsuario(String id) {
+        notNull(id, "O ID do Usuario não pode ser nulo");
+        usuarios.remove(id);
+    }
+
     public Optional<Usuario> obterUsuario(String contaId) {
         notNull(contaId, "O ID do Usuario não pode ser nulo");
         return Optional.ofNullable(usuarios.get(contaId));
