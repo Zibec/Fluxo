@@ -56,6 +56,9 @@ public class Investimento {
         this.valorAtual = this.valorAtual.subtract(valor);
     }
 
+    public void setValorAtual(BigDecimal valorAtual) {
+        this.valorAtual = valorAtual;
+    }
 
 
 }

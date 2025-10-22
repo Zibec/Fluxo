@@ -84,7 +84,6 @@ public class ReembolsoTest {
 
     @Given("que eu tenho uma despesa original com ID {string} de R$ {double}")
     public void que_eu_tenho_uma_despesa_original_com_id_de_r(String id, Double valor) {
-        // CONSTRUTOR CORRIGIDO
         Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, "Categoria Teste", contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
         transacaoRepo.salvarTransacao(despesa);
     }
