@@ -30,7 +30,7 @@ public class RastreamentoDeInvestimentosTest {
     private TaxaSelicService taxaSelicService = new TaxaSelicService(selicApiClient, taxaSelicRepository);
     private Exception excecaoCapturada;
 
-    private HistoricoInvestimentoService historicoInvestimentoService = new HistoricoInvestimentoService(historicoInvestimentoRepositorio);
+    private HistoricoInvestimentoService historicoInvestimentoService;
 
     //Regra de negócio: O sistema precisa de um job agendado para buscar a taxa Selic diária de uma API externa confiável.
 
@@ -53,7 +53,7 @@ public class RastreamentoDeInvestimentosTest {
     //Checar via repositório se a taxa foi armazenada
     @Then("a taxa Selic diária é armazenada no sistema")
     public void taxaSelicArmazenada(){
-        assertNotNull(taxaSelicRepository.obterTaxaSelic());
+        assertNotNull(taxaSelicService.obterTaxaSelic());
     }
 
     //Scenario: Falha ao consultar a API externa
@@ -72,7 +72,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("a texa Selic não é atualizada naquele dia")
     public void taxaNaoAtualizada(){
-        assertNull(taxaSelicRepository.obterTaxaSelic());
+        assertNull(taxaSelicService.obterTaxaSelic());
     }
 
     @And("o sistema deve registrar um log de erro")
@@ -99,6 +99,7 @@ public class RastreamentoDeInvestimentosTest {
         investimentoService.salvar(investimento);
         jobScheduler = new JobScheduler(investimentoService, investimentoRepositorio);
         excecaoCapturada = null;
+        historicoInvestimentoService = new HistoricoInvestimentoService(historicoInvestimentoRepositorio);
         historicoInvestimentoRepositorio.setStatus(true);
     }
 
@@ -106,8 +107,8 @@ public class RastreamentoDeInvestimentosTest {
     public void taxaSelicUmPorcento(Double double1, Integer int1){
         taxaSelicService.atualizarTaxaSelic();
         double a = 1;
-        assertNotNull(taxaSelicRepository.obterTaxaSelic().getValor());
-        assertEquals(new BigDecimal(double1), taxaSelicRepository.obterTaxaSelic().getValor());
+        assertNotNull(taxaSelicService.obterTaxaSelic().getValor());
+        assertEquals(new BigDecimal(double1), taxaSelicService.obterTaxaSelic().getValor());
     }
 
     @When("o job de atualização de rendimento é executado")
