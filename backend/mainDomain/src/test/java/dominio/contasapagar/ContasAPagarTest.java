@@ -259,9 +259,34 @@ public class ContasAPagarTest {
         assertTrue(t.isProximaDoVencimento());
     }
 
-    @Then("o sistema deve recusar a operação e exibir mensagem de erro")
-    public void oSistemaDeveRecusarAOperaçãoEExibirMensagemDeErro() {
-        //assertNotNull(erro, "Esperava-se que o sistema lançasse um erro, mas nenhum foi capturado.");
-        assertEquals("Saldo insuficiente para realizar o débito.", erro.getMessage());
+    @Then("o sistema deve recusar a operação e exibir mensagem de erro {string}")
+    public void oSistemaDeveRecusarAOperaçãoEExibirMensagemDeErro(String mensagem) {
+        assertEquals(mensagem, erro.getMessage());
     }
+
+    @Given("existe uma transação efetivada de {string}")
+    public void existeUmaTransaçãoEfetivadaDe(String valor){
+        perfilService.salvarPerfil(perfil);
+        transacao = new Transacao(
+                UUID.randomUUID().toString(),
+                null,
+                "Transação Única",
+                new BigDecimal(valor),
+                LocalDate.now(),
+                StatusTransacao.EFETIVADA,
+                "categoria1",
+                conta.getId(),
+                true,
+                Tipo.DESPESA,
+                perfilRepository.obterPerfil("0").getId()
+        );
+        txService.salvarTransacao(transacao);
+    }
+
+    @When("o usuario cancela essa transação")
+    public void oUsuarioCancelaEssaTransação() {
+        txService.cancelarTransacao(transacao.getId());
+    }
+
+    
 }
