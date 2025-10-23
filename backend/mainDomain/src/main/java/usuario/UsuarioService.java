@@ -34,6 +34,21 @@ public class UsuarioService {
         return usuarioRepositorio.usernameExistente(username);
     }
 
+    public void changeUsername(String usuarioId, String newUsername, String password) {
+        Usuario usuario = obter(usuarioId);
+
+        if (!usuario.getPassword().verify(password)) {
+            throw new IllegalArgumentException("Senha incorreta");
+        }
+
+        if (usernameExistente(newUsername)) {
+            throw new IllegalArgumentException("Nome de usuário já está em uso");
+        }
+        usuario.setUsername(newUsername);
+        usuarioRepositorio.deletarUsuario(usuarioId);
+        salvar(usuario);
+    }
+
     public void changeEmail(Usuario usuario, Email oldEmail, String newEmail, String password) {
         if (!usuario.getPassword().verify(password)) {
             throw new SecurityException("Senha incorreta");
