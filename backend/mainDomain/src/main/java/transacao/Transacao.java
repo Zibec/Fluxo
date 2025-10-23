@@ -94,8 +94,8 @@ public class Transacao {
 
     /** Cancela a transação (ex: usuário cancelou antes de pagar). */
     public void cancelar() {
-        if (this.status != StatusTransacao.EFETIVADA) {
-            throw new IllegalStateException("Só é possível cancelar transações efetivadas");
+        if (this.status != StatusTransacao.PENDENTE) {
+            throw new IllegalStateException("Só é possível cancelar transações pendentes");
         }
         this.status = StatusTransacao.CANCELADA;
     }

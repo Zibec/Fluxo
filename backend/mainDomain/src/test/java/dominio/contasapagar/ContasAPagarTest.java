@@ -263,34 +263,5 @@ public class ContasAPagarTest {
     public void oSistemaDeveRecusarAOperaçãoEExibirMensagemDeErro(String mensagem) {
         assertEquals(mensagem, erro.getMessage());
     }
-
-    @Given("existe uma transação efetivada de {string}")
-    public void existeUmaTransaçãoEfetivadaDe(String valor){
-        perfilService.salvarPerfil(perfil);
-        transacao = new Transacao(
-                UUID.randomUUID().toString(),
-                null,
-                "Transação Única",
-                new BigDecimal(valor),
-                LocalDate.now(),
-                StatusTransacao.EFETIVADA,
-                "categoria1",
-                conta.getId(),
-                true,
-                Tipo.DESPESA,
-                perfilRepository.obterPerfil("0").getId()
-        );
-        txService.salvarTransacao(transacao);
-    }
-
-    @When("o usuario cancela essa transação")
-    public void oUsuarioCancelaEssaTransação() {
-        try {
-            txService.cancelarTransacao(transacao.getId());
-        } catch (Exception e) {
-            erro = e;
-        }
-    }
-
     
 }

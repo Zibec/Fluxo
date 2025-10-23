@@ -200,16 +200,4 @@ public class TransacaoService {
         Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
         return repo.obterTransacaoPorId(id);
     }
-
-    public void cancelarTransacao(String transacaoId){
-        Objects.requireNonNull(transacaoId, "O ID da transação não pode ser nulo");
-        Transacao t = obterTransacaoPorId(transacaoId).orElse(null);
-        Conta conta = contaRepo.obterConta(t.getPagamentoId().getId()).orElse(null);
-
-        t.cancelar();
-        conta.creditar(t.getValor());
-
-        repo.salvarTransacao(t);
-        contaRepo.salvar(conta);
-    }
 }
