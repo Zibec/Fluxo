@@ -285,7 +285,11 @@ public class ContasAPagarTest {
 
     @When("o usuario cancela essa transação")
     public void oUsuarioCancelaEssaTransação() {
-        txService.cancelarTransacao(transacao.getId());
+        try {
+            txService.cancelarTransacao(transacao.getId());
+        } catch (Exception e) {
+            erro = e;
+        }
     }
 
     
