@@ -62,4 +62,8 @@ public class PatrimonioService {
         notNull(snapshot, "O snapshot não pode ser nulo");
         snapshotRepositorio.salvarPatrimonio(snapshot);
     }
+
+    public void limparPatrimonio() {
+        snapshotRepositorio.limparPatrimonio();
+    }
 }

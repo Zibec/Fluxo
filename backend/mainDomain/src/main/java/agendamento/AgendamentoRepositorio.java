@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public interface AgendamentoRepositorio {
 
-    void salvar(Agendamento a);
+    void salvar(Agendamento agendamento);
 
     Optional<Agendamento> obterAgendamento(String id);
 }

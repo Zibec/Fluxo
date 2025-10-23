@@ -20,18 +20,18 @@ public class AgendamentoService {
         this.transacaoService = Objects.requireNonNull(transacaoService);
     }
 
-    public void salvar(Agendamento a) {
-        agRepo.salvar(a);
+    public void salvar(Agendamento agendamento) {
+        agRepo.salvar(agendamento);
     }
 
 
-    public void salvarValidandoNaoNoPassado(Agendamento a, LocalDate hoje) {
-        Objects.requireNonNull(a, "Agendamento obrigatório");
+    public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje) {
+        Objects.requireNonNull(agendamento, "Agendamento obrigatório");
         Objects.requireNonNull(hoje, "Hoje obrigatório");
-        if (a.getProximaData() != null && a.getProximaData().isBefore(hoje)) {
+        if (agendamento.getProximaData() != null && agendamento.getProximaData().isBefore(hoje)) {
             throw new IllegalArgumentException("Data inválida por estar no passado");
         }
-        agRepo.salvar(a);
+        agRepo.salvar(agendamento);
     }
 
     public Optional<Agendamento> obterAgendamento(String id) {
@@ -39,18 +39,18 @@ public class AgendamentoService {
     }
 
     /** Executa se hoje == próximaData; cria transação e avança próximaData. */
-    public boolean executarSeHoje(Agendamento a, LocalDate hoje) {
-        if (!a.isAtivo() || !Objects.equals(a.getProximaData(), hoje)) return false;
+    public boolean executarSeHoje(Agendamento agendamento, LocalDate hoje) {
+        if (!agendamento.isAtivo() || !Objects.equals(agendamento.getProximaData(), hoje)) return false;
 
-        String chave = a.getId() + "#" + hoje;
+        String chave = agendamento.getId() + "#" + hoje;
         if (!execucoesDoDia.add(chave)) return false;
 
         transacaoService.criarPendenteDeAgendamento(
-                a.getId(), a.getDescricao(), a.getValor(), hoje, new Conta(), false, a.getPerfilId()
+                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, new Conta(), false, agendamento.getPerfilId()
         );
 
-        a.avancarProximaData();
-        agRepo.salvar(a);
+        agendamento.avancarProximaData();
+        agRepo.salvar(agendamento);
         return true;
     }
 }
