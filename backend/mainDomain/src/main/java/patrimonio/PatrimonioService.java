@@ -43,12 +43,8 @@ public class PatrimonioService {
         return totalContas.add(totalInvestimentos).subtract(totalDividas);
     }
 
-    /**
-     * Calcula o patrimônio líquido e salva um registro histórico (snapshot)
-     * APENAS se a data fornecida for o último dia do seu respectivo mês.
-     */
+
     public void gerarEsalvarSnapshot(LocalDate data) {
-        // --- LÓGICA AJUSTADA AQUI ---
         YearMonth yearMonth = YearMonth.from(data);
         boolean isUltimoDiaDoMes = data.equals(yearMonth.atEndOfMonth());
 
@@ -57,10 +53,13 @@ public class PatrimonioService {
             Patrimonio snapshot = new Patrimonio(data, valorAtual);
             snapshotRepositorio.salvarPatrimonio(snapshot);
         }
-        // Se não for o último dia, ele simplesmente não faz nada.
     }
-
     public List<Patrimonio> obterHistoricoDePatrimonio() {
         return snapshotRepositorio.obterTodosPatrimonios();
+    }
+
+    public void salvarSnapshot(Patrimonio snapshot) {
+        notNull(snapshot, "O snapshot não pode ser nulo");
+        snapshotRepositorio.salvarPatrimonio(snapshot);
     }
 }

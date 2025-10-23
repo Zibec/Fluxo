@@ -25,4 +25,8 @@ public class ContaService {
         notNull(nome, "O nome da conta não pode ser nulo");
         return contaRepositorio.contaExistente(nome);
     }
+
+    public void limparConta() {
+        contaRepositorio.limparConta();
+    }
 }

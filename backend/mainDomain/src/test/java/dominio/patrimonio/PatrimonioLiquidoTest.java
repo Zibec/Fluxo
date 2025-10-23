@@ -2,11 +2,13 @@ package dominio.patrimonio;
 
 import conta.Conta;
 import conta.ContaRepositorio;
+import conta.ContaService;
 import divida.Divida;
 import divida.DividaRepositorio;
 import infraestrutura.persistencia.memoria.Repositorio;
 import investimento.Investimento;
 import investimento.InvestimentoRepositorio;
+import investimento.InvestimentoService;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -16,6 +18,9 @@ import org.junit.jupiter.api.Assertions;
 import patrimonio.Patrimonio;
 import patrimonio.PatrimonioRepositorio;
 import patrimonio.PatrimonioService;
+import divida.DividaService;
+import historicoInvestimento.HistoricoInvestimentoRepositorio;
+import taxaSelic.TaxaSelicRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,6 +35,11 @@ public class PatrimonioLiquidoTest {
     private DividaRepositorio dividaRepositorio;
     private PatrimonioRepositorio snapshotRepositorio;
     private PatrimonioService patrimonioService;
+    private InvestimentoService  investimentoService;
+    private ContaService contaService;
+    private DividaService dividaService;
+    private HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio;
+    private TaxaSelicRepository taxaSelicRepository;
 
     private BigDecimal resultadoPatrimonio;
     private List<Patrimonio> historicoResultado;
@@ -43,6 +53,13 @@ public class PatrimonioLiquidoTest {
         investimentoRepositorio = new Repositorio();
         dividaRepositorio = new Repositorio();
         snapshotRepositorio = new Repositorio();
+        taxaSelicRepository = new Repositorio();
+        historicoInvestimentoRepositorio = new Repositorio();
+
+        contaService = new ContaService(contaRepositorio);
+        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio);
+        dividaService = new DividaService(dividaRepositorio);
+
         patrimonioService = new PatrimonioService(
                 contaRepositorio,
                 investimentoRepositorio,
@@ -60,7 +77,7 @@ public class PatrimonioLiquidoTest {
     public void que_eu_tenho_uma_conta_com_saldo(String nomeConta, Double saldo) {
         Conta conta = new Conta(nomeConta, "Corrente", "Banco Teste", BigDecimal.ZERO);
         conta.setSaldo(BigDecimal.valueOf(saldo));
-        contaRepositorio.salvar(conta);
+        contaService.salvar(conta);
     }
 
     @Given("tenho uma {string} com saldo de R$ {double}")
@@ -71,14 +88,14 @@ public class PatrimonioLiquidoTest {
     @Given("tenho um {string} com valor de R$ {double}")
     public void tenho_um_investimento_com_valor_de(String nomeInvestimento, Double valor) {
         Investimento investimento = new Investimento("0",nomeInvestimento,"teste", BigDecimal.valueOf(valor));
-        investimentoRepositorio.salvar(investimento);
+        investimentoService.salvar(investimento);
     }
 
     @Given("um {string} com valor não definido \\(nulo)")
     public void um_investimento_com_valor_nao_definido_nulo(String nomeInvestimento) {
         try {
             Investimento investimentoInvalido = new Investimento("invNuloId", nomeInvestimento, "teste nulo", null);
-            investimentoRepositorio.salvar(investimentoInvalido);
+            investimentoService.salvar(investimentoInvalido);
         } catch (IllegalArgumentException e) {
             this.excecaoCapturada = e;
             this.mensagemDeErro = e.getMessage();
@@ -89,14 +106,14 @@ public class PatrimonioLiquidoTest {
     @Given("tenho um {string} com uma dívida de R$ {double}")
     public void tenho_uma_divida_de(String nomeDivida, Double valor) {
         Divida divida = new Divida(nomeDivida, BigDecimal.valueOf(valor));
-        dividaRepositorio.salvar(divida);
+        dividaService.salvar(divida);
     }
 
     @Given("meu patrimônio líquido atual é de R$ {double}")
     public void meu_patrimonio_liquido_atual_e_de(Double valorPatrimonio) {
-        contaRepositorio.limparConta();
-        investimentoRepositorio.limparInvestimento();
-        dividaRepositorio.limparDivida();
+        contaService.limparConta();
+        investimentoService.limparInvestimento();
+        dividaService.limparDivida();
         que_eu_tenho_uma_conta_com_saldo("Conta Única", valorPatrimonio);
     }
 
@@ -125,7 +142,7 @@ public class PatrimonioLiquidoTest {
             LocalDate data = LocalDate.parse(linha.get("Data"));
             String valorLimpo = linha.get("Valor").replaceAll("[^\\d,.-]", "").replace(".", "").replace(",", ".");
             BigDecimal valor = new BigDecimal(valorLimpo);
-            snapshotRepositorio.salvarPatrimonio(new Patrimonio(data, valor));
+            patrimonioService.salvarSnapshot(new Patrimonio(data, valor));
         }
     }
 
@@ -176,7 +193,7 @@ public class PatrimonioLiquidoTest {
 
     @Then("um registro histórico do patrimônio deve ser salvo com a data de hoje e o valor de R$ {double}")
     public void um_registro_historico_do_patrimonio_deve_ser_salvo(Double valorEsperado) {
-        List<Patrimonio> historico = snapshotRepositorio.obterTodosPatrimonios();
+        List<Patrimonio> historico = patrimonioService.obterHistoricoDePatrimonio();
         Assertions.assertFalse(historico.isEmpty(), "Nenhum snapshot foi salvo, mas era esperado um.");
         Assertions.assertEquals(1, historico.size(), "Era esperado apenas 1 snapshot, mas foram encontrados: " + historico.size());
 
@@ -202,7 +219,7 @@ public class PatrimonioLiquidoTest {
 
     @Then("nenhum registro histórico de patrimônio deve ser salvo")
     public void nenhum_registro_historico_de_patrimonio_deve_ser_salvo() {
-        Assertions.assertTrue(snapshotRepositorio.obterTodosPatrimonios().isEmpty(), "Um snapshot foi salvo, mas não era esperado.");
+        Assertions.assertTrue(patrimonioService.obterHistoricoDePatrimonio().isEmpty(), "Um snapshot foi salvo, mas não era esperado.");
     }
 
     @Then("um gráfico de linhas deve ser exibido com os dados do histórico")
