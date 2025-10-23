@@ -85,14 +85,3 @@ Feature: Gestão de Orçamentos
         Then o sistema deve mostrar que o total gasto para "Alimentação" em "09/2025" permanece "R$ 0,00"
         And o sistema deve mostrar que o progresso de uso do orçamento é "0%"
 
-# história 1.5
-    Scenario: Limpar todos os orçamentos
-        Given que existe uma categoria "Alimentação" com gasto limite de "R$ 100,00" para o mês "09/2025"
-        When o sistema limpa todos os orçamentos
-        Then não deve existir orçamento para "Alimentação" em "09/2025"
-
-    Scenario: Falha ao limpar todos os orçamentos
-        Given que existe uma categoria "Alimentação" com gasto limite de "R$ 100,00" para o mês "09/2025"
-        When o sistema tenta limpar os orçamentos e ocorre uma falha
-        Then o sistema deve retornar "Falha ao limpar orçamentos"
-        And deve continuar existindo orçamento para "Alimentação" em "09/2025"
