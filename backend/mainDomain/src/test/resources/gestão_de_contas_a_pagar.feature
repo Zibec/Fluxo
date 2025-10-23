@@ -54,5 +54,5 @@ Feature: Gestão de Contas a Pagar
     Given existe uma transação única pendente de "250.00"
     And o usuário possui uma conta com saldo "1000.00"
     When o usuario cancela essa transação
-    Then o sistema deve recusar a operação e exibir mensagem de erro "Só é possível cancelar transações pendentes"
+    Then o sistema deve recusar a operação e exibir mensagem de erro "Só é possível cancelar transações efetivadas"
     And o saldo da conta deve ser "1000.00"

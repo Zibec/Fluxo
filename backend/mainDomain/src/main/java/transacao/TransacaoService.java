@@ -202,6 +202,7 @@ public class TransacaoService {
     }
 
     public void cancelarTransacao(String transacaoId){
+        Objects.requireNonNull(transacaoId, "O ID da transação não pode ser nulo");
         Transacao t = obterTransacaoPorId(transacaoId).orElse(null);
         Conta conta = contaRepo.obterConta(t.getPagamentoId().getId()).orElse(null);
 
