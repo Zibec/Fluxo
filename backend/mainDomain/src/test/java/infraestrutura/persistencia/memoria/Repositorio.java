@@ -109,8 +109,9 @@ public class Repositorio implements
 
     private final Map<String, Agendamento> agendamento = new ConcurrentHashMap<>();
 
-    public void salvar(Agendamento a) {
+    public Agendamento salvar(Agendamento a) {
         agendamento.put(a.getId(), a);
+        return a;
     }
 
     public Optional<Agendamento> obterAgendamento(String id) {
@@ -123,9 +124,10 @@ public class Repositorio implements
 
     private Map<CartaoNumero, Cartao> cartoes = new HashMap<>();
 
-    public void salvar(Cartao cartao) {
+    public Cartao salvar(Cartao cartao) {
         notNull(cartao, "O cartão não pode ser nulo");
         cartoes.put(cartao.getNumero(), cartao);
+        return cartao;
     }
 
     public Cartao obterCartao(CartaoNumero numero) {
