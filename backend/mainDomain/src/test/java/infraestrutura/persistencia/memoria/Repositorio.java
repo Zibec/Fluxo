@@ -90,7 +90,6 @@ public class Repositorio implements
     }
 
     public void deletarInvestimento(String investimentoId){
-        notNull(investimentoId, "O id não pode ser nulo");
         for (Investimento inv : investimentos){
             if (investimentoId.equals(inv.getId())){
                 investimentos.remove(inv);

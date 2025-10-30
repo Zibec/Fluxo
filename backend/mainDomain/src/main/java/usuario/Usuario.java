@@ -42,21 +42,14 @@ public class Usuario {
     public void setFormatoDataPreferido(String formatoDataPreferido) {
         this.formatoDataPreferido = DataFormato.valueOf(formatoDataPreferido);
     }
+    public void setUsername(String newUsername) {
+        this.username = newUsername;
+    }
     public Moeda getMoedaPreferida() {
         return moedaPreferida;
     }
     public void setMoedaPreferida(String moedaPreferida) {
         this.moedaPreferida = Moeda.valueOf(moedaPreferida);
-    }
-    public void setUsername(String newUsername, String password, UsuarioService service) {
-        if (!this.password.verify(password)) {
-            throw new IllegalArgumentException("Senha incorreta");
-        }
-
-        if (service.usernameExistente(newUsername)) {
-            throw new IllegalArgumentException("Nome de usuário já está em uso");
-        }
-        this.username = newUsername;
     }
     public void setEmail(Email newEmail) {
         this.userEmail = newEmail;

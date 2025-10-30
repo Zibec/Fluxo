@@ -1,5 +1,6 @@
 package conta;
 
+import java.util.List;
 import java.util.Optional;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -24,5 +25,13 @@ public class ContaService {
     public boolean contaExistente(String nome) {
         notNull(nome, "O nome da conta não pode ser nulo");
         return contaRepositorio.contaExistente(nome);
+    }
+
+    public List<Conta> listarTodasContas(){
+        return contaRepositorio.listarTodasContas();
+    }
+
+    public void limparConta() {
+        contaRepositorio.limparConta();
     }
 }

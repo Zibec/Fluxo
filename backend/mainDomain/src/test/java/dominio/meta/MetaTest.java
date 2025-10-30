@@ -82,7 +82,7 @@ public class MetaTest {
 
     @And("o saldo da meta {string} deve permanecer R$ {double}")
     public void oSaldoDaMetaDevePermanecer(String nomeMeta, Double saldoMeta) {
-        Meta metaNaoAlterada = metaRepositorio.obterMeta(this.meta.getId()).get();
+        Meta metaNaoAlterada = metaService.obter(this.meta.getId()).get();
 
         assertEquals(0, new BigDecimal(saldoMeta).compareTo(metaNaoAlterada.getSaldoAcumulado()),
                 "O saldo da meta não deveria ter mudado, mas mudou.");
@@ -91,7 +91,7 @@ public class MetaTest {
     //cenario 3
     @Given("que não existe uma meta de poupança chamada {string}")
     public void que_nao_existe_uma_meta_de_poupanca_chamada(String nomeMeta) {
-        assertTrue(metaRepositorio.obterMetaPorNome(nomeMeta).isEmpty(), "Pré-condição falhou: Uma meta com este nome já existe.");
+        assertTrue(metaService.obterPorNome(nomeMeta).isEmpty(), "Pré-condição falhou: Uma meta com este nome já existe.");
     }
 
     @When("o usuário cria uma nova meta de poupança chamada {string} com valor alvo de R$ {double} e prazo de {int} meses")
@@ -109,7 +109,7 @@ public class MetaTest {
 
     @Then("uma meta chamada {string} deve existir no sistema")
     public void uma_meta_chamada_deve_existir_no_sistema(String nomeMeta) {
-        Meta metaSalva = metaRepositorio.obterMeta(this.meta.getId())
+        Meta metaSalva = metaService.obter(this.meta.getId())
                 .orElseThrow(() -> new AssertionError("A meta deveria ter sido salva, mas não foi encontrada."));
 
         assertEquals(nomeMeta, metaSalva.getDescricao());
@@ -148,7 +148,7 @@ public class MetaTest {
 
     @Then("a meta {string} não deve mais existir no sistema")
     public void a_meta_nao_deve_mais_existir_no_sistema(String nomeMeta) {
-        Optional<Meta> resultadoBusca = metaRepositorio.obterMeta(this.meta.getId());
+        Optional<Meta> resultadoBusca = metaService.obter(this.meta.getId());
         assertTrue(resultadoBusca.isEmpty(), "A meta não foi excluída corretamente e ainda foi encontrada no sistema.");
     }
 }

@@ -58,7 +58,7 @@ public class ReembolsoTest {
     @Given("que registrei uma despesa original com ID {string} de R$ {double} na categoria {string}")
     public void que_registrei_uma_despesa_original_com_id_de_na_categoria(String id, Double valor, String categoria) {
         Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, categoria, contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
-        transacaoRepo.salvarTransacao(despesa);
+        transacaoService.salvarTransacao(despesa);
     }
 
     @Given("que estou na tela de registro de reembolso")
@@ -69,7 +69,7 @@ public class ReembolsoTest {
     public void que_uma_despesa_original_com_id_tem_o_valor_de_r_na_categoria_em(String id, Double valor, String categoria, String mesAno) {
         LocalDate data = YearMonth.parse(mesAno, DateTimeFormatter.ofPattern("MM/yyyy")).atDay(1);
         Transacao despesa = new Transacao(id, null, "Despesa Original Teste", BigDecimal.valueOf(valor), data, StatusTransacao.EFETIVADA, categoria, contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
-        transacaoRepo.salvarTransacao(despesa);
+        transacaoService.salvarTransacao(despesa);
     }
 
     @Given("que outra despesa com ID {string} tem o valor de R$ {double} na categoria {string} em {string}")
@@ -85,7 +85,7 @@ public class ReembolsoTest {
     @Given("que eu tenho uma despesa original com ID {string} de R$ {double}")
     public void que_eu_tenho_uma_despesa_original_com_id_de_r(String id, Double valor) {
         Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, "Categoria Teste", contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
-        transacaoRepo.salvarTransacao(despesa);
+        transacaoService.salvarTransacao(despesa);
     }
 
     @Given("que uma despesa original com ID {string} tem o valor de R$ {double} na categoria {string}")
@@ -97,7 +97,7 @@ public class ReembolsoTest {
     public void o_total_de_receitas_do_usuario_e_de_r(Double totalReceitas) {
         this.totalReceitasAntes = BigDecimal.valueOf(totalReceitas);
         Transacao receita = new Transacao(UUID.randomUUID().toString(), null, "Salário", this.totalReceitasAntes, LocalDate.now(), StatusTransacao.EFETIVADA, "Salário", contaDeTeste.getId(), true, Tipo.RECEITA, perfilRepository.obterPerfil("0").getId());
-        transacaoRepo.salvarTransacao(receita);
+        transacaoService.salvarTransacao(receita);
     }
 
     @When("eu registrar um reembolso de R$ {double} e o vincular à despesa com ID {string}")
@@ -171,7 +171,7 @@ public class ReembolsoTest {
 
     @Then("o total de receitas do usuário deve permanecer R$ {double}")
     public void o_total_de_receitas_do_usuario_deve_permanecer_r(Double valorReceitaEsperado) {
-        List<Transacao> transacoes = transacaoRepo.listarTodasTransacoes();
+        List<Transacao> transacoes = transacaoService.listarTodasTransacoes();
         BigDecimal totalReceitasAtual = transacoes.stream()
                 .filter(t -> t.getTipo() == Tipo.RECEITA)
                 .map(Transacao::getValor)

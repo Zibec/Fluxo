@@ -3,6 +3,7 @@ package metaInversa;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import conta.Conta;
 import conta.ContaRepositorio;
@@ -35,5 +36,25 @@ public class MetaInversaService {
 
         metaRepositorio.salvarMetaInversa(meta);
         contaRepositorio.salvar(conta);
+    }
+
+    public void salvar(MetaInversa meta) {
+        metaRepositorio.salvarMetaInversa(meta);
+    }
+
+    public MetaInversa buscar(String id){
+        return metaRepositorio.obterMetaInversa(id).orElse(null);
+    }
+
+    public MetaInversa buscarPorNome(String nomeMeta){
+        return metaRepositorio.obterMetaInversaPorNome(nomeMeta).orElse(null);
+    }
+
+    public void deletar(String metaId){
+        metaRepositorio.deletarMetaInversa(metaId);
+    }
+
+    public void limpar(){
+        metaRepositorio.limparMetaInversa();
     }
 }

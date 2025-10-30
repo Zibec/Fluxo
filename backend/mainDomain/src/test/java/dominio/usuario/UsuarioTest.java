@@ -93,7 +93,7 @@ public class UsuarioTest {
     @When("altero meu username para {string}")
     public void altero_meu_username_para(String novoUsername) {
         try {
-            usuarioLogado.setUsername(novoUsername, "senha123", usuarioService);
+            usuarioService.changeUsername(usuarioLogado.getId(), novoUsername, "senha123");
         } catch (Exception e) {
             this.thrownException = e;
         }

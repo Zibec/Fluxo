@@ -84,3 +84,4 @@ Feature: Gestão de Orçamentos
         And o usuário registra uma despesa de "R$ 25,00" na categoria "Alimentação" em "08/2025"
         Then o sistema deve mostrar que o total gasto para "Alimentação" em "09/2025" permanece "R$ 0,00"
         And o sistema deve mostrar que o progresso de uso do orçamento é "0%"
+

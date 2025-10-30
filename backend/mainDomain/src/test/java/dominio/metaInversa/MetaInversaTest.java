@@ -1,4 +1,4 @@
-package dominio.meta;
+package dominio.metaInversa;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import conta.Conta;
 import conta.ContaRepositorio;
+import conta.ContaService;
 import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -22,6 +23,7 @@ public class MetaInversaTest {
     private Exception excecao;
 
     private ContaRepositorio contaRepo = new Repositorio();
+    private ContaService contaService = new ContaService(contaRepo);
     private MetaInversaRepositorio mIRepo = new Repositorio();
     private MetaInversaService mIService = new MetaInversaService(mIRepo, contaRepo);
 
@@ -30,24 +32,24 @@ public class MetaInversaTest {
     public void queUsuarioPossuiConta(String saldo) {
         this.conta = new Conta();
         this.conta.setSaldo(new BigDecimal(saldo));
-        contaRepo.salvar(conta);
+        contaService.salvar(conta);
     }
 
     @When("o usuário cria uma meta inversa com nome {string} e valor alvo {string}")
     public void usuarioCriaMeta(String nomeMeta, String valorDivida) {
         this.meta = new MetaInversa("1", nomeMeta, new BigDecimal(valorDivida), conta.getId().getId(), LocalDate.now().plusMonths(3));
-        mIRepo.salvarMetaInversa(meta);
+        mIService.salvar(meta);
     }
 
     @Then("a meta deve ser criada com status {string}")
     public void metaDeveTerStatus(String statusEsperado) {
-        MetaInversa metaInversa = mIRepo.obterMetaInversa("1").orElse(null);
+        MetaInversa metaInversa = mIService.buscar("1");
         assertEquals(MetaInversaStatus.valueOf(statusEsperado), metaInversa.getStatus());
     }
 
     @Then("o valor amortizado inicial deve ser 0.00")
     public void valorAmortizadoInicial() {
-        MetaInversa metaInversa = mIRepo.obterMetaInversa("1").orElse(null);
+        MetaInversa metaInversa = mIService.buscar("1");
         assertEquals(BigDecimal.ZERO, metaInversa.getValorAmortizado());
     }
 
@@ -55,7 +57,7 @@ public class MetaInversaTest {
     @Given("que existe uma meta inversa ativa de {string}")
     public void existeMetaAtiva(String valorDivida) {
         this.meta = new MetaInversa("1", "Meta Dívida", new BigDecimal(valorDivida), conta.getId().getId(), LocalDate.now().plusMonths(1));
-        mIRepo.salvarMetaInversa(meta);
+        mIService.salvar(meta);
     }
 
     @When("o usuário realiza um aporte de {string} para amortizar a dívida")
@@ -86,7 +88,7 @@ public class MetaInversaTest {
 
     @Then("o status da meta deve mudar para {string}")
     public void statusMetaDeveMudarPara(String statusEsperado) {
-        MetaInversa metaInversa = mIRepo.obterMetaInversa("1").orElse(null);
+        MetaInversa metaInversa = mIService.buscar("1");
         assertEquals(MetaInversaStatus.valueOf(statusEsperado), metaInversa.getStatus());
     }
 

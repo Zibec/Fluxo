@@ -50,7 +50,7 @@ public class CategoriaTest {
     // Cenário: Adicionar uma nova categoria que não existe
     @Given("que não existe uma categoria chamada {string} no sistema")
     public void queNaoExisteUmaCategoriaChamada(String nome) {
-        assertFalse(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent());
+        assertFalse(categoriaService.obterPorNome(nome).isPresent());
     }
 
     @When("o usuário insere o nome {string} e salva")
@@ -66,7 +66,7 @@ public class CategoriaTest {
 
     @Then("a categoria {string} deve aparecer na lista de categorias")
     public void aCategoriaDeveAparecerNaLista(String nome) {
-        assertTrue(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent());
+        assertTrue(categoriaService.obterPorNome(nome).isPresent());
     }
 
     // --- Cenários de Categoria Existente ---
@@ -75,7 +75,7 @@ public class CategoriaTest {
     public void queACategoriaJaExisteNaLista(String nome) {
         String id = UUID.randomUUID().toString();
         this.categoria = new Categoria(id, nome);
-        categoriaRepositorio.salvar(this.categoria);
+        categoriaService.salvar(this.categoria);
         this.contagemInicialDeCategorias = categoriaRepositorio.contagem(); // Salva a contagem inicial
     }
 
@@ -147,11 +147,11 @@ public class CategoriaTest {
     @Then("a categoria {string} deve ser removida da lista")
     public void aCategoriaDeveSerRemovidaDaLista(String nome) {
         assertNull(excecaoCapturada, "Uma exceção foi lançada quando não deveria: " + excecaoCapturada);
-        assertFalse(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent(), "A categoria não foi removida.");
+        assertFalse(categoriaService.obterPorNome(nome).isPresent(), "A categoria não foi removida.");
     }
 
     @And("a categoria {string} deve continuar na lista")
     public void aCategoriaDeveContinuarNaLista(String nome) {
-        assertTrue(categoriaRepositorio.obterCategoriaPorNome(nome).isPresent(), "A categoria foi removida, mas não deveria.");
+        assertTrue(categoriaService.obterPorNome(nome).isPresent(), "A categoria foi removida, mas não deveria.");
     }
 }

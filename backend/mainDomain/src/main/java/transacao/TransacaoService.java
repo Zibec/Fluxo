@@ -3,10 +3,8 @@ package transacao;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notNull;
@@ -23,6 +21,9 @@ public class TransacaoService {
     private final TransacaoRepositorio repo;
     private final ContaRepositorio contaRepo;
     private final CartaoRepositorio cartaoRepositorio;
+    private final Map<String, String> idxAgendamentoData = new ConcurrentHashMap<>();
+    private final Map<String, Transacao> transacao = new ConcurrentHashMap<>();
+
 
     public TransacaoService(TransacaoRepositorio repo, ContaRepositorio contaRepo, CartaoRepositorio cartaoRepositorio) {
         this.repo = Objects.requireNonNull(repo);
@@ -141,5 +142,62 @@ public class TransacaoService {
         }
 
         repo.salvarTransacao(t);
+    }
+
+    public void salvarTransacao(Transacao t){
+        if (t.getPerfilId() == null){
+            throw new RuntimeException("É obrigatório a seleção de um perfil.");
+        }
+        transacao.put(t.getId(), t);
+        if (t.getOrigemAgendamentoId() != null) {
+            idxAgendamentoData.put(chave(t.getOrigemAgendamentoId(), t.getData()), t.getId());
+        }
+        repo.salvarTransacao(t);
+    }
+
+    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data){
+        return repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
+    }
+
+    public boolean existeTransacaoPorCategoriaId(String categoriaId){
+        Objects.requireNonNull(categoriaId, "ID da Categoria não pode ser nulo");
+        return repo.existeTransacaoPorCategoriaId(categoriaId);
+    }
+
+    public List<Transacao> listarTodasTransacoes(){
+        return repo.listarTodasTransacoes();
+    }
+
+    private static String chave(String agendamentoId, LocalDate data) {
+        return agendamentoId + "#" + data;
+    }
+
+    Optional<Transacao> buscarTransacaoPorId(String id){
+        Objects.requireNonNull(id, "ID da transação não pode ser nulo");
+        return repo.buscarTransacaoPorId(id);
+    }
+
+    public void atualizarTransacao(Transacao t){
+        repo.atualizarTransacao(t);
+    }
+
+    public void excluirTransacao(String id){
+        Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
+
+        Transacao removida = transacao.remove(id);
+        if (removida == null) {
+            throw new NoSuchElementException("Transação com ID " + id + " não encontrada para exclusão.");
+        }
+
+        // Remove também do índice auxiliar, se existir
+        if (removida.getOrigemAgendamentoId() != null) {
+            idxAgendamentoData.remove(chave(removida.getOrigemAgendamentoId(), removida.getData()));
+        }
+        repo.excluirTransacao(id);
+    }
+
+    public Optional<Transacao> obterTransacaoPorId(String id){
+        Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
+        return repo.obterTransacaoPorId(id);
     }
 }

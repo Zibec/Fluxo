@@ -23,4 +23,12 @@ public class TaxaSelicService {
         this.selicApiClient = selicApiClient;
         this.taxaSelicRepository = taxaSelicRepository;
     }
+
+    public void salvar(TaxaSelic taxaSelic){
+        taxaSelicRepository.salvar(taxaSelic);
+    }
+
+    public TaxaSelic obterTaxaSelic(){
+        return taxaSelicRepository.obterTaxaSelic();
+    }
 }

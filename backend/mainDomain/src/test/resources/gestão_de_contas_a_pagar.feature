@@ -41,4 +41,4 @@ Feature: Gestão de Contas a Pagar
     Given: existe uma transação única pendente de "250.00"
     And: o usuário possui uma conta com saldo "200.00"
     When: o usuário marca a transação como "Efetivada"
-    Then: o sistema deve recusar a operação e exibir mensagem de erro
+    Then: o sistema deve recusar a operação e exibir mensagem de erro "Saldo insuficiente para realizar o débito."

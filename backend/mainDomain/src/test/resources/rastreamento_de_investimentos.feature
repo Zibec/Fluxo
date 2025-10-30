@@ -8,7 +8,8 @@ Feature: Rastreamento de Investimentos
 
   Scenario: Falha ao consultar a API externa
     Given que o job agendado é executado
-    When o sistema consulta a API externa do Banco Central, mas a API não está disponível
+    And a API não está disponível
+    When o sistema consulta a API externa do Banco Central
     Then a texa Selic não é atualizada naquele dia
     And o sistema deve registrar um log de erro
 
@@ -36,7 +37,8 @@ Feature: Rastreamento de Investimentos
   Scenario: Falha ao registrar histórico
     Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
     And a taxa selic diária é de 0.01 (1%)
-    When o job de atualização de rendimento é executado, mas ocorre uma falha no registro de histórico
+    And o banco de dados de histórico está fora do ar
+    When o job de atualização de rendimento é executado
     Then o sistema deve gerar um log de erro indicando falha ao registrar histórico
 
   #O sistema deve poder realizar tanto o resgate parcial, como o resgate total do valor investido para um investimento.
@@ -49,7 +51,8 @@ Feature: Rastreamento de Investimentos
 
   Scenario: Falha em etapas anteriores do resgate total
     Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
-    When realizo o resgate total do valor investido, mas uma falha ocorre
+    And o banco de dados de histórico está fora do ar
+    When realizo o resgate total do valor investido
     Then o investimento não deve ser removido
     And o sistema deve emitir um log de falha
 
@@ -74,7 +77,8 @@ Feature: Rastreamento de Investimentos
 
   Scenario: Falha deleção do histórico de valorização em resgate total
     Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
-    When realizo o resgate total do valor investido, mas ocorre uma falha na deleção o histórico
+    And o banco de dados de histórico está fora do ar
+    When realizo o resgate total do valor investido
     Then o sistema deve levantar uma exceção referente à falha na deleção
     And o sistema deve emitir um log de falha
 
@@ -87,5 +91,5 @@ Feature: Rastreamento de Investimentos
 
   Scenario: Falha em etapas anteriores à atualização do histórico em resgate parcial
     Given que existe um investimento do tipo Tesouro Selic com valor atual de 1000
-    When realizo o resgate parcial, mas uma falha ocorre
+    When realizo o resgate parcial, mas uma falha ocorre durante o resgate
     Then o sistema não deve atualizar o histórico com uma nova entrada

@@ -1,7 +1,6 @@
 package dominio.orcamento;
 
 import cartao.CartaoRepositorio;
-import cartao.CartaoService;
 import conta.ContaRepositorio;
 import infraestrutura.persistencia.memoria.Repositorio;
 import io.cucumber.java.en.*;
@@ -43,6 +42,16 @@ public class OrcamentoTest {
         public BigDecimal totalGastoMes(String usuarioId, String categoriaId, YearMonth anoMes) {
             return acumulado.getOrDefault(new OrcamentoChave(usuarioId, anoMes, categoriaId), BigDecimal.ZERO);
         }
+
+        //importante: faz o service "enxergar" os gastos do fake
+        @Override
+        public BigDecimal calcularGastosConsolidadosPorCategoria(String categoriaId, YearMonth anoMes) {
+            return acumulado.entrySet().stream()
+                    .filter(e -> e.getKey().getCategoriaId().equals(categoriaId)
+                            && e.getKey().getAnoMes().equals(anoMes))
+                    .map(Map.Entry::getValue)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
     }
 
     private final TransacaoRepositorio transacaoRepoParaTeste = new Repositorio();
@@ -51,14 +60,6 @@ public class OrcamentoTest {
     private final FakeTransacaoService fakeTransacaoService = new FakeTransacaoService(transacaoRepoParaTeste, contaRepoParaTeste, cartaoRepoParaTeste);
 
     private final OrcamentoService service = new OrcamentoService(repo, fakeTransacaoService);
-
-    private static class Notificador {
-        private String ultimaMensagem;
-        public void notificar(String msg) { ultimaMensagem = msg; }
-        public Optional<String> ultima() { return Optional.ofNullable(ultimaMensagem); }
-        public void limpar() { ultimaMensagem = null; }
-    }
-    private final Notificador notificador = new Notificador();
 
     private String usuario;
     private String categoria;
@@ -69,9 +70,10 @@ public class OrcamentoTest {
     private OrcamentoChave ultimaChaveVerificada;
     private BigDecimal ultimoTotalCalculado;
 
+    // guarda a última mensagem retornada pelo service (80% / 100% / excedeu)
+    private String ultimaMensagemNotificacao;
 
     //  HISTÓRIA 1.1 — CRIAR / DUPLICIDADE / ATUALIZAR
-
 
     @Given("que existe a categoria {string} para um usuário autenticado como {string}")
     public void existeCategoriaUsuario(String categoria, String usuario) {
@@ -79,6 +81,7 @@ public class OrcamentoTest {
         this.categoria = categoria;
         this.erro = null;
         this.mensagemSistema = null;
+        this.ultimaMensagemNotificacao = null;
     }
 
     @When("o usuário define um orçamento de {string} para a categoria {string} no mês {string}")
@@ -102,20 +105,18 @@ public class OrcamentoTest {
     public void deveVerOrcamentoSalvoParaCategoriaMesValor(String categoriaEsperada, String mesAno, String valorEsperado) {
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoriaEsperada);
-        var opt = repo.obterOrcamento(chave);
+        var opt = service.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não foi salvo");
         Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
 
     @Given("existe um orçamento de {string} para {string} em {string}")
     public void existeUmOrcamento(String valorMoeda, String categoria, String mesAno) {
-        if (this.usuario == null) this.usuario = "Gabriel"; // <- padroniza o usuário para a chave
+        if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
-        var chave = new OrcamentoChave(usuario, ym, categoria);
-        repo.salvarOrcamento(chave, new Orcamento(valor)); // já existente
+        service.criarOrcamentoMensal(usuario, categoria, ym, valor);
 
-        //guarda no contexto para os @Then/@And
         this.categoria = categoria;
         this.anoMes = ym;
     }
@@ -142,8 +143,7 @@ public class OrcamentoTest {
     public void orcamentoNaoDeveSerSalvo() {
         Assertions.assertNotNull(erro, "Era esperado erro");
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        var opt = repo.obterOrcamento(chave);
-        //No cenário de duplicidade, o original deve continuar existindo
+        var opt = service.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "O orçamento original deveria continuar salvo");
     }
 
@@ -152,8 +152,7 @@ public class OrcamentoTest {
         if (this.usuario == null) this.usuario = "Gabriel";
         var ym = parseAnoMes(mesAno);
         var valor = parseMoedaBR(valorMoeda);
-        var chave = new OrcamentoChave(usuario, ym, categoria);
-        repo.salvarOrcamento(chave, new Orcamento(valor));
+        service.criarOrcamentoMensal(usuario, categoria, ym, valor);
         this.categoria = categoria;
         this.anoMes = ym;
     }
@@ -162,13 +161,8 @@ public class OrcamentoTest {
     public void usuarioAtualizaEsseOrcamentoPara(String novoValorMoeda) {
         if (this.usuario == null) this.usuario = "Gabriel";
         var novoValor = parseMoedaBR(novoValorMoeda);
-        var chave = new OrcamentoChave(usuario, anoMes, categoria);
         try {
-            if (repo.obterOrcamento(chave).isEmpty()) {
-                mensagemSistema = "Não existe um orçamento para essa chave";
-                return;
-            }
-            repo.atualizarOrcamento(chave, new Orcamento(novoValor)); // método void
+            service.atualizarOrcamento(usuario, categoria, anoMes, novoValor);
             mensagemSistema = "Atualizado com sucesso";
         } catch (Throwable t) {
             erro = t;
@@ -180,14 +174,12 @@ public class OrcamentoTest {
     public void usuarioDeveVerOrcamentoSalvoComValor(String valorEsperado) {
         if (this.usuario == null) this.usuario = "Gabriel";
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        var opt = repo.obterOrcamento(chave);
+        var opt = service.obterOrcamento(chave);
         Assertions.assertTrue(opt.isPresent(), "Orçamento não encontrado após atualizar");
         Assertions.assertEquals(0, parseMoedaBR(valorEsperado).compareTo(opt.get().getLimite()));
     }
 
-
     //  HISTÓRIA 1.2 — NOTIFICAÇÕES (80%, 100%, excedeu)
-
 
     @Given("que existe uma categoria {string} com gasto limite de {string} para o mês {string}")
     public void existeCategoriaComLimiteParaOMes(String categoria, String valorMoeda, String mesAno) {
@@ -196,9 +188,8 @@ public class OrcamentoTest {
         this.anoMes = parseAnoMes(mesAno);
 
         var valor = parseMoedaBR(valorMoeda);
-        var chave = new OrcamentoChave(usuario, anoMes, categoria);
-        repo.salvarOrcamento(chave, new Orcamento(valor));
-        notificador.limpar();
+        service.criarOrcamentoMensal(usuario, categoria, this.anoMes, valor);
+        this.ultimaMensagemNotificacao = null;
     }
 
     @Given("existe uma categoria {string} com gasto limite de {string} para o mês {string}")
@@ -220,42 +211,30 @@ public class OrcamentoTest {
         var ym = parseAnoMes(mesAno);
         var chave = new OrcamentoChave(usuario, ym, categoria);
 
-        var antes = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
-        var orc = repo.obterOrcamento(chave).orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
-        var limite = orc.getLimite();
-
         var valor = parseMoedaBR(valorDespesa);
+
+        // 1) delega a regra de notificação ao Service (usa estado "antes" do fake)
+        this.ultimaMensagemNotificacao =
+                service.avaliarLimiarAposLancamento(usuario, categoria, ym, valor).orElse(null);
+
+        // 2) aplica o lançamento no fake para refletir o "mundo" após a operação
         fakeTransacaoService.add(chave, valor);
-
-        var depois = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
-
-        var oitenta = limite.multiply(BigDecimal.valueOf(0.8));
-
-        if (antes.compareTo(oitenta) < 0 && depois.compareTo(oitenta) >= 0 && depois.compareTo(limite) < 0) {
-            notificador.notificar("Você atingiu 80% do limite definido");
-        } else if (antes.compareTo(limite) < 0 && depois.compareTo(limite) == 0) {
-            notificador.notificar("Você atingiu 100% do limite definido");
-        } else if (depois.compareTo(limite) > 0 && (antes.compareTo(limite) <= 0 || antes.compareTo(limite) >= 0)) {
-            notificador.notificar("Você excedeu o limite desta categoria");
-        }
     }
 
     @Then("o sistema deve enviar ao usuário uma notificação {string}")
     public void sistemaDeveEnviarNotificacao(String esperado) {
         if (this.usuario == null) this.usuario = "Gabriel";
-        var msg = notificador.ultima().orElse(null);
-        Assertions.assertEquals(esperado, msg, "Mensagem de notificação diferente do esperado");
+        Assertions.assertEquals(esperado, this.ultimaMensagemNotificacao,
+                "Mensagem de notificação diferente do esperado");
     }
 
     @Then("o sistema não deve notificar o usuário")
     public void sistemaNaoDeveNotificar() {
         if (this.usuario == null) this.usuario = "Gabriel";
-        Assertions.assertTrue(notificador.ultima().isEmpty(), "Não era para notificar");
+        Assertions.assertNull(this.ultimaMensagemNotificacao, "Não era para notificar");
     }
 
-
     //  HISTÓRIA 1.3 — VALIDAÇÃO (positivo/negativo)
-
 
     @When("o usuário tenta definir um orçamento de {string} para a categoria {string} no mês {string}")
     public void usuarioTentaDefinirValor(String valorMoeda, String categoria, String mesAno) {
@@ -279,21 +258,19 @@ public class OrcamentoTest {
         Assertions.assertNotNull(erro, "Era esperado falhar valor negativo");
         var chave = new OrcamentoChave(usuario, anoMes, categoria);
         Assertions.assertTrue(
-                repo.obterOrcamento(chave).isEmpty(),
+                service.obterOrcamento(chave).isEmpty(),
                 "Não deveria haver orçamento salvo para a chave"
         );
     }
 
-
     //  HISTÓRIA 1.4 — CÁLCULO DE PROGRESSO (total + %)
-
 
     @Then("o sistema deve mostrar que o total gasto para {string} em {string} é de {string}")
     public void sistemaDeveMostrarQueOTotalGastoParaEmEDe(String categoria, String mesAno, String esperado) {
         if (this.usuario == null) this.usuario = "Gabriel";
         YearMonth ym = parseAnoMes(mesAno);
 
-        BigDecimal totalCalculado = fakeTransacaoService.totalGastoMes(usuario, categoria, ym);
+        BigDecimal totalCalculado = totalGastoViaService(usuario, categoria, ym);
         BigDecimal totalEsperado  = parseMoedaBR(esperado);
 
         this.ultimaChaveVerificada = new OrcamentoChave(usuario, ym, categoria);
@@ -313,7 +290,7 @@ public class OrcamentoTest {
         Assertions.assertNotNull(ultimaChaveVerificada,
                 "Chame primeiro o passo que valida o total gasto (ele seleciona o orçamento).");
 
-        var orc = repo.obterOrcamento(ultimaChaveVerificada)
+        var orc = service.obterOrcamento(ultimaChaveVerificada)
                 .orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
         BigDecimal limite = orc.getLimite();
 
@@ -329,7 +306,16 @@ public class OrcamentoTest {
                 "Progresso diferente do esperado");
     }
 
-    // Helpers & utilidades
+    //Helpers
+
+    /** Usa apenas métodos do Service para derivar o total gasto (limite - saldo). */
+    private BigDecimal totalGastoViaService(String usuarioId, String categoriaId, YearMonth ym) {
+        var chave = new OrcamentoChave(usuarioId, ym, categoriaId);
+        var orc = service.obterOrcamento(chave)
+                .orElseThrow(() -> new IllegalArgumentException("Orçamento não encontrado"));
+        var saldo = service.saldoMensalTotal(usuarioId, categoriaId, ym);
+        return orc.getLimite().subtract(saldo);
+    }
 
     private static BigDecimal parseMoedaBR(String s) {
         String limpo = s.trim();

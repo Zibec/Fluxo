@@ -6,44 +6,54 @@ Domain Fluxo {
     Subdomain UsuarioEConfiguracoes
 }
 
+ContextMap {
+    contains GestaoFinanceiraBase
+    contains PlanejamentoEMetas
+    contains AutomacaoEAgendamentos
+    contains PatrimonioEInvestimentos
+    contains UsuarioEConfiguracoes
+
+    GestaoFinanceiraBase Shared-Kernel UsuarioEConfiguracoes
+    GestaoFinanceiraBase Shared-Kernel AutomacaoEAgendamentos
+    GestaoFinanceiraBase Shared-Kernel PlanejamentoEMetas
+    GestaoFinanceiraBase Shared-Kernel PatrimonioEInvestimentos
+    
+
+}
+
 BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
     Aggregate Conta {
         Entity Conta {
             aggregateRoot
-
             -ContaId id
             BigDecimal saldo 
             String nome
             String tipo 
             String banco
-
-            void realizarTransacao(BigDecimal valor);
-
-            void creditar(BigDecimal valor);
-
-            boolean temSaldoSuficiente(BigDecimal valor);
+            def void realizarTransacao(BigDecimal valor);
+            def void creditar(BigDecimal valor);
+            def boolean temSaldoSuficiente(BigDecimal valor);
             
-            Repository ContaRepositorio {
+            Repository ContaRepository {
                 void salvar(@Conta conta);
-                @Conta obter(String contaId);
+                @Conta obterConta(String contaId);
                 boolean contaExistente(String nome);
-                List<@Conta> listarTodas();
-                void limpar();
+                List<@Conta> listarTodasContas();
+                void limparConta();
             }
         }
-
         Service ContaService {
             void salvar(@Conta conta);
-            @Conta obter(String contaId);
+            @Conta obterConta(String contaId);
             boolean contaExistente(String nome);
+            List<@Conta> listarTodasContas();
+            void limparConta();
         }
-
         ValueObject ContaId {
             String id
-            String getId();
+            def String getId();
         }
     }
-
     Aggregate Cartao {
         Entity Cartao{
             aggregateRoot
@@ -53,135 +63,127 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
             String titular
             YearMonth validade
             -Cvv cvv
-
             BigDecimal limite
             BigDecimal saldo 
-            int contador
             -Fatura fatura
             LocalDate dataFechamentoFatura
             LocalDate dataVencimentoFatura
-
-            void realizarTransacao(BigDecimal valor);
-            void fecharFatura();
-            void pagarFatura();
-
-            Repository CartaoRepositorio {
+            def void realizarTransacao(BigDecimal valor);
+            def void fecharFatura();
+            def void pagarFatura();
+            Repository CartaoRepository {
                 void salvar(@Cartao cartao);
-                @Cartao obter(@CartaoNumero numero);
+                @Cartao obterCartao(@CartaoNumero numero);
+                @Cartao obterCartaoPorId(@CartaoId cartaoId);
             }
-
         }
-
         ValueObject CartaoNumero{
             String numero
-
-            boolean isValid(String codigo);
+            def boolean isValid(String codigo);
         }
-
         ValueObject Cvv {
             String codigo
-
-            boolean isValid(String codigo);
+            def boolean isValid(String codigo);
         }
         
         ValueObject CartaoId {
             String id
-            String getId();
+            def String getId();
         }
-
         ValueObject Fatura {
             -Cartao cartao
             BigDecimal valorTotal
             LocalDate dataVencimento
             String status
-
-            void adicionarValor(BigDecimal valor);
-            void fecharFatura();
-            void pagarFatura();
+            def void adicionarValor(BigDecimal valor);
+            def void fecharFatura();
+            def void pagarFatura();
         }
-
         Service CartaoService {
             void salvar(@Cartao cartao);
             @Cartao obter(@CartaoNumero numero);
+            @Cartao obterPorId(@CartaoId cartaoId);
         }
     }
-
     Aggregate Transacao {
         Entity Transacao{
             aggregateRoot
-
             String id 
             String origemAgendamentoId
             String descricao
             BigDecimal valor 
             LocalDate data 
+            -StatusTransacao status
+            String categoriaId
             -Tipo tipo 
             String transacaoOriginalId
             -FormaPagamentoId pagamentoId
             boolean avulsa
             String perfilId
-
-            void atualizarValor(BigDecimal novoValor);
-            void efetivar();
-            void cancelar();
-            void reagendarPara(LocalDate novaData, LocalDate hoje);
-            boolean isProximaDoVencimento();
-
-            Repository TransacaoRepositorio {
-                void salvar(@Transacao t);
-                @Transacao encontrarPorAgendamentoEData(String agendamentoId, LocalDate data);
+            def void atualizarValor(BigDecimal novoValor);
+            def void efetivar();
+            def void cancelar();
+            def void reagendarPara(LocalDate novaData, LocalDate hoje);
+            def boolean isProximaDoVencimento();
+            Repository TransacaoRepository {
+                void salvarTransacao(@Transacao t);
+                @Transacao encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data);
                 boolean existePorCategoriaId(String categoriaId);
-                List<@Transacao> listarTodas();
+                List<@Transacao> listarTodasTransacoes();
                 String chave(String agendamentoId, LocalDate data);
-                void atualizar(@Transacao t);
-                void excluir(String id);
-                @Transacao obterPorId(String id);
-                void limpar();
+                @Transacao buscarTransacaoPorId(String id);
+                void atualizarTransacao(@Transacao t);
+                void excluirTransacao(String id);
+                @Transacao obterTransacaoPorId(String id);
+                void limparTransacao();
             }
-
         }
-
         ValueObject FormaPagamentoId {
             String id
-            String getId();
+            def String getId();
         }
-
         enum StatusTransacao {
             PENDENTE,
             EFETIVADA,
             CANCELADA
         }
-
         enum Tipo {
             DESPESA,
             RECEITA,
             REEMBOLSO
         }
-
         Service TransacaoService {
             @Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data, @Conta conta, boolean avulsa, String perfilId);
             BigDecimal calcularGastosConsolidadosPorCategoria(String categoriaId, YearMonth mes);
             @Transacao registrarReembolso(BigDecimal valorReembolso, String idDespesaOriginal);
+            void efetivarTransacao(String transacaoId);
+            void salvarTransacao(@Transacao t);
+            @Transacao encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data);
+            boolean existeTransacaoPorCategoriaId(String categoriaId);
+            List<@Transacao> listarTodasTransacoes();
+            String chave(String agendamentoId, LocalDate data);
+            @Transacao buscarTransacaoPorId(String id);
+            void atualizarTransacao(@Transacao t);
+            void excluirTransacao(String id);
+            @Transacao obterTransacaoPorId(String id);
 
         }
         
-
     }
-
     Aggregate Categoria {
         Entity Categoria {
+            aggregateRoot
+            
             String id
             String nome
-
-            Repository CategoriaRepositorio {
+            Repository CategoriaRepository {
                 void salvar(@Categoria categoria);
-                @Categoria obterPorNome(String nome);
-                @Categoria obter(String id);
-                void deletar(String id);
+                @Categoria obterCategoriaPorNome(String nome);
+                @Categoria obterCategoria(String id);
+                void deletarCategoria(String id);
                 int contagem();
             }
         }
-
         Service CategoriaService {
             void salvar(@Categoria categoria);
             @Categoria obterPorNome(String nome);
@@ -189,7 +191,6 @@ BoundedContext GestaoFinanceiraBase implements GestaoFinanceiraBase{
         }
     }
 }
-
 BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
     Aggregate Meta {
         Entity Meta {
@@ -202,28 +203,22 @@ BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
             BigDecimal saldoAcumulado
             LocalDate prazo
             -MetaStatus status
-
-            void realizarAporte(BigDecimal valorDoAporte);
-
-            Repository MetaRepositorio {
+            def void realizarAporte(BigDecimal valorDoAporte);
+            Repository MetaRepository {
                 void salvar(@Meta meta);
-                @Meta obter(String metaId);
-                @Meta obterPorNome(String nomeMeta);
-                void deletar(String metaId); 
+                @Meta obterMeta(String metaId);
+                @Meta obterMetaPorNome(String nomeMeta);
+                void deletarMeta(String metaId); 
             }
-
         }
-
         enum MetaStatus {
             ATIVA,
             CONCLUIDA
         }
-
         enum TipoMeta {
             POUPANCA,
             REDUCAO_DIVIDA
         }
-
         Service MetaService {
             void realizarAporte(String metaId, BigDecimal valorDoAporte, @Conta contaPrincipal);
             void salvar(@Meta meta);
@@ -232,9 +227,10 @@ BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
             void deletar(String metaId); 
         }
     }
-
     Aggregate MetaInversa {
         Entity MetaInversa {
+            aggregateRoot
+            
             String id
             String nome
             BigDecimal valorDivida
@@ -242,36 +238,39 @@ BoundedContext PlanejamentoEMetas implements PlanejamentoEMetas {
             String contaAssociadaId
             LocalDate dataLimite
             -MetaInversaStatus status
-
-            void conluirMeta();
-            void realizarAporte(BigDecimal valorDoAporte);
-
-            Repository MetaInversaRepositorio{
-                void salvar(@MetaInversa metaInversa);
-                @MetaInversa obter(String metaId);
-                @MetaInversa obterPorNome(String nomeMeta)
-                void deletar(String metaId);
-                void limpar();
+            def void conluirMeta();
+            def void realizarAporte(BigDecimal valorDoAporte);
+            Repository MetaInversaRepository {
+                void salvarMetaInversa(@MetaInversa metaInversa);
+                @MetaInversa obterMetaInversa(String metaId);
+                @MetaInversa obterMetaInversaPorNome(String nomeMeta);
+                void deletarMetaInversa(String metaId);
+                void limparMetaInversa();
             }
         }
-
         enum MetaInversaStatus {
             ATIVA,
             CONCLUIDA
         }
-
         enum TipoMetaInversa {
             POUPANCA,
             REDUCAO_DIVIDA
         }
+
+        Service MetaInversaService{
+            void realizarAporte(String metaId, BigDecimal valorDoAporte);
+            void salvar(@MetaInversa meta);
+            @MetaInversa buscar(String id);
+            @MetaInversa buscarPorNome(Sring nomeMeta);
+            void deletar(String metaId);
+            void limpar();
+        }
     }
 }
-
 BoundedContext AutomacaoEAgendamentos implements AutomacaoEAgendamentos {
     Aggregate Agendamento {
         Entity Agendamento {
             aggregateRoot
-
             String descricao
             String id
             BigDecimal valor
@@ -279,227 +278,210 @@ BoundedContext AutomacaoEAgendamentos implements AutomacaoEAgendamentos {
             LocalDate proximaData
             boolean ativo
             String perfilId
-
-            void avancarProximaData();
-
-            Repository AgendamentoRepositorio {
-                void salvar(@Agendamento a);
-                @Agendamento obter(String id);
+            def void avancarProximaData();
+            Repository AgendamentoRepository {
+                void salvar(@Agendamento agendamento);
+                @Agendamento obterAgendamento(String id);
             }
         }
-
         enum Frequencia {
             DIARIA,
             SEMANAL,
             MENSAL,
             ANUAL
         }
-
         Service AgendamentoService {
-            void salvar(@Agendamento a);
-            void salvarValidandoNaoNoPassado(@Agendamento a, LocalDate hoje);
-            @Agendamento obter(String id);
-            boolean executarSeHoje(@Agendamento a, LocalDate hoje);
+            void salvar(@Agendamento agendamento);
+            void salvarValidandoNaoNoPassado(@Agendamento agendamento, LocalDate hoje);
+            @Agendamento obterAgendamento(String id);
+            boolean executarSeHoje(@Agendamento agendamento, LocalDate hoje);
         }
     }
 }
-
 BoundedContext PatrimonioEInvestimentos implements PatrimonioEInvestimentos{
     Aggregate Investimento {
         Entity Investimento{
             aggregateRoot
-
             String id
             String nome
             String descricao
             BigDecimal valorAtual
-
-            void atualizarValor(BigDecimal taxaSelic);
-            void resgatarValor(BigDecimal valor);
-
-            Repository InvestimentoRepositorio {
+            def void atualizarValor(BigDecimal taxaSelic);
+            def void resgatarValor(BigDecimal valor);
+            Repository InvestimentoRepository {
                 void salvar(@Investimento investimento);
-                @Investimento obter(String investimentoId);
+                @Investimento obterInvestimento(String investimentoId);
                 ArrayList<@Investimento> obterTodos();
-                void atualizar(String investimentoId, Investimento @investimento);
-                void deletar(String investimentoId);
+                void atualizarInvestimento(String investimentoId, @Investimento investimento);
+                void deletarInvestimento(String investimentoId);
+                void limparInvestimento();
             }
         }
-
         Service InvestimentoService {
             void salvar (@Investimento investimento);
-            @Investimento obter(String investimentoId);
+            @Investimento obterInvestimento(String investimentoId);
             void atualizar(String investimentoId, @Investimento investimento);
+            void obterTodos();
+            void deletarInvestimento(String investimentoId);
+            void limparInvestimento();
             void atualizarRendimento (@Investimento investimento);
             void resgateTotal(String investimentoId);
             void resgateParcial(String investimentoId, BigDecimal valor);
         }
-
-        Entity JobScheduler {
-            -InvestimentoService investimentoService
-            -InvestimentoRepositorio investimentoRepositorio
+        Service JobScheduler {
             void executarJob();
         }
     }
-
     Aggregate HistoricoInvestimento {
         Entity HistoricoInvestimento {
             aggregateRoot
-
             String investimentoId
             BigDecimal valorAtualizado
             LocalDate data
-
-            Repository HistoricoInvestimentoRepositorio{
+            Repository HistoricoInvestimentoRepository {
                 void salvar(@HistoricoInvestimento historicoInvestimento);
-                List<@HistoricoInvestimento> obterTodos();
-                void deletarTodosPorId(String investimentoId)
+                List<@HistoricoInvestimento> obterTodosHistoricos();
+                void deletarTodosHistoricosPorId(String investimentoId);
             }
         }
-
         Service HistoricoInvestimentoService {
-            void salvar (@HistoricoInvestimento historicoInvestimento);
-            List<@HistoricoInvestimento> obterTodos ();
+            void salvar(@HistoricoInvestimento historicoInvestimento);
+            List<@HistoricoInvestimento> obterTodosHistoricos ();
+            void deletarTodosHistoricosPorId(String investimentoId);
         }
     }
-
     Aggregate TaxaSelic {
         Entity TaxaSelic {
             aggregateRoot
         
             BigDecimal valor
-
             Repository TaxaSelicRepository {
                 void salvar(@TaxaSelic taxaSelic);
-                @TaxaSelic obter();
+                @TaxaSelic obterTaxaSelic();
             }
         }
-
         Service TaxaSelicService {
             void atualizarTaxaSelic();
+            void salvar(@TaxaSelic taxaSelic);
+            @TaxaSelic obterTaxaSelic();
         }
-
-        Entity SelicApiClient {
-            boolean status
+        Service SelicApiClient {
             Double buscarTaxaSelicDiaria();
         }
     }
-
     Aggregate Divida {
         Entity Divida {
             aggregateRoot
-
             String id
             String nome
             BigDecimal valorDevedor
-
-            Repository DividaRepositorio {
+            Repository DividaRepository {
                 void salvar(@Divida divida);
-                List<@Divida> obterTodos();
-                void limpar();
+                List<@Divida> obterTodosDivida();
+                void limparDivida();
             }
         }
-    }
 
+        Service DividaService {
+            void salvar(@Divida divida);
+            List<@Divida> obterTodas();
+            void limparDivida();
+        }
+    }
     Aggregate Patrimonio {
         Entity Patrimonio{
             aggregateRoot
-
             String id
             LocalDate data
             BigDecimal valor
-
-            Repository PatrimonioRepositorio {
-                void salvar(@Patrimonio snapshot);
-                List<@Patrimonio> obterTodos();
-                void limpar();
+            Repository PatrimonioRepository {
+                void salvarPatrimonio(@Patrimonio snapshot);
+                List<@Patrimonio> obterTodosPatrimonio();
+                void limparPatrimonio();
             }
         } 
-
         Service PatrimonioService {
             BigDecimal calcularPatrimonioLiquido();
             void gerarEsalvarSnapshot(LocalDate data);
-            List<@SnapshotPatrimonio> obterHistoricoDePatrimonio();
+            List<@Patrimonio> obterHistoricoDePatrimonio();
+            void salvarSnapshot(@Patrimonio snapshot);
+            void limparPatrimonio();
         }
     }
 }
-
 BoundedContext UsuarioEConfiguracoes implements UsuarioEConfiguracoes{
     Aggregate Usuario {
         Entity Usuario{
+            aggregateRoot
             String id
             String username
             -Email userEmail
             -Password password
             -DataFormato formatoDataPreferido
             -Moeda moedaPreferida
-
-            boolean verifyEmail(String email);
-            boolean verifyPassword(String password);
-            void setUsername(String newUsername, String password, @UsuarioService service);
-
-            //Revisar usuário
-
-            Repository UsuarioRepositorio {
-                void salvar(@Usuario usuario);
-                @Usuario obter(String contaId);
-                boolean emailExistente(String email);
+            Repository UsuarioRepository {
+                void salvarUsuario(@Usuario usuario);
+                @Usuario obterUsuario(String contaId);
+                boolean emailExistente(String eMail);
                 boolean usernameExistente(String username);
             }
-
         }
         
-        ValueObject Password {
-            byte[] passwordHash
-            byte[] salt
+        ValueObject Password { 
+            List<byte> passwordHash
+            List<byte> salt
             SecureRandom random
-
-            byte[] hash(String password, byte[] salt);
-            boolean verify(String inputPassword);
+            def List<byte> hash(String password, List<byte> salt);
+            def boolean verify(String inputPassword);
         }
 
         ValueObject Email {
             String userEmail
-            verifyEmail(String email);
+            def verifyEmail(String eMail);
         }
 
         enum Moeda {
             BRL("BRL"),
             USD("USD"),
             EUR("EUR");
-
-            String codigo
         }
-
+        
         enum DataFormato {
             MMDDYYYY("MM-dd-yyyy"),
             DDMMYYYY("dd-MM-yyyy"),
             YYYYMMDD("yyyy-MM-dd");
-
-            String formato
         }
 
         Service UsuarioService {
             void salvar(@Usuario usuario);
-            @Usuario obter(String Id);
-            boolean emailExistente(String Email);
+            @Usuario obter(String id);
+            boolean emailExistente(String eMail);
             boolean usernameExistente(String username);
+            void changeUsername(String usuarioId, String newUsername, String password);
+            void changeEmail (@Usuario usuario, @Email oldEmail, String newEmail, String password);
+            void changePassword (@Usuario usuario, String oldPassword, String newPassword);
         }
-
     }
-
     Aggregate Perfil{
         Entity Perfil {
+            aggregateRoot
             String id
             String nome
-
             Repository PerfilRepository {
-                salvar(@Perfil perfil);
-                @Perfil obter(String id);
-                ArrayList<@Perfil> obterTodos();
-                public void alterar(String id,@Perfil perfil);
-                void deletar(String id);
+                salvarPerfil(@Perfil perfil);
+                @Perfil obterPerfil(String id);
+                ArrayList<@Perfil> obterTodosPerfis();
+                public void alterarPerfil(String id,@Perfil perfil);
+                void deletarPerfil(String id);
             }
+        }
+
+        Service PerfilService {
+            salvarPerfil(@Perfil perfil);
+            @Perfil obterPerfil(String id);
+            ArrayList<@Perfil> obterTodosPerfis();
+            public void alterarPerfil(String id,@Perfil perfil);
+            void deletarPerfil(String id);
         }
     }  
 }
