@@ -21,8 +21,18 @@ public class MetaInversa {
         this.valorDivida = valorDivida;
         this.contaAssociadaId = contaAssociada;
         this.dataLimite = dataLimite;
-        this.valorAcumulado = BigDecimal.ZERO; // opcionalmente pode iniciar zerado
+        this.valorAcumulado = BigDecimal.ZERO;
         this.status = MetaInversaStatus.ATIVA;
+    }
+
+    public MetaInversa(String id, String nome, BigDecimal valorDivida, String contaAssociada, LocalDate dataLimite, BigDecimal valorAcumulado,MetaInversaStatus status) {
+        this.id = id;
+        this.nome = nome;
+        this.valorDivida = valorDivida;
+        this.contaAssociadaId = contaAssociada;
+        this.dataLimite = dataLimite;
+        this.valorAcumulado = valorAcumulado;
+        this.status = status;
     }
 
     private void conluirMeta() {

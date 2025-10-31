@@ -4,9 +4,6 @@ import investimento.Investimento;
 import investimento.InvestimentoRepositorio;
 import investimento.InvestimentoService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JobScheduler {
 
     private final InvestimentoService investimentoService;
@@ -18,7 +15,7 @@ public class JobScheduler {
     }
 
     public void executarJob() {
-        for (Investimento inv : investimentoRepositorio.obterTodos()) {
+        for (Investimento inv : investimentoRepositorio.obterTodosInvestimentos()) {
             investimentoService.atualizarRendimento(inv);
         }
     }

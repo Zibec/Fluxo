@@ -32,7 +32,7 @@ public class PatrimonioService {
                 .map(conta -> conta.getSaldo())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalInvestimentos = investimentoRepositorio.obterTodos().stream()
+        BigDecimal totalInvestimentos = investimentoRepositorio.obterTodosInvestimentos().stream()
                 .map(investimento -> investimento.getValorAtual())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 

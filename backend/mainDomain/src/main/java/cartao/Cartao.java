@@ -56,6 +56,23 @@ public class Cartao implements FormaPagamento {
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
 
+    public Cartao(CartaoId id, CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo) {
+        this.id = id;
+        notNull(numero);
+        this.numero = numero;
+        notNull(titular);
+        this.titular = titular;
+        notNull(validade);
+        this.validade = validade;
+        notNull(cvv);
+        this.cvv = cvv;
+        notNull(limite);
+        this.limite = limite;
+        this.saldo = saldo;
+        this.dataFechamentoFatura = dataFechamentoFatura;
+        this.dataVencimentoFatura = dataVencimentoFatura;
+    }
+
     public CartaoId getId() {
         return id;
     }
@@ -115,6 +132,9 @@ public class Cartao implements FormaPagamento {
     }
     public Fatura getFatura() {
         return fatura;
+    }
+    public void setFatura(Fatura fatura) {
+        this.fatura = fatura;
     }
 
     public void realizarTransacao(BigDecimal valor) {

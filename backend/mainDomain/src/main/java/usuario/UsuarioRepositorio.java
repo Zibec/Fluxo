@@ -11,6 +11,8 @@ public interface UsuarioRepositorio {
 
      Optional<Usuario> obterUsuario(String contaId);
 
+    Optional<Usuario> obterUsuarioPorEmail(String contaEmail);
+
      void deletarUsuario(String id);
 
      boolean emailExistente(String email);

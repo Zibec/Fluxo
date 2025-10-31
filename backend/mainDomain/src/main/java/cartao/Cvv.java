@@ -10,6 +10,10 @@ public class Cvv {
         this.codigo = codigo;
     }
 
+    public String getCodigo() {
+        return codigo;
+    }
+
     private boolean isValid(String codigo) {
         return codigo != null && codigo.matches("^\\d{3,4}$");
     }

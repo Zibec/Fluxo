@@ -1,65 +1,67 @@
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\agendamento\Agendamento.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\agendamento\AgendamentoRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\agendamento\AgendamentoService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\agendamento\Frequencia.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\Cartao.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoId.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoNumero.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\Cvv.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\cartao\Fatura.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\categoria\Categoria.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\categoria\CategoriaRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\categoria\CategoriaService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\conta\Conta.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\conta\ContaId.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\conta\ContaRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\conta\ContaService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\divida\Divida.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\divida\DividaRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\generics\FormaPagamento.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\historicoInvestimento\HistoricoInvestimento.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\historicoInvestimento\HistoricoInvestimentoRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\historicoInvestimento\HistoricoInvestimentoService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\investimento\Investimento.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\investimento\InvestimentoRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\investimento\InvestimentoService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\jobScheduler\JobScheduler.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\meta\Meta.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\meta\MetaRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\meta\MetaService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\meta\MetaStatus.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\meta\TipoMeta.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversa.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversaRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversaService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversaStatus.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\metaInversa\TipoMetaInversa.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\orcamento\Orcamento.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\orcamento\OrcamentoChave.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\orcamento\OrcamentoRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\orcamento\OrcamentoService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\orcamento\TransacaoSumario.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\patrimonio\Patrimonio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\patrimonio\PatrimonioRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\patrimonio\PatrimonioService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\perfil\Perfil.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\perfil\PerfilRepository.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\selicApiClient\SelicApiClient.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\taxaSelic\TaxaSelic.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\taxaSelic\TaxaSelicRepository.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\taxaSelic\TaxaSelicService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\transacao\FormaPagamentoId.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\transacao\StatusTransacao.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\transacao\Tipo.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\transacao\Transacao.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\transacao\TransacaoRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\transacao\TransacaoService.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\DataFormato.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\Email.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\Moeda.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\Password.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\Usuario.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\UsuarioRepositorio.java
-C:\Users\lfta\OneDrive\Área de Trabalho\Fluxo\backend\mainDomain\src\main\java\usuario\UsuarioService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\agendamento\Agendamento.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\agendamento\AgendamentoRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\agendamento\AgendamentoService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\agendamento\Frequencia.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\Cartao.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoId.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoNumero.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\CartaoService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\Cvv.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\cartao\Fatura.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\categoria\Categoria.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\categoria\CategoriaRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\categoria\CategoriaService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\conta\Conta.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\conta\ContaId.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\conta\ContaRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\conta\ContaService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\divida\Divida.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\divida\DividaRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\divida\DividaService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\generics\FormaPagamento.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\historicoInvestimento\HistoricoInvestimento.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\historicoInvestimento\HistoricoInvestimentoRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\historicoInvestimento\HistoricoInvestimentoService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\investimento\Investimento.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\investimento\InvestimentoRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\investimento\InvestimentoService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\jobScheduler\JobScheduler.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\meta\Meta.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\meta\MetaRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\meta\MetaService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\meta\MetaStatus.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\meta\TipoMeta.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversa.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversaRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversaService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\metaInversa\MetaInversaStatus.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\metaInversa\TipoMetaInversa.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\orcamento\Orcamento.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\orcamento\OrcamentoChave.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\orcamento\OrcamentoRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\orcamento\OrcamentoService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\orcamento\TransacaoSumario.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\patrimonio\Patrimonio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\patrimonio\PatrimonioRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\patrimonio\PatrimonioService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\perfil\Perfil.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\perfil\PerfilRepository.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\perfil\PerfilService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\selicApiClient\SelicApiClient.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\taxaSelic\TaxaSelic.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\taxaSelic\TaxaSelicRepository.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\taxaSelic\TaxaSelicService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\transacao\FormaPagamentoId.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\transacao\StatusTransacao.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\transacao\Tipo.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\transacao\Transacao.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\transacao\TransacaoRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\transacao\TransacaoService.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\DataFormato.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\Email.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\Moeda.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\Password.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\Usuario.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\UsuarioRepositorio.java
+C:\Users\PC\Desktop\Fluxo\backend\mainDomain\src\main\java\usuario\UsuarioService.java

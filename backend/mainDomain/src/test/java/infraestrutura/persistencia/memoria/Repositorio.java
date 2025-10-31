@@ -76,7 +76,7 @@ public class Repositorio implements
         return null;
     }
 
-    public ArrayList<Investimento> obterTodos(){
+    public ArrayList<Investimento> obterTodosInvestimentos(){
         return investimentos;
     }
 
@@ -108,9 +108,8 @@ public class Repositorio implements
 
     private final Map<String, Agendamento> agendamento = new ConcurrentHashMap<>();
 
-    public Agendamento salvar(Agendamento a) {
+    public void salvar(Agendamento a) {
         agendamento.put(a.getId(), a);
-        return a;
     }
 
     public Optional<Agendamento> obterAgendamento(String id) {
@@ -123,10 +122,10 @@ public class Repositorio implements
 
     private Map<CartaoNumero, Cartao> cartoes = new HashMap<>();
 
-    public Cartao salvar(Cartao cartao) {
+    public void salvar(Cartao cartao) {
         notNull(cartao, "O cartão não pode ser nulo");
         cartoes.put(cartao.getNumero(), cartao);
-        return cartao;
+        cartoes.get(cartao.getNumero());
     }
 
     public Cartao obterCartao(CartaoNumero numero) {
@@ -145,6 +144,11 @@ public class Repositorio implements
             }
         }
         return null;
+    }
+
+    @Override
+    public List<Cartao> obterTodos() {
+        return List.of();
     }
 
     /*-----------------------------------------------------------------------*/
@@ -540,6 +544,11 @@ public class Repositorio implements
     public Optional<Usuario> obterUsuario(String contaId) {
         notNull(contaId, "O ID do Usuario não pode ser nulo");
         return Optional.ofNullable(usuarios.get(contaId));
+    }
+
+    @Override
+    public Optional<Usuario> obterUsuarioPorEmail(String contaEmail) {
+        return Optional.empty();
     }
 
     public boolean emailExistente(String email) {

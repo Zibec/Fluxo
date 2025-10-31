@@ -2,16 +2,12 @@ package investimento;
 
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
-import historicoInvestimento.HistoricoInvestimentoService;
-import selicApiClient.SelicApiClient;
 import taxaSelic.TaxaSelic;
 import taxaSelic.TaxaSelicRepository;
-import taxaSelic.TaxaSelicService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -42,7 +38,7 @@ public class InvestimentoService {
     }
 
     public ArrayList<Investimento> obterTodos(){
-        return investimentoRepositorio.obterTodos();
+        return investimentoRepositorio.obterTodosInvestimentos();
     }
 
     public void deletarInvestimento(String investimentoId){

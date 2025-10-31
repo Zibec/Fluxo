@@ -1,7 +1,6 @@
 package dominio.usuario;
 
 import infraestrutura.persistencia.memoria.Repositorio;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -140,7 +139,7 @@ public class UsuarioTest {
         usuarioService.salvar(usuarioLogado);
         
         Usuario usuario = usuarioService.obter(usuarioLogado.getId());
-        this.isSenhaAtualCorreta = usuario.getPassword().verify(senha);
+        this.isSenhaAtualCorreta = usuario.getPassword().equals(senha);
     }
 
     @When("informo a nova senha {string}")
@@ -173,13 +172,13 @@ public class UsuarioTest {
         } catch (Exception e) {
             this.thrownException = e;
         }
-        assertTrue(usuario.getPassword().verify(this.novaSenha));
+        assertTrue(usuario.getPassword().equals(this.novaSenha));
     }
 
     // Scenario: Falha ao alterar senha com senha atual incorreta
     @Given("informo a senha atual incorreta {string}")
     public void informo_a_senha_atual_incorreta(String senha) {
-        this.isSenhaAtualCorreta = this.usuarioLogado.getPassword().verify(senha);
+        this.isSenhaAtualCorreta = this.usuarioLogado.getPassword().equals(senha);
     }
 
     @Then("o sistema deve exibir uma mensagem de erro de senha atual inválida")

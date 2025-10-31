@@ -15,6 +15,12 @@ public class Patrimonio {
         this.valor = valor;
     }
 
+    public Patrimonio(String id, LocalDate data, BigDecimal valor) {
+        this.id = id;
+        this.data = data;
+        this.valor = valor;
+    }
+
     // Getters
     public String getId() { return id; }
     public LocalDate getData() { return data; }

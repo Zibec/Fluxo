@@ -1,27 +1,40 @@
 package usuario;
 
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.isTrue;
 
 public class Usuario {
-    private final String id;
+    private String id;
     private String username;
     private Email userEmail;
-    private Password password;
-
+    private String password;
+    private String providerId;
     private DataFormato formatoDataPreferido;
     private Moeda moedaPreferida;
+
+    public Usuario() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public Usuario(String username, String email, String password) {
         this.id = UUID.randomUUID().toString();
         this.username = username;
         this.userEmail = new Email(email);
         isTrue(userEmail.verifyEmail(email), "Email inválido");
-        this.password = new Password(password);
+        this.password = password;
         this.formatoDataPreferido = DataFormato.DDMMYYYY;
         this.moedaPreferida = Moeda.valueOf("BRL");
+    }
+
+    public Usuario(String id, String username, String email, String password, DataFormato formatoDataPreferido, Moeda moedaPreferida, String providerId) {
+        this.id = id;
+        this.username = username;
+        this.userEmail = new Email(email);
+        this.password = password;
+        this.formatoDataPreferido = formatoDataPreferido;
+        this.moedaPreferida = moedaPreferida;
+        this.providerId = providerId;
     }
 
     public String getId() {
@@ -33,12 +46,17 @@ public class Usuario {
     public Email getEmail() {
         return userEmail;
     }
-    public Password getPassword() {
+    public String getPassword() {
         return password;
     }
     public DataFormato getFormatoDataPreferido() {
         return formatoDataPreferido;
     }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
     public void setFormatoDataPreferido(String formatoDataPreferido) {
         this.formatoDataPreferido = DataFormato.valueOf(formatoDataPreferido);
     }
@@ -54,7 +72,15 @@ public class Usuario {
     public void setEmail(Email newEmail) {
         this.userEmail = newEmail;
     }
-    public void setPassword(Password newPassword) {
+    public void setPassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 }

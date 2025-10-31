@@ -42,6 +42,17 @@ public class Conta implements FormaPagamento {
         this.saldo = saldoInicial;
     }
 
+    public Conta(ContaId id, String nome, String tipo, String banco, BigDecimal saldoInicial) {
+        this.id = id;
+        this.nome = nome;
+        this.tipo = tipo;
+        this.banco = banco;
+        if (saldoInicial.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("O saldo inicial não pode ser negativo.");
+        }
+        this.saldo = saldoInicial;
+    }
+
     public void realizarTransacao(BigDecimal valor) {
         if (!temSaldoSuficiente(valor)) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar o débito.");

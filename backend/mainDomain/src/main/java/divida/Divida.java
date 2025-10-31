@@ -19,6 +19,15 @@ public class Divida {
         this.valorDevedor = valorDevedor;
     }
 
+    public Divida(String id, String nome, BigDecimal valorDevedor) {
+        notBlank(nome, "O nome da dívida não pode ser vazio.");
+        notNull(valorDevedor, "O valor devedor da dívida não pode ser nulo.");
+
+        this.id = id;
+        this.nome = nome;
+        this.valorDevedor = valorDevedor;
+    }
+
     // Getters
     public String getId() { return id; }
     public String getNome() { return nome; }

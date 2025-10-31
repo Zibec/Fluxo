@@ -12,7 +12,7 @@ public interface InvestimentoRepositorio {
 
     Investimento obterInvestimento(String investimentoId);
 
-    ArrayList<Investimento> obterTodos();
+    ArrayList<Investimento> obterTodosInvestimentos();
 
     void atualizarInvestimento(String investimentoId, Investimento investimento);
 

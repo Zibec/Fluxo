@@ -1,5 +1,7 @@
 package cartao;
 
+import java.util.List;
+
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class CartaoService {
@@ -24,5 +26,9 @@ public class CartaoService {
     public Cartao obterPorId(CartaoId cartaoId) {
         notNull(cartaoId, "O ID do cartão não pode ser nulo");
         return cartaoRepositorio.obterCartaoPorId(cartaoId);
+    }
+
+    public List<Cartao> obterTodos() {
+        return cartaoRepositorio.obterTodos();
     }
 }
