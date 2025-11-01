@@ -11,7 +11,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 public class Cartao implements FormaPagamento {
     private CartaoId id;
-    private final CartaoNumero numero;
+    private CartaoNumero numero;
     private String titular;
     private YearMonth validade;
     private Cvv cvv;
@@ -21,6 +21,10 @@ public class Cartao implements FormaPagamento {
     private Fatura fatura = null;
     private LocalDate dataFechamentoFatura;
     private LocalDate dataVencimentoFatura;
+
+    public Cartao() {
+        this.id = new CartaoId(UUID.randomUUID().toString());
+    }
 
     public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura) {
         this.id = new CartaoId(UUID.randomUUID().toString());
@@ -75,6 +79,9 @@ public class Cartao implements FormaPagamento {
 
     public CartaoId getId() {
         return id;
+    }
+    public void  setId(CartaoId id) {
+        this.id = id;
     }
     public CartaoNumero getNumero() {
         return numero;

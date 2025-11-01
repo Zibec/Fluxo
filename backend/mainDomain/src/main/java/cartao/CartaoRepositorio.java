@@ -13,4 +13,6 @@ public interface CartaoRepositorio {
     Cartao obterCartaoPorId(CartaoId cartaoId);
 
     List<Cartao> obterTodos();
+
+    void deletarCartao(CartaoId id);
 }

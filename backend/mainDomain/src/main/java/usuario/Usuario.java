@@ -1,5 +1,7 @@
 package usuario;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.isTrue;
@@ -9,7 +11,6 @@ public class Usuario {
     private String username;
     private Email userEmail;
     private String password;
-    private String providerId;
     private DataFormato formatoDataPreferido;
     private Moeda moedaPreferida;
 
@@ -27,14 +28,13 @@ public class Usuario {
         this.moedaPreferida = Moeda.valueOf("BRL");
     }
 
-    public Usuario(String id, String username, String email, String password, DataFormato formatoDataPreferido, Moeda moedaPreferida, String providerId) {
+    public Usuario(String id, String username, String email, String password, DataFormato formatoDataPreferido, Moeda moedaPreferida) {
         this.id = id;
         this.username = username;
         this.userEmail = new Email(email);
         this.password = password;
         this.formatoDataPreferido = formatoDataPreferido;
         this.moedaPreferida = moedaPreferida;
-        this.providerId = providerId;
     }
 
     public String getId() {
@@ -52,11 +52,6 @@ public class Usuario {
     public DataFormato getFormatoDataPreferido() {
         return formatoDataPreferido;
     }
-
-    public String getProviderId() {
-        return providerId;
-    }
-
     public void setFormatoDataPreferido(String formatoDataPreferido) {
         this.formatoDataPreferido = DataFormato.valueOf(formatoDataPreferido);
     }
@@ -75,12 +70,7 @@ public class Usuario {
     public void setPassword(String newPassword) {
         this.password = newPassword;
     }
-
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
     }
 }

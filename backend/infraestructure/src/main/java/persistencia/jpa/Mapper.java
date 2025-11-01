@@ -2,10 +2,7 @@ package persistencia.jpa;
 
 import agendamento.Agendamento;
 import agendamento.Frequencia;
-import cartao.Cartao;
-import cartao.CartaoId;
-import cartao.CartaoNumero;
-import cartao.Cvv;
+import cartao.*;
 import categoria.Categoria;
 import conta.Conta;
 import conta.ContaId;
@@ -24,15 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import patrimonio.Patrimonio;
 import perfil.Perfil;
-//import persistencia.jpa.agendamento.AgendamentoJpa;
 import persistencia.jpa.agendamento.AgendamentoJpa;
 import persistencia.jpa.cartao.CartaoJpa;
 import persistencia.jpa.cartao.CartaoJpaRepository;
+import persistencia.jpa.cartao.CartaoRepositoryImpl;
 import persistencia.jpa.categoria.CategoriaJpa;
 import persistencia.jpa.conta.ContaJpa;
 import persistencia.jpa.conta.ContaJpaRepository;
 import persistencia.jpa.conta.ContaRepositoryImpl;
 import persistencia.jpa.divida.DividaJpa;
+import persistencia.jpa.fatura.FaturaJpa;
 import persistencia.jpa.historicoInvestimento.HistoricoInvestimentoJpa;
 import persistencia.jpa.investimento.InvestimentoJpa;
 import persistencia.jpa.meta.MetaJpa;
@@ -49,9 +47,7 @@ import usuario.Email;
 import usuario.Moeda;
 import usuario.Usuario;
 
-import java.security.Provider;
 import java.time.YearMonth;
-import java.util.ArrayList;
 
 @Component
 public class Mapper extends ModelMapper {
@@ -62,12 +58,12 @@ public class Mapper extends ModelMapper {
     @Autowired
     private ContaJpaRepository contaJpaRepository;
 
-    Mapper() {
+    public Mapper() {
         var config = getConfiguration();
-
         config.setFieldMatchingEnabled(true);
         config.setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
 
+        // ====== JPA -> DOMÍNIO ======
         addConverter(new AbstractConverter<AgendamentoJpa, Agendamento>() {
             @Override
             protected Agendamento convert(AgendamentoJpa source) {
@@ -87,7 +83,16 @@ public class Mapper extends ModelMapper {
             @Override
             protected Cartao convert(CartaoJpa source) {
                 CartaoId id = new CartaoId(source.id);
-                return new Cartao(id, new CartaoNumero(source.numero), source.titular, source.validade, new Cvv(source.cvv), source.limite, source.dataFechamentoFatura, source.dataVencimentoFatura, source.saldo);
+                return new Cartao(id, new CartaoNumero(source.numero), source.titular, source.validade, new Cvv(source.cvv),
+                        source.limite, source.dataFechamentoFatura, source.dataVencimentoFatura, source.saldo);
+            }
+        });
+
+        addConverter(new AbstractConverter<FaturaJpa, Fatura>() {
+            @Override
+            protected Fatura convert(FaturaJpa source) {
+                var cartao = new CartaoRepositoryImpl().obterCartaoPorId(new CartaoId(source.cartaoId));
+                return new Fatura(cartao, source.dataVencimento);
             }
         });
 
@@ -129,15 +134,16 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<MetaInversaJpa, MetaInversa>() {
             @Override
             protected MetaInversa convert(MetaInversaJpa source) {
-                return new MetaInversa(source.id, source.nome, source.valorDivida, source.contaAssociadaId,source.dataLimite, source.valorAcumulado, source.status);
+                return new MetaInversa(source.id, source.nome, source.valorDivida, source.contaAssociadaId,
+                        source.dataLimite, source.valorAcumulado, source.status);
             }
         });
 
         addConverter(new AbstractConverter<OrcamentoJpa, Orcamento>() {
             @Override
             protected Orcamento convert(OrcamentoJpa source) {
-                String[] infolist = source.chave.split("-");
-                OrcamentoChave chave = new OrcamentoChave(infolist[0], YearMonth.parse(infolist[1]),infolist[2]);
+                String[] info = source.chave.split("-");
+                OrcamentoChave chave = new OrcamentoChave(info[0], YearMonth.parse(info[1]), info[2]);
                 return new Orcamento(chave, source.limite, source.dataLimite);
             }
         });
@@ -160,70 +166,163 @@ public class Mapper extends ModelMapper {
             @Override
             protected Transacao convert(TransacaoJpa source) {
                 ContaService contaService = new ContaService(new ContaRepositoryImpl());
-
-                FormaPagamentoId pagamentoId = null;
-
-                if(contaService.obter(source.pagamentoId).isPresent()) {
-                    pagamentoId = new ContaId(source.pagamentoId);
-                } else {
-                    pagamentoId = new CartaoId(source.pagamentoId);
-                }
-                return new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor, source.data, source.status, source.categoriaId, pagamentoId, source.avulsa, source.tipo, source.perfilId);
+                FormaPagamentoId pagamentoId = contaService.obter(source.pagamentoId).isPresent()
+                        ? new ContaId(source.pagamentoId)
+                        : new CartaoId(source.pagamentoId);
+                return new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor,
+                        source.data, source.status, source.categoriaId, pagamentoId, source.avulsa, source.tipo, source.perfilId);
             }
         });
 
         addConverter(new AbstractConverter<UsuarioJpa, Usuario>() {
             @Override
             protected Usuario convert(UsuarioJpa source) {
-                return new Usuario(source.id, source.username, source.userEmail, source.password, DataFormato.valueOf(source.formatoDataPreferido) , Moeda.valueOf(source.moedaPreferida), source.providerId);
+                return new Usuario(source.id, source.username, source.userEmail,
+                        source.password, DataFormato.valueOf(source.formatoDataPreferido),
+                        Moeda.valueOf(source.moedaPreferida));
             }
         });
 
-        addConverter(new AbstractConverter<String, Cvv>() {
+        // ====== DOMÍNIO -> JPA ======
+
+        addConverter(new AbstractConverter<Agendamento, AgendamentoJpa>() {
             @Override
-            protected Cvv convert(String source) {
-                return new Cvv(source);
+            protected AgendamentoJpa convert(Agendamento source) {
+                var jpa = new AgendamentoJpa();
+                jpa.id = source.getId();
+                jpa.descricao = source.getDescricao();
+                jpa.valor = source.getValor();
+                jpa.frequencia = source.getFrequencia();
+                jpa.proximaData = source.getProximaData();
+                jpa.perfilId = source.getPerfilId();
+                return jpa;
             }
         });
 
-        addConverter(new AbstractConverter<Cvv, String>() {
+        addConverter(new AbstractConverter<Conta, ContaJpa>() {
             @Override
-            protected String convert(Cvv source) {
-                var value = source.getCodigo();
-                return value;
+            protected ContaJpa convert(Conta source) {
+                var jpa = new ContaJpa();
+                jpa.id = source.getId().getId();
+                jpa.nome = source.getNome();
+                jpa.tipo = source.getTipo();
+                jpa.banco = source.getBanco();
+                jpa.saldo = source.getSaldo();
+                return jpa;
             }
         });
 
-        addConverter(new AbstractConverter<String, CartaoNumero>() {
+        addConverter(new AbstractConverter<Cartao, CartaoJpa>() {
             @Override
-            protected CartaoNumero convert(String source) {
-                return new CartaoNumero(source);
+            protected CartaoJpa convert(Cartao source) {
+                CartaoJpa jpa = new CartaoJpa();
+                jpa.id = source.getId().getId();
+                jpa.numero = source.getNumero().getCodigo();
+                jpa.titular = source.getTitular();
+                jpa.validade = source.getValidade();
+                jpa.cvv = source.getCvv().getCodigo();
+                jpa.limite = source.getLimite();
+                jpa.dataFechamentoFatura = source.getDataFechamentoFatura();
+                jpa.dataVencimentoFatura = source.getDataVencimentoFatura();
+                jpa.saldo = source.getSaldo();
+                return jpa;
             }
         });
 
-        addConverter(new AbstractConverter<CartaoNumero, String>() {
+        addConverter(new AbstractConverter<Categoria, CategoriaJpa>() {
             @Override
-            protected String convert(CartaoNumero source) {
-                var value = source.toString();
-                return value;
+            protected CategoriaJpa convert(Categoria source) {
+                var jpa = new CategoriaJpa();
+                jpa.id = source.getId();
+                jpa.nome = source.getNome();
+                return jpa;
             }
         });
 
-        addConverter(new AbstractConverter<OrcamentoChave, String>() {
+        addConverter(new AbstractConverter<Divida, DividaJpa>() {
             @Override
-            protected String convert(OrcamentoChave source) {
-                return source.getUsuarioId() + "-" + source.getAnoMes() + "-" + source.getCategoriaId();
+            protected DividaJpa convert(Divida source) {
+                var jpa = new DividaJpa();
+                jpa.id = source.getId();
+                jpa.nome = source.getNome();
+                jpa.valorDevedor = source.getValorDevedor();
+                return jpa;
             }
         });
 
-        addConverter(new AbstractConverter<String, Email>() {
+        addConverter(new AbstractConverter<Investimento, InvestimentoJpa>() {
             @Override
-            protected Email convert(String source) {
-                return new Email(source);
+            protected InvestimentoJpa convert(Investimento source) {
+                var jpa = new InvestimentoJpa();
+                jpa.id = source.getId();
+                jpa.nome = source.getNome();
+                jpa.descricao = source.getDescricao();
+                jpa.valorAtual = source.getValorAtual();
+                return jpa;
             }
         });
 
+        addConverter(new AbstractConverter<Meta, MetaJpa>() {
+            @Override
+            protected MetaJpa convert(Meta source) {
+                var jpa = new MetaJpa();
+                jpa.id = source.getId();
+                jpa.tipo = source.getTipo();
+                jpa.descricao = source.getDescricao();
+                jpa.valorAlvo = source.getValorAlvo();
+                jpa.prazo = source.getPrazo();
+                return jpa;
+            }
+        });
 
+        addConverter(new AbstractConverter<MetaInversa, MetaInversaJpa>() {
+            @Override
+            protected MetaInversaJpa convert(MetaInversa source) {
+                var jpa = new MetaInversaJpa();
+                jpa.id = source.getId();
+                jpa.nome = source.getNome();
+                jpa.valorDivida = source.getValorDivida();
+                jpa.contaAssociadaId = source.getContaAssociadaId();
+                jpa.dataLimite = source.getDataLimite();
+                jpa.valorAcumulado = source.getValorAmortizado();
+                jpa.status = source.getStatus();
+                return jpa;
+            }
+        });
 
+        addConverter(new AbstractConverter<Patrimonio, PatrimonioJpa>() {
+            @Override
+            protected PatrimonioJpa convert(Patrimonio source) {
+                var jpa = new PatrimonioJpa();
+                jpa.id = source.getId();
+                jpa.data = source.getData();
+                jpa.valor = source.getValor();
+                return jpa;
+            }
+        });
+
+        addConverter(new AbstractConverter<Perfil, PerfilJpa>() {
+            @Override
+            protected PerfilJpa convert(Perfil source) {
+                var jpa = new PerfilJpa();
+                jpa.id = source.getId();
+                jpa.nome = source.getNome();
+                return jpa;
+            }
+        });
+
+        addConverter(new AbstractConverter<Usuario, UsuarioJpa>() {
+            @Override
+            protected UsuarioJpa convert(Usuario source) {
+                var jpa = new UsuarioJpa();
+                jpa.id = source.getId();
+                jpa.username = source.getUsername();
+                jpa.userEmail = source.getEmail().getEndereco();
+                jpa.password = source.getPassword();
+                jpa.formatoDataPreferido = source.getFormatoDataPreferido().name();
+                jpa.moedaPreferida = source.getMoedaPreferida().name();
+                return jpa;
+            }
+        });
     }
 }

@@ -34,4 +34,8 @@ public class ContaService {
     public void limparConta() {
         contaRepositorio.limparConta();
     }
+
+    public void deletar(String id) {
+        contaRepositorio.deletarConta(id);
+    }
 }

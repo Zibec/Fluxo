@@ -18,4 +18,6 @@ public interface ContaRepositorio {
     List<Conta> listarTodasContas();
 
     void limparConta();
+
+    void deletarConta(String id);
 }

@@ -31,4 +31,8 @@ public class CartaoService {
     public List<Cartao> obterTodos() {
         return cartaoRepositorio.obterTodos();
     }
+
+    public void deletarCartao(CartaoId cartaoId) {
+        cartaoRepositorio.deletarCartao(cartaoId);
+    }
 }

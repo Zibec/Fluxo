@@ -12,12 +12,11 @@ import java.util.UUID;
 import static org.apache.commons.lang3.Validate.isTrue;
 
 @Entity
-@Table(name = "CONTA")
+@Table(name = "USUARIO")
 public class UsuarioJpa {
     @Id
     public String id;
     public String username;
-    public String providerId;
     public String password;
 
     public String userEmail;

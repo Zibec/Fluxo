@@ -3,6 +3,8 @@ package cartao;
 public class Cvv {
     private String codigo;
 
+    public Cvv() {}
+
     public Cvv(String codigo) {
         if (!isValid(codigo)) {
             throw new IllegalArgumentException("Código inválido");

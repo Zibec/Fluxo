@@ -9,7 +9,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 
 public class Conta implements FormaPagamento {
 
-    private final ContaId id;
+    private ContaId id;
     private BigDecimal saldo;
 
     private String nome;
@@ -75,6 +75,10 @@ public class Conta implements FormaPagamento {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = new ContaId(id);
+    }
+
     public BigDecimal getSaldo() {
         return saldo;
     }
@@ -97,5 +101,13 @@ public class Conta implements FormaPagamento {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getBanco() {
+        return banco;
+    }
+
+    public void setBanco(String banco) {
+        this.banco = banco;
     }
 }

@@ -46,4 +46,9 @@ public class ContaRepositoryImpl implements ContaRepositorio {
     public void limparConta() {
         repositorio.deleteAll();
     }
+
+    @Override
+    public void deletarConta(String id) {
+        repositorio.deleteById(id);
+    }
 }

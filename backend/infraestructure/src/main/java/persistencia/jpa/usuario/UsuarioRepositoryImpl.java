@@ -8,6 +8,7 @@ import usuario.Email;
 import usuario.Usuario;
 import usuario.UsuarioRepositorio;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,11 +28,32 @@ public class UsuarioRepositoryImpl implements UsuarioRepositorio {
 
     @Override
     public Optional<Usuario> obterUsuario(String contaId) {
+        if(repository.findById(contaId).isEmpty()) {
+            return Optional.empty();
+        }
+
         return Optional.of(mapper.map(repository.findById(contaId), Usuario.class));
     }
 
+    public Optional<Usuario> obterUsuarioPorNome(String username) {
+        if(!repository.existsByUsername(username)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(mapper.map(repository.findByUsername(username), Usuario.class));
+    }
+
+    public List<Usuario> obterUsuarios() {
+        var usuarios = repository.findAll();
+        return mapper.map(usuarios, List.class);
+    }
+
     public Optional<Usuario> obterUsuarioPorEmail(String email) {
-        return Optional.of(mapper.map(repository.findByUserEmail(new Email(email)), Usuario.class));
+        if(!repository.existsByUserEmail(email)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(mapper.map(repository.findByUserEmail(email), Usuario.class));
     }
 
     @Override
@@ -41,11 +63,11 @@ public class UsuarioRepositoryImpl implements UsuarioRepositorio {
 
     @Override
     public boolean emailExistente(String email) {
-        return repository.findByUserEmail(new Email(email));
+        return repository.findByUserEmail(email);
     }
 
     @Override
     public boolean usernameExistente(String username) {
-        return repository.findByUsername(username);
+        return repository.existsByUsername(username);
     }
 }

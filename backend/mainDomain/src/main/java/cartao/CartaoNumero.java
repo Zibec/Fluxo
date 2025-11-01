@@ -3,6 +3,8 @@ package cartao;
 public class CartaoNumero {
     private String codigo;
 
+    public CartaoNumero() {}
+
     public CartaoNumero(String codigo) {
         /*if (!isValid(codigo)) {
             throw new IllegalArgumentException("Código inválido");
