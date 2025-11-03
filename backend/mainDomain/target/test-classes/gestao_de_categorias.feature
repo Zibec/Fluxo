@@ -10,6 +10,11 @@ Feature: Gestão de Categorias
     When o usuário insere o nome "Saúde" e salva
     Then a categoria "Saúde" deve aparecer na lista de categorias
 
+  Scenario: Tentar excluir uma categoria que não existe
+    Given que não existe uma categoria chamada "Investimentos" no sistema
+    When o usuário escolhe deletar a categoria "Investimentos"
+    Then o sistema deve exibir uma mensagem de erro "Categoria não encontrada"
+
   Scenario: Tentar adicionar uma categoria que já existe
     Given que a categoria "Moradia" já existe na lista
     When o usuário tenta criar uma nova categoria com o nome "Moradia"
@@ -29,7 +34,3 @@ Feature: Gestão de Categorias
     Then o sistema deve exibir uma mensagem de erro "Categoria não pode ser excluída pois está em uso"
     And a lista de categorias não deve ser alterada
 
-  Scenario: Tentar excluir uma categoria que não existe
-    Given que não existe uma categoria chamada "Investimentos" no sistema
-    When o usuário escolhe deletar a categoria "Investimentos"
-    Then o sistema deve exibir uma mensagem de erro "Categoria não encontrada"

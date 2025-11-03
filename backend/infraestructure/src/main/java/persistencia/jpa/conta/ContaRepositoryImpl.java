@@ -1,0 +1,54 @@
+package persistencia.jpa.conta;
+
+import conta.Conta;
+import conta.ContaId;
+import conta.ContaRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import persistencia.jpa.Mapper;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public class ContaRepositoryImpl implements ContaRepositorio {
+
+    @Autowired
+    private ContaJpaRepository repositorio;
+
+    @Autowired
+    private Mapper mapper;
+
+    @Override
+    public void salvar(Conta conta) {
+        var contaJpa = mapper.map(conta, ContaJpa.class);
+        repositorio.save(contaJpa);
+    }
+
+    @Override
+    public Optional<Conta> obterConta(String contaId) {
+        var conta = repositorio.findById(contaId);
+        return Optional.of(mapper.map(conta, Conta.class));
+    }
+
+    @Override
+    public boolean contaExistente(String nome) {
+        return repositorio.existsById(nome);
+    }
+
+    @Override
+    public List<Conta> listarTodasContas() {
+        var contasJpa = repositorio.findAll();
+        return mapper.map(contasJpa, List.class);
+    }
+
+    @Override
+    public void limparConta() {
+        repositorio.deleteAll();
+    }
+
+    @Override
+    public void deletarConta(String id) {
+        repositorio.deleteById(id);
+    }
+}

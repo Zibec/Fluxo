@@ -1,23 +1,18 @@
 package cartao;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class CartaoRepositorio {
+public interface CartaoRepositorio {
 
-    private Map<CartaoNumero, Cartao> cartoes = new HashMap<>();
+    void salvar(Cartao cartao);
 
-    public void salvar(Cartao cartao) {
-        notNull(cartao, "O cartão não pode ser nulo");
-        cartoes.put(cartao.getNumero(), cartao);
-    }
+    Cartao obterCartao(CartaoNumero numero);
 
-    public Cartao obter(CartaoNumero numero) {
-        notNull(numero, "O número do cartão não pode ser nulo");
+    Cartao obterCartaoPorId(CartaoId cartaoId);
 
-        var cartao = cartoes.get(numero);
-        return cartao;
-    }
+    List<Cartao> obterTodos();
+
+    void deletarCartao(CartaoId id);
 }

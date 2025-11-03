@@ -1,5 +1,6 @@
 package agendamento;
 
+import conta.Conta;
 import transacao.TransacaoService;
 
 import java.time.LocalDate;
@@ -19,27 +20,37 @@ public class AgendamentoService {
         this.transacaoService = Objects.requireNonNull(transacaoService);
     }
 
-    public void salvar(Agendamento a) {
-        agRepo.salvar(a);
+    public void salvar(Agendamento agendamento) {
+        agRepo.salvar(agendamento);
     }
 
-    public Optional<Agendamento> obter(String id) {
-        return agRepo.obter(id);
+
+    public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje) {
+        Objects.requireNonNull(agendamento, "Agendamento obrigatório");
+        Objects.requireNonNull(hoje, "Hoje obrigatório");
+        if (agendamento.getProximaData() != null && agendamento.getProximaData().isBefore(hoje)) {
+            throw new IllegalArgumentException("Data inválida por estar no passado");
+        }
+        agRepo.salvar(agendamento);
+    }
+
+    public Optional<Agendamento> obterAgendamento(String id) {
+        return agRepo.obterAgendamento(id);
     }
 
     /** Executa se hoje == próximaData; cria transação e avança próximaData. */
-    public boolean executarSeHoje(Agendamento a, LocalDate hoje) {
-        if (!a.isAtivo() || !Objects.equals(a.getProximaData(), hoje)) return false;
+    public boolean executarSeHoje(Agendamento agendamento, LocalDate hoje) {
+        if (!agendamento.isAtivo() || !Objects.equals(agendamento.getProximaData(), hoje)) return false;
 
-        String chave = a.getId() + "#" + hoje;
-        if (!execucoesDoDia.add(chave)) return false; // já executou hoje
+        String chave = agendamento.getId() + "#" + hoje;
+        if (!execucoesDoDia.add(chave)) return false;
 
         transacaoService.criarPendenteDeAgendamento(
-                a.getId(), a.getDescricao(), a.getValor(), hoje
+                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, new Conta(), false, agendamento.getPerfilId()
         );
 
-        a.avancarProximaData();
-        agRepo.salvar(a); // persiste a nova próxima data
+        agendamento.avancarProximaData();
+        agRepo.salvar(agendamento);
         return true;
     }
 }
