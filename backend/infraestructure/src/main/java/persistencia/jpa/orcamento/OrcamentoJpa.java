@@ -25,7 +25,7 @@ public class OrcamentoJpa {
     public String chave;
 
 // colunas sombreadas
-    @Column(name = "usuarioId", nullable = false, length = 64)
+    @Column(name = "usuario_id", nullable = false, length = 64)
     public String usuarioId;
 
     @Column(name= "categoria_id", nullable = false, length = 64)
@@ -40,7 +40,7 @@ public class OrcamentoJpa {
     @Column(name = "limite", nullable = false, precision = 15, scale = 2)
     public BigDecimal limite;
 
-    @Column(name = "dataLimite", nullable = false)
+    @Column(name = "data_limite", nullable = false)
     public LocalDate dataLimite;
 
     protected OrcamentoJpa() {}
