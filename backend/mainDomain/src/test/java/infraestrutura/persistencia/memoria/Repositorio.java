@@ -151,6 +151,11 @@ public class Repositorio implements
         return List.of();
     }
 
+    @Override
+    public void deletarCartao(CartaoId id) {
+
+    }
+
     /*-----------------------------------------------------------------------*/
     // Categoria
     /*-----------------------------------------------------------------------*/
@@ -215,6 +220,11 @@ public class Repositorio implements
 
     public void limparConta() {
         contas.clear();
+    }
+
+    @Override
+    public void deletarConta(String id) {
+
     }
 
     /*-----------------------------------------------------------------------*/
