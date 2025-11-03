@@ -61,10 +61,9 @@ public class TransacaoService {
         notBlank(categoriaId, "O ID da categoria não pode ser vazio.");
         notNull(mes, "O mês não pode ser nulo.");
 
-        // Busca todas as transações (em um sistema real, isso seria otimizado)
         List<Transacao> todasTransacoes = repo.listarTodasTransacoes();
 
-        // Soma todas as DESPESAS da categoria no mês especificado
+        // 1) Soma todas as DESPESAS da categoria no mês
         BigDecimal totalDespesas = todasTransacoes.stream()
                 .filter(t -> t.getTipo() == Tipo.DESPESA)
                 .filter(t -> categoriaId.equals(t.getCategoriaId()))
@@ -72,15 +71,26 @@ public class TransacaoService {
                 .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Soma todos os REEMBOLSOS da categoria no mês especificado
+        // 2) Soma os REEMBOLSOS que corrigem DESPESAS dessa categoria e mês,
+        //    mesmo que o reembolso tenha sido em outro mês
         BigDecimal totalReembolsos = todasTransacoes.stream()
                 .filter(t -> t.getTipo() == Tipo.REEMBOLSO)
-                .filter(t -> categoriaId.equals(t.getCategoriaId()))
-                .filter(t -> YearMonth.from(t.getData()).equals(mes))
-                .map(Transacao::getValor)
+                .map(t -> {
+                    // se não tiver transação original ligada, ignora
+                    if (t.getTransacaoOriginalId() == null) {
+                        return BigDecimal.ZERO;
+                    }
+                    return repo.buscarTransacaoPorId(t.getTransacaoOriginalId())
+                            .filter(orig -> orig.getTipo() == Tipo.DESPESA)
+                            .filter(orig -> categoriaId.equals(orig.getCategoriaId()))
+                            .filter(orig -> YearMonth.from(orig.getData()).equals(mes))
+                            // se a despesa original bate categoria + mês, esse reembolso entra
+                            .map(orig -> t.getValor())
+                            .orElse(BigDecimal.ZERO);
+                })
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // O gasto consolidado é a diferença
+        // 3) Gasto líquido = despesas - reembolsos
         return totalDespesas.subtract(totalReembolsos);
     }
 

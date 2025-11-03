@@ -29,6 +29,7 @@ public class ReembolsoTest {
     private OrcamentoService orcamentoService;
     private ContaRepositorio contaRepo;
     private CartaoRepositorio cartaoRepositorio;
+    private YearMonth ultimoMesOrcamento;
 
     private Exception excecaoCapturada;
     private Transacao reembolsoResultado;
@@ -53,11 +54,33 @@ public class ReembolsoTest {
         contaDeTeste = new Conta();
         perfilRepository.salvarPerfil(perfil);
         contaRepo.salvar(contaDeTeste);
+
+        ultimoMesOrcamento = null;
     }
 
     @Given("que registrei uma despesa original com ID {string} de R$ {double} na categoria {string}")
     public void que_registrei_uma_despesa_original_com_id_de_na_categoria(String id, Double valor, String categoria) {
-        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, categoria, contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
+
+        LocalDate dataDespesa;
+        if (ultimoMesOrcamento != null) {
+            dataDespesa = ultimoMesOrcamento.atDay(1);
+        } else {
+            dataDespesa = LocalDate.now();
+        }
+
+        Transacao despesa = new Transacao(
+                id,
+                null,
+                "Despesa Teste",
+                BigDecimal.valueOf(valor),
+                dataDespesa,
+                StatusTransacao.EFETIVADA,
+                categoria,
+                contaDeTeste.getId(),
+                true,
+                Tipo.DESPESA,
+                perfilRepository.obterPerfil("0").getId()
+        );
         transacaoService.salvarTransacao(despesa);
     }
 
@@ -79,7 +102,9 @@ public class ReembolsoTest {
 
     @Given("que tenho um orçamento de R$ {double} para {string} em {string}")
     public void que_tenho_um_orcamento_de_r_para_em(Double limite, String categoria, String mesAno) {
+        YearMonth mes = YearMonth.parse(mesAno, DateTimeFormatter.ofPattern("MM/yyyy"));
         orcamentoService.criarOrcamentoMensal("usuario-teste", categoria, YearMonth.parse(mesAno, DateTimeFormatter.ofPattern("MM/yyyy")), BigDecimal.valueOf(limite));
+        this.ultimoMesOrcamento = mes;
     }
 
     @Given("que eu tenho uma despesa original com ID {string} de R$ {double}")
