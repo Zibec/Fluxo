@@ -15,6 +15,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import usuario.UsuarioRepositorio;
+import usuario.UsuarioService;
 
 @SpringBootApplication(scanBasePackages = "persistencia.jpa")
 @EnableJpaRepositories(basePackages = "persistencia.jpa")
@@ -27,6 +29,11 @@ public class FluxoApplication {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Bean
+    public UsuarioService usuarioService(UsuarioRepositorio repositorio) {
+        return new UsuarioService(repositorio);
+    }
 
     @Bean
     public CartaoService cartaoService(CartaoRepositorio repositorio) {

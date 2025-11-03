@@ -26,6 +26,11 @@ public class UsuarioService {
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
     }
 
+    public Usuario obterPorNome(String username) {
+        return usuarioRepositorio.obterPorNome(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+    }
+
     public boolean emailExistente(String email) {
         return usuarioRepositorio.emailExistente(email);
     }

@@ -1,9 +1,11 @@
 package com.fluxo.config.security;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.RegisteredClaims;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,9 @@ import usuario.Usuario;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class TokenService {
@@ -47,5 +52,18 @@ public class TokenService {
 
     private Instant genExpirationDate(){
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claim::asString);
+    }
+    public <T> T extractClaim(String token, Function<Claim, T> claimsResolver) {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        Claim claim = JWT.require(algorithm)
+                .withIssuer("auth-api")
+                .build()
+                .verify(token)
+                .getClaim(RegisteredClaims.SUBJECT);
+        return claimsResolver.apply(claim);
     }
 }

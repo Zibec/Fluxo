@@ -57,6 +57,11 @@ public class UsuarioRepositoryImpl implements UsuarioRepositorio {
     }
 
     @Override
+    public Optional<Usuario> obterPorNome(String username) {
+        return Optional.of(mapper.map(repository.findByUsername(username), Usuario.class));
+    }
+
+    @Override
     public void deletarUsuario(String id) {
         repository.deleteById(id);
     }
