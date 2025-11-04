@@ -385,6 +385,8 @@ public class Repositorio implements
         orcamentos.clear();
     }
 
+    public List<Orcamento> listarTodos(){return new ArrayList<>(orcamentos.values());}
+
     /*-----------------------------------------------------------------------*/
     // Patrimonio
     /*-----------------------------------------------------------------------*/

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -46,6 +47,10 @@ public class OrcamentoService {
 
     public void limparOrcamento(){
         orcamentoRepositorio.limparOrcamento();
+    }
+
+    public List<Orcamento> listarTodos() {
+        return orcamentoRepositorio.listarTodos();
     }
 
     //LÓGICA DE NOTIFICAÇÕES
