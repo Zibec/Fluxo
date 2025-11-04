@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
 import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -60,6 +61,11 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
     }
 
     @Override
+    public List<Orcamento> listarTodos(){
+        return repositorio.findAll().stream().map(this::toDomain).toList();
+    }
+
+    @Override
     public Optional<Orcamento> obterOrcamento(OrcamentoChave chave) {
         String id = chaveToId(chave);
         return repositorio.findById(id).map(j -> {
@@ -75,9 +81,20 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
         repositorio.deleteAll();
     }
 
-// Helper
+// Helpers
     private String chaveToId(OrcamentoChave c) {
         // YearMonth.toString() já é "YYYY-MM"
         return c.getUsuarioId() + "|" + c.getCategoriaId() + "|" + c.getAnoMes();
+    }
+
+    private Orcamento toDomain(OrcamentoJpa j) {
+        //Remonta o YearMonth a partir das colunas sombreadas do banco
+        var ym = java.time.YearMonth.of(j.ano, j.mes);
+
+        //Reconstrói a chave de domínio
+        var chaveDomain = new OrcamentoChave(j.usuarioId, ym, j.categoriaId);
+
+        //Cria o agregado de domínio Orcamento com os dados persistidos
+        return new Orcamento(chaveDomain, j.limite, j.dataLimite);
     }
 }
