@@ -10,6 +10,14 @@ public class UsuarioService {
     }
 
     public void salvar(Usuario usuario) {
+        if(usuario.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Usuário precisa de um nome");
+        }
+
+        if(usuario.getEmail().getEndereco().isEmpty()) {
+            throw new IllegalArgumentException("Usuário precisa de um email");
+        }
+
         if(usuarioRepositorio.usernameExistente(usuario.getUsername())) {
             throw new IllegalArgumentException("Usuario esse username já existe");
         }
@@ -29,6 +37,10 @@ public class UsuarioService {
     public Usuario obterPorNome(String username) {
         return usuarioRepositorio.obterPorNome(username)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+    }
+
+    public void deletar(String usuarioId) {
+        usuarioRepositorio.deletarUsuario(usuarioId);
     }
 
     public boolean emailExistente(String email) {
