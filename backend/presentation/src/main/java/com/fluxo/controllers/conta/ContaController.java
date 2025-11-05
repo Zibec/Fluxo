@@ -83,14 +83,19 @@ public class ContaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateConta(@PathVariable String id, @RequestBody Conta conta){
+    public ResponseEntity<Object> updateConta(@PathVariable String id, @RequestBody Conta conta, HttpServletRequest request){
         if(service.obter(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         service.deletar(id);
 
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
         conta.setId(id);
+        conta.setUsuarioId(usuario.getId());
         service.salvar(conta);
         return ResponseEntity.ok().build();
     }

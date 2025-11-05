@@ -6,7 +6,7 @@ import static org.apache.commons.lang3.Validate.notBlank;
 
 public class Categoria {
 
-    private final String id;
+    private String id;
     private String nome;
 
     public Categoria() {
@@ -30,6 +30,10 @@ public class Categoria {
 
     public String getId(){
         return this.id;
+    }
+
+    public void setId(String id){
+        this.id = id;
     }
 }
 

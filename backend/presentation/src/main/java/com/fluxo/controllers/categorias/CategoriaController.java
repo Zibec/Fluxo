@@ -71,6 +71,7 @@ public class CategoriaController {
         }
 
         var categoria = categoriaOpt.get();
+        categoria.setId(id);
         categoria.setNome(categoriaAtualizada.getNome());
         categoriaService.salvar(categoria);
 

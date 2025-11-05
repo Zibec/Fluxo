@@ -88,6 +88,7 @@ public class CartaoController {
             }
 
             newCartao.setId(new CartaoId(id));
+            newCartao.setUsuarioId(cartao.usuarioId);
             service.salvar(newCartao);
 
             CartaoDTO cartaoDTO = mapper.map(newCartao, CartaoDTO.class);

@@ -72,8 +72,7 @@ export default function ContasCartoesPage() {
                 <AccountCard
                   id={account.id!}
                   key={account.id}
-                  title={account.nome}
-                  subtitle={account.banco}
+                  account={account}
                   setAccounts={setAccounts}
                 />
               ))}
@@ -112,8 +111,7 @@ export default function ContasCartoesPage() {
                 <CardCard
                   id={card.id!}
                   key={card.id}
-                  title={card.numero}
-                  cardNumber={card.titular}
+                  card={card}
                   setCards={setCards}
                 />
               ))}
