@@ -3,6 +3,9 @@ package com.fluxo;
 import agendamento.AgendamentoService;
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
+import categoria.CategoriaRepositorio;
+import categoria.CategoriaService;
+import transacao.TransacaoRepositorio;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import conta.ContaRepositorio;
@@ -36,6 +39,11 @@ public class FluxoApplication {
     @Bean
     public ContaService contaService(ContaRepositorio repositorio) {
         return new ContaService(repositorio);
+    }
+
+    @Bean
+    public CategoriaService categoriaService(CategoriaRepositorio repositorio, TransacaoRepositorio repositorioTransacao) {
+        return new CategoriaService(repositorio, repositorioTransacao);
     }
 
     public static void main(String[] args) {

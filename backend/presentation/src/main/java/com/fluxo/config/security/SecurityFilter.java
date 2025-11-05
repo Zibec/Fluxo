@@ -13,6 +13,7 @@ import persistencia.jpa.usuario.UsuarioRepositoryImpl;
 import usuario.Usuario;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
