@@ -1,11 +1,17 @@
 package categoria;
 
+import java.util.UUID;
+
 import static org.apache.commons.lang3.Validate.notBlank;
 
 public class Categoria {
 
     private final String id;
     private String nome;
+
+    public Categoria() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public Categoria(String id,String nome) {
         notBlank(nome, "O nome da categoria não pode ser vazio.");

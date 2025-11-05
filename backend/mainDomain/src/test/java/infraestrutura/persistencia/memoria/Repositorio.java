@@ -193,6 +193,11 @@ public class Repositorio implements
         return categorias.size();
     }
 
+    @Override
+    public List<Categoria> listar() {
+        return List.of();
+    }
+
     /*-----------------------------------------------------------------------*/
     // Conta
     /*-----------------------------------------------------------------------*/

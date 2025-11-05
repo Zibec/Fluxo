@@ -3,6 +3,7 @@ package categoria;
 
 import transacao.TransacaoRepositorio;
 
+import java.util.List;
 import java.util.Optional;
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -15,7 +16,6 @@ public class CategoriaService {
         this.categoriaRepositorio = categoriaRepositorio;
         this.transacaoRepositorio = transacaoRepositorio;
     }
-
     public void salvar(Categoria categoria) {
         notNull(categoria, "A categoria não pode ser nula.");
         categoriaRepositorio.salvar(categoria);
@@ -41,4 +41,14 @@ public class CategoriaService {
         // Se a verificação passar, a exclusão é permitida
         categoriaRepositorio.deletarCategoria(id);
     }
+
+    public Optional<Categoria> obterCategoria(String id) {
+        return categoriaRepositorio.obterCategoria(id);
+    }
+
+    public List<Categoria> listar() {
+        return categoriaRepositorio.listar();
+    }
+
+
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -43,4 +44,14 @@ public class CategoriaRepository implements CategoriaRepositorio {
     public int contagem() {
         return (int) repository.count();
     }
+
+    @Override
+    public List<Categoria> listar() {
+        var categoriasJpa = repository.findAll();
+        return categoriasJpa.stream()
+                .map(c -> mapper.map(c, Categoria.class))
+                .toList();
+    }
+
+
 }
