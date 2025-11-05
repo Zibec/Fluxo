@@ -14,6 +14,7 @@ import usuario.Usuario;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,12 +47,13 @@ public class TokenService {
                     .verify(token)
                     .getSubject();
         } catch (JWTVerificationException exception){
+            System.out.println(exception.getMessage());
             return "";
         }
     }
 
     private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return new Date(System.currentTimeMillis() + 7L * 24 * 60 * 60 * 1000).toInstant();
     }
 
     public String extractUsername(String token) {

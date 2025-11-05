@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 interface CategoryItemProps {
   name: string
   onEdit: () => void
-  onDelete: () => void
+  onDelete: () => Promise<void>
 }
 
 export function CategoryItem({ name, onEdit, onDelete }: CategoryItemProps) {

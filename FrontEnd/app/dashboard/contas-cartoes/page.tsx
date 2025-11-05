@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { use, useEffect, useState } from "react"
 import { PageHeader } from "@/components/dedicated/accounts/page-header"
 import { AccountCard } from "@/components/dedicated/accounts/account-card"
 import { CardCard } from "@/components/dedicated/accounts/card-card"
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { cartoesService, contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
 import { createCartaoFormData, createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
+import { useToast } from "@/hooks/use-toast"
 
 export default function ContasCartoesPage() {
   const [addAccountOpen, setAddAccountOpen] = useState(false)
@@ -24,12 +25,15 @@ export default function ContasCartoesPage() {
       setAccounts(contas)
     }
 
+    fetchAccounts()
+  }, [])
+
+  useEffect(() => {
     async function fetchCards() {
       const cartoes = await cartoesService.getAllCartoes()
       setCards(cartoes)
     }
 
-    fetchAccounts()
     fetchCards()
   }, [])
 
@@ -66,9 +70,11 @@ export default function ContasCartoesPage() {
             <div className="space-y-3">
               {accounts.map((account) => (
                 <AccountCard
-                  key={account.nome}
+                  id={account.id!}
+                  key={account.id}
                   title={account.nome}
                   subtitle={account.banco}
+                  setAccounts={setAccounts}
                 />
               ))}
             </div>
@@ -104,9 +110,11 @@ export default function ContasCartoesPage() {
             <div className="space-y-3">
               {cards.map((card) => (
                 <CardCard
-                  key={card.numero}
+                  id={card.id!}
+                  key={card.id}
                   title={card.numero}
                   cardNumber={card.titular}
+                  setCards={setCards}
                 />
               ))}
             </div>
@@ -118,8 +126,8 @@ export default function ContasCartoesPage() {
         </section>
       </main>
 
-      <AddAccountDialog open={addAccountOpen} onOpenChange={setAddAccountOpen} />
-      <AddCardDialog open={addCardOpen} onOpenChange={setAddCardOpen} />
+      <AddAccountDialog open={addAccountOpen} onOpenChange={setAddAccountOpen} setAccounts={setAccounts} />
+      <AddCardDialog open={addCardOpen} onOpenChange={setAddCardOpen} setCards={setCards} />
     </div>
   )
 }

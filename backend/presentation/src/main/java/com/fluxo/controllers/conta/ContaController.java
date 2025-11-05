@@ -63,9 +63,6 @@ public class ContaController {
 
         List<Conta> contas =  service.obterPorUsuarioId(usuario.getId());
 
-        if(contas == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return ResponseEntity.ok(contas);
     }
 

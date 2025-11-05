@@ -9,27 +9,27 @@ import { Label } from "@/components/ui/label"
 interface EditCategoryDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  categoryName: string
-  onSave: (newName: string) => void
+  category: {id: string; name: string}
+  onSave: (id: string, newName: string) => Promise<void>
 }
 
-export function EditCategoryDialog({ open, onOpenChange, categoryName, onSave }: EditCategoryDialogProps) {
-  const [name, setName] = useState(categoryName)
+export function EditCategoryDialog({ open, onOpenChange, category, onSave }: EditCategoryDialogProps) {
+  const [name, setName] = useState(category.name)
 
   // Update the name when categoryName prop changes
   useEffect(() => {
-    setName(categoryName)
-  }, [categoryName])
+    setName(category.name)
+  }, [category.name])
 
   const handleSave = () => {
     if (name.trim()) {
-      onSave(name.trim())
+      onSave(category.id, name.trim())
       onOpenChange(false)
     }
   }
 
   const handleCancel = () => {
-    setName(categoryName) // Reset to original name
+    setName(category.name) // Reset to original name
     onOpenChange(false)
   }
 

@@ -1,29 +1,16 @@
-import axios, { AxiosHeaders } from 'axios';
+import { AxiosError } from 'axios';
 import { api } from '../../axios';
-
-const cartao = axios.create({
-    baseURL: api.defaults.baseURL + '/cartao',
-    headers: new AxiosHeaders({
-        'Content-Type': 'application/json',
-    }),
-    withCredentials: true,
-})   
-
-const conta = axios.create({
-    baseURL: api.defaults.baseURL + '/conta',
-    headers: new AxiosHeaders({
-        'Content-Type': 'application/json',
-    }),
-    withCredentials: true,
-})
 
 class ContaService {
     async getAllContas() {
         try {
-            console.log('Fetching all contas in ' + conta.defaults.baseURL + '/by-user');
-            const response = await conta.get('/by-user');
+            console.log('Fetching all contas in ' + api.defaults.baseURL + '/conta/by-user');
+            const response = await api.get('/conta/by-user');
             return response.data;
         } catch (error) {
+            if (error instanceof AxiosError && error?.status === 404) {
+                return [];
+            }
             console.error('Error fetching contas:', error);
             throw error;
         }
@@ -31,22 +18,22 @@ class ContaService {
     }
 
     async getContaById(id: string) {
-        const response = await conta.get(`/${id}`);
+        const response = await api.get(`/conta/${id}`);
         return response.data;
     }
 
     async createConta(data: any) {
-        const response = await conta.post('/', data);
+        const response = await api.post('/conta/', data);
         return response.data;
     }
 
     async updateConta(id: string, data: any) {
-        const response = await conta.put(`/${id}`, data);
+        const response = await api.put(`/conta/${id}`, data);
         return response.data;
     }
 
     async deleteConta(id: string) {
-        const response = await conta.delete(`/${id}`);
+        const response = await api.delete(`/conta/${id}`);
         return response.data;
     }
 }
@@ -54,10 +41,13 @@ class ContaService {
 class CartaoService {
     async getAllCartoes() {
         try {
-            console.log('Fetching all cartoes in ' + cartao.defaults.baseURL + '/by-user');
-            const response = await cartao.get('/by-user');
+            console.log('Fetching all cartoes in ' + api.defaults.baseURL + '/cartao/by-user');
+            const response = await api.get('/cartao/by-user');
             return response.data;
         } catch (error) {
+            if (error instanceof AxiosError && error?.status === 404) {
+                return [];
+            }
             console.error('Error fetching cartoes:', error);
             throw error;
         }
@@ -65,23 +55,23 @@ class CartaoService {
     }
 
     async getCartaoById(id: string) {
-        const response = await cartao.get(`/${id}`);
+        const response = await api.get(`/cartao/${id}`);
         return response.data;
     }
 
     async createCartao(data: any) {
         console.log('Creating cartao with data:', data);
-        const response = await cartao.post('/', data);
+        const response = await api.post('/cartao/', data);
         return response.data;
     }
 
     async updateCartao(id: string, data: any) {
-        const response = await cartao.put(`/${id}`, data);
+        const response = await api.put(`/cartao/${id}`, data);
         return response.data;
     }
 
     async deleteCartao(id: string) {
-        const response = await cartao.delete(`/${id}`);
+        const response = await api.delete(`/cartao/${id}`);
         return response.data;
     }
 

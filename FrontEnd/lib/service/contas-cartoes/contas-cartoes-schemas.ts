@@ -1,6 +1,8 @@
 import {z} from 'zod'
 
 const ContaFormSchema = z.object({
+    id: z.string()
+        .optional(),
     nome: z.string()
         .nonempty("Nome da Conta é obrigatório"),
     saldo: z.number()
@@ -11,6 +13,8 @@ const ContaFormSchema = z.object({
 })
 
 const CartaoFormSchema = z.object({
+    id: z.string()
+        .optional(),
     numero: z.string()
         .min(16, "Número do cartão deve ter 16 dígitos")
         .max(16, "Número do cartão deve ter 16 dígitos"),
@@ -24,9 +28,9 @@ const CartaoFormSchema = z.object({
         .max(4, "CVV deve ter 4 dígitos"),
     limite: z.number()
         .min(0, "Limite do cartão não pode ser negativo"),
-    dataFechamento: z.string(),
+    dataFechamentoFatura: z.string(),
         //.min(1, "Data de fechamento deve ser entre 1 e 31")
-    dataVencimento: z.string()
+    dataVencimentoFatura: z.string()
         //.min(1, "Data de vencimento deve ser entre 1 e 31")
 })
 

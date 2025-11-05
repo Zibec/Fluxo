@@ -1,23 +1,20 @@
 package com.fluxo.controllers.auth;
 
-
 import com.fluxo.config.security.TokenService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import persistencia.jpa.usuario.UsuarioRepositoryImpl;
 import usuario.Usuario;
 
+import java.time.Duration;
 import java.util.Map;
 
 @RestController
@@ -32,51 +29,55 @@ public class AuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationDTO data, HttpServletResponse response){
+    public ResponseEntity<?> login(@RequestBody AuthenticationDTO data, HttpServletResponse response) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.username(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((User) auth.getPrincipal());
 
-        Cookie cookie = new Cookie("token", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(86400000);
+        ResponseCookie cookie = ResponseCookie.from("token", token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(Duration.ofHours(24))
+                .build();
 
-        response.addCookie(cookie);
+        System.out.println(token);
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok(Map.of("message", "Login successful"));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterDTO> register(@RequestBody RegisterDTO data){
+    public ResponseEntity<?> register(@RequestBody RegisterDTO data) {
         try {
-            if (this.repository.obterUsuarioPorNome(data.username()).isPresent())
-                return ResponseEntity.badRequest().build();
+            if (repository.obterUsuarioPorNome(data.username()).isPresent()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Usuário já existe"));
+            }
 
             String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
             Usuario newUser = new Usuario(data.username(), data.email(), encryptedPassword);
+            repository.salvarUsuario(newUser);
 
-            this.repository.salvarUsuario(newUser);
-
-            return ResponseEntity.ok().build();
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.ok(Map.of("message", "Usuário registrado com sucesso"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
         }
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true); // true em produção (HTTPS)
-        cookie.setPath("/");
-        cookie.setMaxAge(0); // expira imediatamente
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(0)
+                .build();
 
-        response.addCookie(cookie);
-
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(Map.of("message", "Logout realizado com sucesso"));
     }
 }

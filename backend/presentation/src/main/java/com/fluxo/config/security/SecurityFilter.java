@@ -16,6 +16,7 @@ import usuario.Usuario;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
@@ -26,19 +27,28 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
+
+        String path = request.getRequestURI();
+        if (path.startsWith("/auth/")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         System.out.println("Autenticação");
         var token = this.recoverToken(request);
         System.out.println("Token: " + token);
         if(token != null){
             var login = tokenService.validateToken(token);
 
-            Usuario user = userRepository.obterUsuarioPorNome(login).get();
+            if(!Objects.equals(login, "")){
+                Usuario user = userRepository.obterUsuarioPorNome(login).get();
 
-            System.out.println("Usuario: " + login);
+                System.out.println("Usuario: " + login);
 
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }

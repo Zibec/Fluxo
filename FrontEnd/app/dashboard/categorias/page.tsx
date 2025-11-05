@@ -7,19 +7,82 @@ import { EditCategoryDialog } from "@/components/dedicated/categories/edit-categ
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { createCategoriaFormData } from "@/lib/service/categoria/categoria-schemas"
+import { CategoriaFormSchema, createCategoriaFormData } from "@/lib/service/categoria/categoria-schemas"
+import { categoriasService } from "@/lib/service/categoria/categoria-service"
+import { useToast } from "@/hooks/use-toast"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 
 export default function CategoriasPage() {
-  const [newCategory, setNewCategory] = useState("")
-  const [categories, setCategories] = useState<createCategoriaFormData>([])
+  const [categories, setCategories] = useState<createCategoriaFormData[]>([])
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [editingCategory, setEditingCategory] = useState<{ id: number; name: string } | null>(null)
+  const [editingCategory, setEditingCategory] = useState<{ id: string; name: string }>({ id: "", name: "" })
+
+  const {toast} = useToast();
+
+  const  {
+        register,
+        handleSubmit,
+        watch,
+        getValues,
+        formState: { errors }
+    } = useForm<createCategoriaFormData>({
+        resolver: zodResolver(CategoriaFormSchema)
+      })
 
   useEffect(() => {
     async function fetchCategories() {
-      const categorias = 
+      const categorias = await categoriasService.getAllCategorias();
+      setCategories(categorias);
     }
-  })
+    fetchCategories();
+    console.log("Categorias atualizadas", categories);
+  }, [])
+
+  const handleAddCategory = async () => {
+    if (getValues("nome").trim() === "") return;
+
+    try {
+      await categoriasService.createCategoria({ nome: getValues("nome") });
+      
+      toast({
+        title: "Categoria adicionada",
+        description: "A nova categoria foi adicionada com sucesso.",
+      });
+
+      setCategories(await categoriasService.getAllCategorias());
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  }
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      await categoriasService.deleteCategoria(id);
+
+      toast({
+        title: "Categoria deletada",
+        description: "A categoria foi deletada com sucesso.",
+      });
+
+      setCategories(await categoriasService.getAllCategorias());
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  }
+
+  const handleSaveEditedCategory = async (id: string, newName: string) => {
+    try {
+      await categoriasService.updateCategoria(id, { id: id, nome: newName });
+      toast({
+        title: "Categoria atualizada",
+        description: "A categoria foi atualizada com sucesso.",
+      });
+      setCategories(await categoriasService.getAllCategorias());
+    } catch (error) {
+      console.error("Error updating category:", error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
@@ -28,17 +91,20 @@ export default function CategoriasPage() {
 
         {/* Lista de categorias */}
         <div className="space-y-3 mb-8">
-          {categories.map((category) => (
+          {categories && categories.map((category) => (
             <CategoryItem
               key={category.id}
-              name={category.name}
-              onEdit={() => handleEditCategory(category.id)}
-              onDelete={() => handleDeleteCategory(category.id)}
+              name={category.nome}
+              onEdit={() => {
+                setEditingCategory({ id: category.id!, name: category.nome });
+                setEditDialogOpen(true);
+              }}
+              onDelete={() => handleDeleteCategory(category.id!)}
             />
           ))}
         </div>
 
-        {/* Adicionar nova categoria */}
+        
         <div
           className="
             bg-[var(--color-card)] 
@@ -50,6 +116,7 @@ export default function CategoriasPage() {
           "
         >
           <div className="flex items-end gap-4">
+            <form onSubmit={handleSubmit(handleAddCategory)} className="flex items-end gap-4 w-full">
             <div className="flex-1">
               <Label
                 htmlFor="new-category"
@@ -58,15 +125,7 @@ export default function CategoriasPage() {
                 Nova categoria:
               </Label>
               <Input
-                id="new-category"
-                type="text"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddCategory()
-                  }
-                }}
+                {...register("nome")}
                 placeholder="Digite o nome da categoria"
                 className="
                   w-full 
@@ -78,7 +137,7 @@ export default function CategoriasPage() {
               />
             </div>
             <Button
-              onClick={handleAddCategory}
+              type="submit"
               className="
                 bg-[var(--color-primary)] 
                 hover:bg-[var(--color-primary)]/90 
@@ -89,6 +148,7 @@ export default function CategoriasPage() {
             >
               Salvar
             </Button>
+            </form>
           </div>
         </div>
       </main>
@@ -96,7 +156,7 @@ export default function CategoriasPage() {
       <EditCategoryDialog
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
-        categoryName={editingCategory?.name || ""}
+        category={editingCategory}
         onSave={handleSaveEditedCategory}
       />
     </div>

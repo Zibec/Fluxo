@@ -14,9 +14,10 @@ import { useToast } from "@/hooks/use-toast"
 interface AddAccountDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  setAccounts: React.Dispatch<React.SetStateAction<createContaFormData[]>>
 }
 
-export function AddAccountDialog({ open, onOpenChange }: AddAccountDialogProps) {
+export function AddAccountDialog({ open, onOpenChange, setAccounts }: AddAccountDialogProps) {
   const  {
           register,
           handleSubmit,
@@ -37,6 +38,8 @@ export function AddAccountDialog({ open, onOpenChange }: AddAccountDialogProps) 
       toast({
           title: "Conta criada com sucesso!"
       })
+
+      setAccounts(await contasService.getAllContas())
 
       onOpenChange(false)
       

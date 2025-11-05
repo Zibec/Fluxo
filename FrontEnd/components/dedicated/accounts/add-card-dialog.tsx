@@ -11,22 +11,13 @@ import { useForm } from "react-hook-form"
 import { useToast } from "@/hooks/use-toast"
 import { cartoesService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
 
-interface CardForm {
-  name: string
-  bank: string
-  brand: string
-  lastDigits: string
-  totalLimit: string
-  closingDate: string
-  dueDate: string
-}
-
 interface AddCardDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  setCards: React.Dispatch<React.SetStateAction<createCartaoFormData[]>>
 }
 
-export function AddCardDialog({ open, onOpenChange }: AddCardDialogProps) {
+export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogProps) {
   const  {
           register,
           handleSubmit,
@@ -49,6 +40,8 @@ export function AddCardDialog({ open, onOpenChange }: AddCardDialogProps) {
 
       console.log("Cartão criado com sucesso")
       onOpenChange(false)
+
+      setCards(await cartoesService.getAllCartoes())
       
     } catch (error) {
       console.error("Erro ao criar cartão:", error)

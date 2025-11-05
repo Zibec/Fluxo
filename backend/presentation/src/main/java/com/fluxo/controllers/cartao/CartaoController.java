@@ -54,10 +54,6 @@ public class CartaoController {
 
         List<Cartao> cartoes =  service.obterPorUsuarioId(usuario.getId());
 
-        if(cartoes.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         return ResponseEntity.ok(cartoes);
     }
 
