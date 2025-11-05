@@ -1,50 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PageHeader } from "@/components/dedicated/accounts/page-header"
 import { CategoryItem } from "@/components/dedicated/categories/category-item"
 import { EditCategoryDialog } from "@/components/dedicated/categories/edit-category-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { createCategoriaFormData } from "@/lib/service/categoria/categoria-schemas"
 
 export default function CategoriasPage() {
   const [newCategory, setNewCategory] = useState("")
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Carro" },
-    { id: 2, name: "Aluguel" },
-    { id: 3, name: "Casa" },
-    { id: 4, name: "Alimentação" },
-    { id: 5, name: "Transporte" },
-  ])
+  const [categories, setCategories] = useState<createCategoriaFormData>([])
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<{ id: number; name: string } | null>(null)
 
-  const handleAddCategory = () => {
-    if (newCategory.trim()) {
-      const newId = Math.max(...categories.map((c) => c.id), 0) + 1
-      setCategories([...categories, { id: newId, name: newCategory.trim() }])
-      setNewCategory("")
+  useEffect(() => {
+    async function fetchCategories() {
+      const categorias = 
     }
-  }
-
-  const handleEditCategory = (id: number) => {
-    const category = categories.find((c) => c.id === id)
-    if (category) {
-      setEditingCategory(category)
-      setEditDialogOpen(true)
-    }
-  }
-
-  const handleSaveEditedCategory = (newName: string) => {
-    if (editingCategory) {
-      setCategories(categories.map((c) => (c.id === editingCategory.id ? { ...c, name: newName } : c)))
-    }
-  }
-
-  const handleDeleteCategory = (id: number) => {
-    setCategories(categories.filter((c) => c.id !== id))
-  }
+  })
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">

@@ -1,0 +1,10 @@
+import {z} from 'zod'
+
+const CategoriaFormSchema = z.object({
+    nome: z.string()
+        .nonempty("Nome da Categoria não pode ser vazio")
+})
+
+export type createCategoriaFormData = z.infer<typeof CategoriaFormSchema>
+
+export { CategoriaFormSchema }
