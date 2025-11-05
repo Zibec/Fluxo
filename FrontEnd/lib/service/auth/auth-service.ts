@@ -1,5 +1,5 @@
 // services/auth.service.ts
-import { api, auth } from '../axios';
+import { api, auth } from '../../axios';
 
 export interface ApiResponse<T> {
   data: T;
@@ -13,26 +13,21 @@ export interface UserInfo {
 }
 
 class AuthService {
-  // Faz o registro e salva cookie HttpOnly automaticamente
-  async register(name: string, email: string, password: string): Promise<ApiResponse<any>> {
+  async register(username: string, email: string, password: string): Promise<ApiResponse<any>> {
     const response = await auth.post(
-      '/auth/register',
-      { name, email, password },
-      { withCredentials: true } // fundamental
+      '/register',
+      { username, email, password },
     );
 
-    // O backend já deve ter enviado o cookie HttpOnly
-    // Aqui só buscamos o usuário logado
+
     await this.fetchAndSaveUserInfo();
     return { data: response.data, status: response.status };
   }
 
-  // Faz login e backend define o cookie HttpOnly (JWT)
   async login(username: string, password: string): Promise<ApiResponse<any>> {
     const response = await auth.post(
       '/login',
       { username, password },
-      { withCredentials: true } // envia e recebe cookies
     );
 
     if (response.status !== 200) {
@@ -46,7 +41,7 @@ class AuthService {
   // Busca o usuário atual
   async getCurrentUser(): Promise<UserInfo> {
     const response = await api.get('/user/me', {
-      withCredentials: true, // inclui o cookie automaticamente
+      withCredentials: true, 
     });
 
     return response.data;
@@ -75,12 +70,13 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      await api.post('/logout', {}, { withCredentials: true });
+      await auth.post('/logout', {}, { withCredentials: true });
     } catch (e) {
       console.error('Erro ao deslogar', e);
     } finally {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('fluxo_user');
+        window.location.href = '/';
       }
     }
   }

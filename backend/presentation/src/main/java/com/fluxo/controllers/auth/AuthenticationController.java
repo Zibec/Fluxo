@@ -51,13 +51,32 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<RegisterDTO> register(@RequestBody RegisterDTO data){
-        if(this.repository.obterUsuarioPorNome(data.username()).isPresent()) return ResponseEntity.badRequest().build();
+        try {
+            if (this.repository.obterUsuarioPorNome(data.username()).isPresent())
+                return ResponseEntity.badRequest().build();
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        Usuario newUser = new Usuario(data.username(), data.email(), encryptedPassword);
+            String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
+            Usuario newUser = new Usuario(data.username(), data.email(), encryptedPassword);
 
-        this.repository.salvarUsuario(newUser);
+            this.repository.salvarUsuario(newUser);
 
-        return ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // true em produção (HTTPS)
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // expira imediatamente
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(Map.of("message", "Logout realizado com sucesso"));
     }
 }

@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { BudgetsPageHeader } from "@/components/budgets/budgets-page-header"
-import { BudgetDetailCard } from "@/components/budgets/budget-detail-card"
-import { EditBudgetDialog } from "@/components/budgets/edit-budget-dialog"
+import { BudgetsPageHeader } from "@/components/dedicated/budgets/budgets-page-header"
+import { BudgetDetailCard } from "@/components/dedicated/budgets/budget-detail-card"
+import { EditBudgetDialog } from "@/components/dedicated/budgets/edit-budget-dialog"
 
 export default function OrcamentosPage() {
   const [balance] = useState(5420.5)
@@ -77,7 +77,7 @@ export default function OrcamentosPage() {
 
   return (
     <div className="min-h-screen bg-neutral-100">
-      <BudgetsPageHeader balance={balance} />
+
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="space-y-6">

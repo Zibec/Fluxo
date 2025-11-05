@@ -1,16 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ArrowRight, TrendingUp, PieChart, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AuthDialog } from "@/components/auth/auth-dialog"
 import Image from "next/image"
+import { useTheme } from "next-themes"
 
 export default function Home() {
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
 
+  const { theme, setTheme } = useTheme()
+  
+  useEffect(() => {
+    setTheme("light")
+  }, [setTheme])
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-slate-50">
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-sm bg-white/80 border-b border-slate-200">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -72,7 +79,7 @@ export default function Home() {
             </p>
           </div>
           <div className="relative h-96 md:h-full min-h-96 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-blue-600/20 rounded-2xl blur-3xl"></div>
+            <div className="absolute inset-0 bg-linear-to-br from-blue-400/20 to-blue-600/20 rounded-2xl blur-3xl"></div>
             <Image
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Imagem%20do%20WhatsApp%20de%202025-10-19%20%C3%A0%28s%29%2018.19.15_be016fe0-15btNodOVv3HJqmwsiVLandRznsM67.jpg"
               alt="Fluxo - Gestão Financeira"
@@ -128,7 +135,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl border border-blue-200 p-12 md:p-16 text-center space-y-8">
+        <div className="bg-linear-to-r from-blue-50 to-blue-100 rounded-2xl border border-blue-200 p-12 md:p-16 text-center space-y-8">
           <div className="space-y-4">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900">
               Pronto para tomar controle das suas finanças?

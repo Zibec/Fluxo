@@ -28,6 +28,11 @@ public class CartaoService {
         return cartaoRepositorio.obterCartaoPorId(cartaoId);
     }
 
+    public List<Cartao> obterPorUsuarioId(String id) {
+        notNull(id, "O ID do usuário não pode ser nulo");
+        return cartaoRepositorio.obterCartaoPorUsarioId(id);
+    }
+
     public List<Cartao> obterTodos() {
         return cartaoRepositorio.obterTodos();
     }

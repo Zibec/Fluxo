@@ -13,19 +13,40 @@ interface SavingsSectionProps {
 
 export function SavingsSection({ savings }: SavingsSectionProps) {
   return (
-    <Card className="bg-white">
+    <Card
+      className="transition-colors"
+      style={{
+        backgroundColor: "var(--card)",
+        color: "var(--card-foreground)",
+        borderColor: "var(--border)",
+      }}
+    >
       <CardHeader>
-        <Link href="/metas">
-          <CardTitle className="text-xl font-semibold text-neutral-900 cursor-pointer hover:text-blue-600 transition-colors">
+        <Link href="/dashboard/metas">
+          <CardTitle
+            className="text-xl font-semibold cursor-pointer transition-colors"
+            style={{
+              color: "var(--foreground)",
+            }}
+          >
             Poupança
           </CardTitle>
         </Link>
       </CardHeader>
+
       <CardContent className="space-y-4">
         {savings.map((saving) => (
           <div key={saving.name} className="space-y-1">
-            <p className="text-sm font-medium text-neutral-700">{saving.name}</p>
-            <p className="text-sm text-neutral-600">
+            <p
+              className="text-sm font-medium"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              {saving.name}
+            </p>
+            <p
+              className="text-sm"
+              style={{ color: "var(--muted-foreground)" }}
+            >
               R$ {saving.saved.toLocaleString("pt-BR")} / R$ {saving.goal.toLocaleString("pt-BR")}
             </p>
           </div>

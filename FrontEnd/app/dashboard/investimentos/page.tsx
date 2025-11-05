@@ -2,9 +2,8 @@
 
 import { useState } from "react"
 import { Plus } from "lucide-react"
-import { PageHeader } from "@/components/accounts/page-header"
-import { InvestmentCard } from "@/components/investments/investment-card"
-import { AddInvestmentDialog } from "@/components/investments/add-investment-dialog"
+import { InvestmentCard } from "@/components/dedicated/investments/investment-card"
+import { AddInvestmentDialog } from "@/components/dedicated/investments/add-investment-dialog"
 import { Button } from "@/components/ui/button"
 
 export default function InvestimentosPage() {
@@ -26,16 +25,30 @@ export default function InvestimentosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <PageHeader balance={balance} />
-
+    <div
+      className="
+        min-h-screen 
+        bg-[var(--color-background)] 
+        text-[var(--color-foreground)] 
+        transition-colors
+      "
+    >
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Title and Add Button */}
+        {/* Cabeçalho e botão adicionar */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-neutral-900">Meus Investimentos</h1>
+          <h1 className="text-3xl font-bold text-[var(--color-foreground)]">
+            Meus Investimentos
+          </h1>
           <Button
             size="icon"
-            className="rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+            className="
+              rounded-full 
+              bg-[var(--color-primary)] 
+              text-[var(--color-primary-foreground)] 
+              hover:opacity-90 
+              shadow-md 
+              transition
+            "
             onClick={handleAddInvestment}
           >
             <Plus className="h-5 w-5" />
@@ -43,18 +56,31 @@ export default function InvestimentosPage() {
           </Button>
         </div>
 
-        {/* Selic Rate Card */}
-        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 mb-6 inline-block">
-          <p className="text-sm font-medium text-blue-900">
-            Taxa Selic: <span className="font-bold">{selicRate.toFixed(2)}%</span>
+        {/* Taxa Selic */}
+        <div
+          className="
+            border 
+            rounded-lg 
+            px-4 py-3 mb-6 inline-block
+            bg-[var(--color-secondary)]
+            border-[var(--color-border)]
+            text-[var(--color-secondary-foreground)]
+            transition-colors
+          "
+        >
+          <p className="text-sm font-medium">
+            Taxa Selic:{" "}
+            <span className="font-bold">{selicRate.toFixed(2)}%</span>
           </p>
         </div>
 
-        {/* Investments List */}
+        {/* Lista de investimentos */}
         <div className="space-y-4">
           {investments.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-neutral-500">Nenhum investimento cadastrado ainda.</p>
+              <p className="text-[var(--color-muted-foreground)]">
+                Nenhum investimento cadastrado ainda.
+              </p>
             </div>
           ) : (
             investments.map((investment) => (

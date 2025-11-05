@@ -22,6 +22,8 @@ public class Cartao implements FormaPagamento {
     private LocalDate dataFechamentoFatura;
     private LocalDate dataVencimentoFatura;
 
+    private String usuarioId;
+
     public Cartao() {
         this.id = new CartaoId(UUID.randomUUID().toString());
     }
@@ -60,7 +62,7 @@ public class Cartao implements FormaPagamento {
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
 
-    public Cartao(CartaoId id, CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo) {
+    public Cartao(CartaoId id, CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo, String usuarioId) {
         this.id = id;
         notNull(numero);
         this.numero = numero;
@@ -75,6 +77,25 @@ public class Cartao implements FormaPagamento {
         this.saldo = saldo;
         this.dataFechamentoFatura = dataFechamentoFatura;
         this.dataVencimentoFatura = dataVencimentoFatura;
+        this.usuarioId = usuarioId;
+    }
+
+    public Cartao(CartaoNumero numero, String titular, YearMonth validade, Cvv cvv, BigDecimal limite, LocalDate dataFechamentoFatura, LocalDate dataVencimentoFatura, BigDecimal saldo, String usuarioId) {
+        this.id = new CartaoId(UUID.randomUUID().toString());
+        notNull(numero);
+        this.numero = numero;
+        notNull(titular);
+        this.titular = titular;
+        notNull(validade);
+        this.validade = validade;
+        notNull(cvv);
+        this.cvv = cvv;
+        notNull(limite);
+        this.limite = limite;
+        this.saldo = saldo;
+        this.dataFechamentoFatura = dataFechamentoFatura;
+        this.dataVencimentoFatura = dataVencimentoFatura;
+        this.usuarioId = usuarioId;
     }
 
     public CartaoId getId() {
@@ -142,6 +163,12 @@ public class Cartao implements FormaPagamento {
     }
     public void setFatura(Fatura fatura) {
         this.fatura = fatura;
+    }
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public void realizarTransacao(BigDecimal valor) {

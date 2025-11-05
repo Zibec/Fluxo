@@ -22,6 +22,11 @@ public class ContaService {
         return contaRepositorio.obterConta(contaId);
     }
 
+    public List<Conta> obterPorUsuarioId(String id) {
+        notNull(id, "O ID do usuário não pode ser nulo");
+        return contaRepositorio.obterContaPorUsuarioId(id);
+    }
+
     public boolean contaExistente(String nome) {
         notNull(nome, "O nome da conta não pode ser nulo");
         return contaRepositorio.contaExistente(nome);

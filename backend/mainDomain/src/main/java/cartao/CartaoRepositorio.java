@@ -14,5 +14,7 @@ public interface CartaoRepositorio {
 
     List<Cartao> obterTodos();
 
+    List<Cartao> obterCartaoPorUsarioId(String id);
+
     void deletarCartao(CartaoId id);
 }

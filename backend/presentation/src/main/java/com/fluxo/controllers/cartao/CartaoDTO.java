@@ -9,6 +9,8 @@ public class CartaoDTO {
 
     public String numero;
 
+    public String usuarioId;
+
     public String cvv;
 
     public String titular;

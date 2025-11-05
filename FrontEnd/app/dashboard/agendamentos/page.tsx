@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { PageHeader } from "@/components/accounts/page-header"
-import { ScheduleCard } from "@/components/schedules/schedule-card"
-import { AddScheduleDialog } from "@/components/schedules/add-schedule-dialog"
+import { PageHeader } from "@/components/dedicated/accounts/page-header"
+import { ScheduleCard } from "@/components/dedicated/schedules/schedule-card"
+import { AddScheduleDialog } from "@/components/dedicated/schedules/add-schedule-dialog"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 
@@ -11,31 +11,14 @@ export default function AgendamentosPage() {
   const [balance] = useState(12500.0)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
-  // Sample scheduled transactions data
   const [schedules, setSchedules] = useState([
-    {
-      id: 1,
-      title: "Aluguel",
-      value: 1500.0,
-      nextDate: "05/11/2025",
-    },
-    {
-      id: 2,
-      title: "Netflix",
-      value: 55.9,
-      nextDate: "10/11/2025",
-    },
-    {
-      id: 3,
-      title: "Conta de Luz",
-      value: 180.0,
-      nextDate: "15/11/2025",
-    },
+    { id: 1, title: "Aluguel", value: 1500.0, nextDate: "05/11/2025" },
+    { id: 2, title: "Netflix", value: 55.9, nextDate: "10/11/2025" },
+    { id: 3, title: "Conta de Luz", value: 180.0, nextDate: "15/11/2025" },
   ])
 
   const handleEdit = (id: number) => {
     console.log("[v0] Edit schedule:", id)
-    // TODO: Implement edit functionality
   }
 
   const handleDelete = (id: number) => {
@@ -49,13 +32,33 @@ export default function AgendamentosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <PageHeader balance={balance} />
-
+    <div
+      className="min-h-screen transition-colors"
+      style={{
+        backgroundColor: "var(--background)",
+        color: "var(--foreground)",
+      }}
+    >
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-neutral-900">Agendamentos</h1>
-          <Button onClick={handleAddSchedule} size="icon" className="rounded-full bg-blue-600 hover:bg-blue-700">
+          <h1
+            className="text-3xl font-bold"
+            style={{
+              color: "var(--foreground)",
+            }}
+          >
+            Agendamentos
+          </h1>
+
+          <Button
+            onClick={handleAddSchedule}
+            size="icon"
+            className="rounded-full transition-colors"
+            style={{
+              backgroundColor: "var(--primary)",
+              color: "var(--primary-foreground)",
+            }}
+          >
             <Plus className="h-5 w-5" />
             <span className="sr-only">Agendar nova transação</span>
           </Button>
@@ -76,13 +79,26 @@ export default function AgendamentosPage() {
 
         {schedules.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-neutral-500 text-lg">Nenhum agendamento encontrado</p>
-            <p className="text-neutral-400 text-sm mt-2">Clique no botão + para criar um novo agendamento</p>
+            <p
+              className="text-lg"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Nenhum agendamento encontrado
+            </p>
+            <p
+              className="text-sm mt-2"
+              style={{ color: "var(--muted-foreground)" }}
+            >
+              Clique no botão + para criar um novo agendamento
+            </p>
           </div>
         )}
       </main>
 
-      <AddScheduleDialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen} />
+      <AddScheduleDialog
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+      />
     </div>
   )
 }

@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { BudgetsPageHeader } from "@/components/budgets/budgets-page-header"
-import { GoalCard } from "@/components/goals/goal-card"
-import { EditGoalDialog } from "@/components/goals/edit-goal-dialog"
+import { BudgetsPageHeader } from "@/components/dedicated/budgets/budgets-page-header"
+import { GoalCard } from "@/components/dedicated/goals/goal-card"
+import { EditGoalDialog } from "@/components/dedicated/goals/edit-goal-dialog"
 
 interface Goal {
   id: number
@@ -57,7 +57,6 @@ export default function MetasPage() {
 
   return (
     <div className="min-h-screen bg-neutral-100">
-      <BudgetsPageHeader balance={balance} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <h1 className="text-3xl font-bold text-neutral-900 mb-6">Minhas Metas</h1>

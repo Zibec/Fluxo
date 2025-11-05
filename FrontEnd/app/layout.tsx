@@ -12,7 +12,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Fluxo - Finanças Pessoais",
   description: "Dashboard moderno para gerenciar suas finanças pessoais",
-  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -21,13 +20,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
-
-        {children}
-        <Toaster />
-        <Analytics />
-        
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+          <Toaster />
+          <Analytics />
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -1,9 +1,13 @@
 package com.fluxo.controllers;
 
 import cartao.Cartao;
+import cartao.CartaoId;
 import cartao.CartaoNumero;
 import cartao.Cvv;
 import com.fluxo.controllers.cartao.CartaoDTO;
+import com.fluxo.controllers.conta.ContaDTO;
+import conta.Conta;
+import conta.ContaId;
 import org.modelmapper.AbstractConverter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
@@ -32,6 +36,7 @@ public class ControllerMapper extends ModelMapper {
                 cartaoDTO.saldo =  cartao.getSaldo();
                 cartaoDTO.dataFechamentoFatura = cartao.getDataFechamentoFatura().toString();
                 cartaoDTO.dataVencimentoFatura = cartao.getDataVencimentoFatura().toString();
+                cartaoDTO.usuarioId = cartao.getUsuarioId();
                 return cartaoDTO;
             }
         });
@@ -39,7 +44,35 @@ public class ControllerMapper extends ModelMapper {
         addConverter(new AbstractConverter<CartaoDTO, Cartao>() {
             @Override
             protected Cartao convert(CartaoDTO cartao) {
-                return new Cartao(new CartaoNumero(cartao.numero), cartao.titular, cartao.validade, new Cvv(cartao.cvv), cartao.limite, LocalDate.parse(cartao.dataFechamentoFatura), LocalDate.parse(cartao.dataVencimentoFatura));
+                return new Cartao(new CartaoNumero(cartao.numero), cartao.titular, cartao.validade, new Cvv(cartao.cvv), cartao.limite, LocalDate.parse(cartao.dataFechamentoFatura), LocalDate.parse(cartao.dataVencimentoFatura), cartao.saldo, cartao.usuarioId);
+            }
+        });
+
+        addConverter(new AbstractConverter<Conta, ContaDTO>() {
+            @Override
+            protected ContaDTO convert(Conta conta) {
+                ContaDTO dto = new ContaDTO();
+                dto.id = conta.getId().getId();
+                dto.nome = conta.getNome();
+                dto.tipo = conta.getTipo();
+                dto.banco = conta.getBanco();
+                dto.saldo = conta.getSaldo();
+                dto.usuarioId = conta.getUsuarioId();
+                return dto;
+            }
+        });
+
+        addConverter(new AbstractConverter<ContaDTO, Conta>() {
+            @Override
+            protected Conta convert(ContaDTO dto) {
+                return new Conta(
+                        new ContaId(dto.id),
+                        dto.nome,
+                        dto.tipo,
+                        dto.banco,
+                        dto.saldo,
+                        dto.usuarioId
+                );
             }
         });
     }

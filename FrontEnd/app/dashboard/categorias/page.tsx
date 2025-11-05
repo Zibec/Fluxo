@@ -1,15 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { PageHeader } from "@/components/accounts/page-header"
-import { CategoryItem } from "@/components/categories/category-item"
-import { EditCategoryDialog } from "@/components/categories/edit-category-dialog"
+import { PageHeader } from "@/components/dedicated/accounts/page-header"
+import { CategoryItem } from "@/components/dedicated/categories/category-item"
+import { EditCategoryDialog } from "@/components/dedicated/categories/edit-category-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 export default function CategoriasPage() {
-  const [balance] = useState(5420.5)
   const [newCategory, setNewCategory] = useState("")
   const [categories, setCategories] = useState([
     { id: 1, name: "Carro" },
@@ -48,12 +47,11 @@ export default function CategoriasPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <PageHeader balance={balance} />
-
+    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)]">
       <main className="max-w-4xl mx-auto px-6 py-8">
-        <h1 className="text-3xl font-bold text-neutral-900 mb-6">Categorias</h1>
+        <h1 className="text-3xl font-bold mb-6 text-[var(--color-foreground)]">Categorias</h1>
 
+        {/* Lista de categorias */}
         <div className="space-y-3 mb-8">
           {categories.map((category) => (
             <CategoryItem
@@ -65,11 +63,24 @@ export default function CategoriasPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-6">
+        {/* Adicionar nova categoria */}
+        <div
+          className="
+            bg-[var(--color-card)] 
+            border 
+            border-[var(--color-border)] 
+            rounded-lg 
+            shadow-sm 
+            p-6
+          "
+        >
           <div className="flex items-end gap-4">
             <div className="flex-1">
-              <Label htmlFor="new-category" className="text-sm font-medium text-neutral-700 mb-2 block">
-                Nova:
+              <Label
+                htmlFor="new-category"
+                className="text-sm font-medium text-[var(--color-muted-foreground)] mb-2 block"
+              >
+                Nova categoria:
               </Label>
               <Input
                 id="new-category"
@@ -82,10 +93,25 @@ export default function CategoriasPage() {
                   }
                 }}
                 placeholder="Digite o nome da categoria"
-                className="w-full"
+                className="
+                  w-full 
+                  bg-[var(--color-input)] 
+                  border-[var(--color-border)] 
+                  text-[var(--color-foreground)] 
+                  placeholder:text-[var(--color-muted-foreground)]
+                "
               />
             </div>
-            <Button onClick={handleAddCategory} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button
+              onClick={handleAddCategory}
+              className="
+                bg-[var(--color-primary)] 
+                hover:bg-[var(--color-primary)]/90 
+                text-[var(--color-primary-foreground)] 
+                font-medium 
+                transition-colors
+              "
+            >
               Salvar
             </Button>
           </div>

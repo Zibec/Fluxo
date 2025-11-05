@@ -72,6 +72,17 @@ public class CartaoRepositoryImpl implements CartaoRepositorio {
     }
 
     @Override
+    public List<Cartao> obterCartaoPorUsarioId(String id) {
+        var cartoes = repository.findAllByUsuarioId(id);
+
+        if(cartoes == null){
+            return null;
+        }
+
+        return mapper.map(cartoes, List.class);
+    }
+
+    @Override
     public void deletarCartao(CartaoId id) {
         repository.deleteById(id.getId());
     }

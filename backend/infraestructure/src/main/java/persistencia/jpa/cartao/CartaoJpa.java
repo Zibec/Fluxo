@@ -18,6 +18,8 @@ public class CartaoJpa {
     @Id
     public String id;
 
+    public String usuarioId;
+
     public String numero;
 
     public String cvv;

@@ -28,6 +28,11 @@ public class ContaRepositoryImpl implements ContaRepositorio {
     @Override
     public Optional<Conta> obterConta(String contaId) {
         var conta = repositorio.findById(contaId);
+
+        if(conta.isEmpty()){
+            return Optional.empty();
+        }
+
         return Optional.of(mapper.map(conta, Conta.class));
     }
 
@@ -39,6 +44,11 @@ public class ContaRepositoryImpl implements ContaRepositorio {
     @Override
     public List<Conta> listarTodasContas() {
         var contasJpa = repositorio.findAll();
+
+        if (contasJpa.isEmpty()) {
+            return List.of();
+        }
+
         return mapper.map(contasJpa, List.class);
     }
 
@@ -50,5 +60,16 @@ public class ContaRepositoryImpl implements ContaRepositorio {
     @Override
     public void deletarConta(String id) {
         repositorio.deleteById(id);
+    }
+
+    @Override
+    public List<Conta> obterContaPorUsuarioId(String id) {
+        var contasJpa = repositorio.findAllByUsuarioId(id);
+
+        if (contasJpa.isEmpty()) {
+            return List.of();
+        }
+
+        return mapper.map(contasJpa, List.class);
     }
 }

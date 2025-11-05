@@ -9,6 +9,6 @@ public class ContaDTO {
     public BigDecimal saldo;
     public String tipo;
     public String banco;
-
+    public String usuarioId;
     public ContaDTO() {}
 }

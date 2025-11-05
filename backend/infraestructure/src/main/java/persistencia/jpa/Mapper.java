@@ -75,7 +75,7 @@ public class Mapper extends ModelMapper {
             @Override
             protected Conta convert(ContaJpa source) {
                 ContaId contaId = new ContaId(source.id);
-                return new Conta(contaId, source.nome, source.tipo, source.banco, source.saldo);
+                return new Conta(contaId, source.nome, source.tipo, source.banco, source.saldo, source.usuarioId);
             }
         });
 
@@ -84,7 +84,7 @@ public class Mapper extends ModelMapper {
             protected Cartao convert(CartaoJpa source) {
                 CartaoId id = new CartaoId(source.id);
                 return new Cartao(id, new CartaoNumero(source.numero), source.titular, source.validade, new Cvv(source.cvv),
-                        source.limite, source.dataFechamentoFatura, source.dataVencimentoFatura, source.saldo);
+                        source.limite, source.dataFechamentoFatura, source.dataVencimentoFatura, source.saldo, source.usuarioId);
             }
         });
 
@@ -208,6 +208,7 @@ public class Mapper extends ModelMapper {
                 jpa.tipo = source.getTipo();
                 jpa.banco = source.getBanco();
                 jpa.saldo = source.getSaldo();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
             }
         });
@@ -225,6 +226,7 @@ public class Mapper extends ModelMapper {
                 jpa.dataFechamentoFatura = source.getDataFechamentoFatura();
                 jpa.dataVencimentoFatura = source.getDataVencimentoFatura();
                 jpa.saldo = source.getSaldo();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
             }
         });

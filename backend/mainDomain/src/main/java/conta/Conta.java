@@ -16,6 +16,8 @@ public class Conta implements FormaPagamento {
     private String tipo;
     private String banco;
 
+    private String usuarioId;
+
     public Conta() {
         this.id = new ContaId(UUID.randomUUID().toString());
         this.saldo = BigDecimal.ZERO;
@@ -42,7 +44,7 @@ public class Conta implements FormaPagamento {
         this.saldo = saldoInicial;
     }
 
-    public Conta(ContaId id, String nome, String tipo, String banco, BigDecimal saldoInicial) {
+    public Conta(ContaId id, String nome, String tipo, String banco, BigDecimal saldoInicial, String usuarioId) {
         this.id = id;
         this.nome = nome;
         this.tipo = tipo;
@@ -51,6 +53,7 @@ public class Conta implements FormaPagamento {
             throw new IllegalArgumentException("O saldo inicial não pode ser negativo.");
         }
         this.saldo = saldoInicial;
+        this.usuarioId = usuarioId;
     }
 
     public void realizarTransacao(BigDecimal valor) {
@@ -109,5 +112,13 @@ public class Conta implements FormaPagamento {
 
     public void setBanco(String banco) {
         this.banco = banco;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 }

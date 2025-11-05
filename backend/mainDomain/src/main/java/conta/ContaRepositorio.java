@@ -20,4 +20,6 @@ public interface ContaRepositorio {
     void limparConta();
 
     void deletarConta(String id);
+
+    List<Conta> obterContaPorUsuarioId(String id);
 }

@@ -15,6 +15,8 @@ public class ContaJpa {
     @Id
     public String id;
 
+    public String usuarioId;
+
     public String nome;
     public BigDecimal saldo;
     public String tipo;
