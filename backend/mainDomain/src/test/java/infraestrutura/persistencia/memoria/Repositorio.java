@@ -152,6 +152,11 @@ public class Repositorio implements
     }
 
     @Override
+    public List<Cartao> obterCartaoPorUsarioId(String id) {
+        return List.of();
+    }
+
+    @Override
     public void deletarCartao(CartaoId id) {
 
     }
@@ -230,6 +235,11 @@ public class Repositorio implements
     @Override
     public void deletarConta(String id) {
 
+    }
+
+    @Override
+    public List<Conta> obterContaPorUsuarioId(String id) {
+        return List.of();
     }
 
     /*-----------------------------------------------------------------------*/
@@ -563,6 +573,11 @@ public class Repositorio implements
 
     @Override
     public Optional<Usuario> obterUsuarioPorEmail(String contaEmail) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Usuario> obterPorNome(String username) {
         return Optional.empty();
     }
 
