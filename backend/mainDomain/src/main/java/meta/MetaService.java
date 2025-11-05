@@ -4,6 +4,7 @@ import conta.Conta;
 import conta.ContaRepositorio;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -60,4 +61,9 @@ public class MetaService {
 
         metaRepositorio.deletarMeta(metaId);
     }
+
+    public List<Meta> listar() {
+        return metaRepositorio.listar();
+    }
+
 }
