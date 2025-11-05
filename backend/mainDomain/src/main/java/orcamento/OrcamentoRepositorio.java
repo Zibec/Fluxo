@@ -1,6 +1,7 @@
 package orcamento;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,5 +16,7 @@ public interface OrcamentoRepositorio {
     Optional<Orcamento> obterOrcamento(OrcamentoChave chave);
 
     void limparOrcamento();
+
+    List<Orcamento> listarTodos();
 
 }

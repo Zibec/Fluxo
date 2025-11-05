@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
+import java.time.YearMonth;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,29 +22,79 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
 
     @Override
     public void salvarOrcamento(OrcamentoChave chave, Orcamento orcamento) {
-        var orcamentoJpa = mapper.map(orcamento, OrcamentoJpa.class);
-        String chaveJpa = mapper.map(chave, String.class);
-        orcamentoJpa.chave = chaveJpa;
-        repositorio.save(orcamentoJpa);
+        if (orcamento.getOrcamentoChave() == null) {
+            orcamento.setOrcamentoChave(chave);
+        }
+
+        String id = chaveToId(chave);
+
+        OrcamentoJpa jpa = new OrcamentoJpa();
+        jpa.chave = id;
+        jpa.usuarioId = chave.getUsuarioId();
+        jpa.categoriaId = chave.getCategoriaId();
+        jpa.ano = chave.getAnoMes().getYear();
+        jpa.mes = chave.getAnoMes().getMonthValue();
+        jpa.limite = orcamento.getLimite();
+        jpa.dataLimite = orcamento.getDataLimite();
+
+        repositorio.save(jpa);
     }
 
     @Override
     public void atualizarOrcamento(OrcamentoChave chave, Orcamento orcamento) {
-        repositorio.deleteById(chave);
-        var orcamentoJpa = mapper.map(orcamento, OrcamentoJpa.class);
-        String chaveJpa = mapper.map(chave, String.class);
-        orcamentoJpa.chave = chaveJpa;
-        repositorio.save(orcamentoJpa);
+        String id = chaveToId(chave);
+
+        OrcamentoJpa jpa = repositorio.findById(id).orElseGet(() -> {
+            OrcamentoJpa novo = new OrcamentoJpa();
+            novo.chave = id;
+            novo.usuarioId = chave.getUsuarioId();
+            novo.categoriaId = chave.getCategoriaId();
+            novo.ano = chave.getAnoMes().getYear();
+            novo.mes = chave.getAnoMes().getMonthValue();
+            return novo;
+        });
+
+        jpa.limite = orcamento.getLimite();
+        jpa.dataLimite = orcamento.getDataLimite();
+
+        repositorio.save(jpa);
+    }
+
+    @Override
+    public List<Orcamento> listarTodos(){
+        return repositorio.findAll().stream().map(this::toDomain).toList();
     }
 
     @Override
     public Optional<Orcamento> obterOrcamento(OrcamentoChave chave) {
-        var orcamentoJpa = repositorio.findById(chave);
-        return Optional.of(mapper.map(orcamentoJpa, Orcamento.class));
+        String id = chaveToId(chave);
+        return repositorio.findById(id).map(j -> {
+            // Reconstroi a chave de domínio direto das colunas sombreadas
+            var ym = YearMonth.of(j.ano, j.mes);
+            var chaveDomain = new OrcamentoChave(j.usuarioId, ym, j.categoriaId);
+            return new Orcamento(chaveDomain, j.limite, j.dataLimite);
+        });
     }
 
     @Override
     public void limparOrcamento() {
         repositorio.deleteAll();
+    }
+
+// Helpers
+    private String chaveToId(OrcamentoChave c) {
+        // YearMonth.toString() já é "YYYY-MM"
+        return c.getUsuarioId() + "|" + c.getCategoriaId() + "|" + c.getAnoMes();
+    }
+
+    private Orcamento toDomain(OrcamentoJpa j) {
+        //Remonta o YearMonth a partir das colunas sombreadas do banco
+        var ym = java.time.YearMonth.of(j.ano, j.mes);
+
+        //Reconstrói a chave de domínio
+        var chaveDomain = new OrcamentoChave(j.usuarioId, ym, j.categoriaId);
+
+        //Cria o agregado de domínio Orcamento com os dados persistidos
+        return new Orcamento(chaveDomain, j.limite, j.dataLimite);
     }
 }
