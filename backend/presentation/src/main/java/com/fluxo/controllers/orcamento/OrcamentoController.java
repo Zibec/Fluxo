@@ -19,6 +19,10 @@ public class OrcamentoController {
 
     @Autowired
     private OrcamentoService service;
+    @Autowired
+    private usuario.UsuarioRepositorio usuarioRepo;
+    @Autowired
+    private categoria.CategoriaRepositorio categoriaRepo;
 
     @GetMapping("/todos")
     public ResponseEntity<List<Orcamento>> listarTodos(){
@@ -41,12 +45,18 @@ public class OrcamentoController {
     @PostMapping("/criar")
     public ResponseEntity<Void> criarOrcamentoMensal(@RequestParam String usuarioId, @RequestParam String categoriaId, @RequestParam String anoMes, @RequestParam BigDecimal limite){
         try {
+            if (usuarioRepo.obterUsuario(usuarioId).isEmpty())
+                return ResponseEntity.status(404).build(); //usuário não existe
+            if (categoriaRepo.obterCategoria(categoriaId).isEmpty())
+                return ResponseEntity.status(404).build(); //categoria não existe
+
             var ym = YearMonth.parse(anoMes);
             service.criarOrcamentoMensal(usuarioId, categoriaId, ym, limite);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalStateException e) {//orçamento duplicado
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }catch (IllegalArgumentException | DateTimeParseException e){//limite inválido
+            return ResponseEntity.status(201).build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).build();
+        }
+        catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -54,12 +64,16 @@ public class OrcamentoController {
     @PutMapping("/{usuarioId}/{categoriaId}/{anoMes}")
     public ResponseEntity<Void> atualizarOrcamento(@PathVariable String usuarioId, @PathVariable String categoriaId, @PathVariable String anoMes, @RequestParam BigDecimal limite){
         try{
+            if (usuarioRepo.obterUsuario(usuarioId).isEmpty() || categoriaRepo.obterCategoria(categoriaId).isEmpty()) {
+                return ResponseEntity.status(404).build();
+            }
             var ym = YearMonth.parse(anoMes);
             service.atualizarOrcamento(usuarioId, categoriaId, ym, limite);
             return ResponseEntity.noContent().build();
-        }catch (IllegalStateException e){//não existe orçamento p/ essa chave
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }catch (IllegalArgumentException | DateTimeParseException e){//validação do limite
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(404).build();
+        }
+        catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
