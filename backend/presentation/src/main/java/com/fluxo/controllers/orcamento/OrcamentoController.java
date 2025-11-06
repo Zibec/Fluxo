@@ -4,11 +4,8 @@ import orcamento.Orcamento;
 import orcamento.OrcamentoChave;
 import orcamento.OrcamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -45,10 +42,10 @@ public class OrcamentoController {
     @PostMapping("/criar")
     public ResponseEntity<Void> criarOrcamentoMensal(@RequestBody java.util.Map<String, String> body){
         try {
-            var usuarioId   = body.get("usuarioId");
+            var usuarioId = body.get("usuarioId");
             var categoriaId = body.get("categoriaId");
-            var anoMes      = java.time.YearMonth.parse(body.get("anoMes"));
-            var limite      = new java.math.BigDecimal(body.get("limite").replace(",", "."));
+            var anoMes = java.time.YearMonth.parse(body.get("anoMes"));
+            var limite = new java.math.BigDecimal(body.get("limite").replace(",", "."));
 
             if (usuarioRepo.obterUsuario(usuarioId).isEmpty()
                     || categoriaRepo.obterCategoria(categoriaId).isEmpty()) {
@@ -64,19 +61,17 @@ public class OrcamentoController {
     }
 
     @PutMapping("/{usuarioId}/{categoriaId}/{anoMes}")
-    public ResponseEntity<Void> atualizarOrcamento(@PathVariable String usuarioId, @PathVariable String categoriaId, @PathVariable String anoMes, @RequestParam BigDecimal limite){
-        try{
-            if (usuarioRepo.obterUsuario(usuarioId).isEmpty() || categoriaRepo.obterCategoria(categoriaId).isEmpty()) {
+    public ResponseEntity<Void> atualizarOrcamento(@PathVariable String usuarioId, @PathVariable String categoriaId, @PathVariable String anoMes, @RequestParam java.util.Map<String,String> body){
+        try {
+            if (usuarioRepo.obterUsuario(usuarioId).isEmpty()
+                    || categoriaRepo.obterCategoria(categoriaId).isEmpty()) {
                 return ResponseEntity.status(404).build();
             }
             var ym = YearMonth.parse(anoMes);
+            var limite = new java.math.BigDecimal(body.get("limite").replace(",", "."));
             service.atualizarOrcamento(usuarioId, categoriaId, ym, limite);
             return ResponseEntity.noContent().build();
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(404).build();
-        }
-        catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        } catch (IllegalStateException e) { return ResponseEntity.status(404).build(); }
+        catch (Exception e) { return ResponseEntity.badRequest().build(); }
     }
 }

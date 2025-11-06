@@ -1,6 +1,5 @@
 package persistencia.jpa.orcamento;
 
-import meta.MetaRepositorio;
 import orcamento.Orcamento;
 import orcamento.OrcamentoChave;
 import orcamento.OrcamentoRepositorio;
@@ -26,14 +25,22 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
             orcamento.setOrcamentoChave(chave);
         }
 
-        String id = chaveToId(chave);
+        // normaliza (evita espaços/tabs acidentais)
+        var usuarioId = chave.getUsuarioId().trim();
+        var categoriaId = chave.getCategoriaId().trim();
+        var ano = chave.getAnoMes().getYear();
+        var mes = chave.getAnoMes().getMonthValue();
 
-        OrcamentoJpa jpa = new OrcamentoJpa();
-        jpa.chave = id;
-        jpa.usuarioId = chave.getUsuarioId();
-        jpa.categoriaId = chave.getCategoriaId();
-        jpa.ano = chave.getAnoMes().getYear();
-        jpa.mes = chave.getAnoMes().getMonthValue();
+        if (repositorio.existsByUsuarioIdAndCategoriaIdAndAnoAndMes(usuarioId, categoriaId, ano, mes)) {
+            throw new IllegalStateException("Já existe um orçamento para essa chave");
+        }
+
+        var jpa = new OrcamentoJpa();
+        jpa.chave = chaveToId(chave);
+        jpa.usuarioId = usuarioId;
+        jpa.categoriaId = categoriaId;
+        jpa.ano = ano;
+        jpa.mes = mes;
         jpa.limite = orcamento.getLimite();
         jpa.dataLimite = orcamento.getDataLimite();
 
@@ -42,21 +49,13 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
 
     @Override
     public void atualizarOrcamento(OrcamentoChave chave, Orcamento orcamento) {
-        String id = chaveToId(chave);
-
-        OrcamentoJpa jpa = repositorio.findById(id).orElseGet(() -> {
-            OrcamentoJpa novo = new OrcamentoJpa();
-            novo.chave = id;
-            novo.usuarioId = chave.getUsuarioId();
-            novo.categoriaId = chave.getCategoriaId();
-            novo.ano = chave.getAnoMes().getYear();
-            novo.mes = chave.getAnoMes().getMonthValue();
-            return novo;
-        });
-
+        var id = chaveToId(chave);
+        if (!repositorio.existsById(id)) {
+            throw new IllegalStateException("Não existe um orçamento para essa chave");
+        }
+        var jpa = repositorio.findById(id).orElseThrow();
         jpa.limite = orcamento.getLimite();
         jpa.dataLimite = orcamento.getDataLimite();
-
         repositorio.save(jpa);
     }
 
@@ -69,7 +68,7 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
     public Optional<Orcamento> obterOrcamento(OrcamentoChave chave) {
         String id = chaveToId(chave);
         return repositorio.findById(id).map(j -> {
-            // Reconstroi a chave de domínio direto das colunas sombreadas
+            //Reconstroi a chave de domínio direto das colunas sombreadas
             var ym = YearMonth.of(j.ano, j.mes);
             var chaveDomain = new OrcamentoChave(j.usuarioId, ym, j.categoriaId);
             return new Orcamento(chaveDomain, j.limite, j.dataLimite);
@@ -81,14 +80,12 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
         repositorio.deleteAll();
     }
 
-// Helpers
+//Helpers
     private String chaveToId(OrcamentoChave c) {
-        // YearMonth.toString() já é "YYYY-MM"
         return c.getUsuarioId() + "|" + c.getCategoriaId() + "|" + c.getAnoMes();
     }
 
     private Orcamento toDomain(OrcamentoJpa j) {
-        //Remonta o YearMonth a partir das colunas sombreadas do banco
         var ym = java.time.YearMonth.of(j.ano, j.mes);
 
         //Reconstrói a chave de domínio

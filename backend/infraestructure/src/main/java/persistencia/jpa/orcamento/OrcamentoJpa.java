@@ -24,7 +24,7 @@ public class OrcamentoJpa {
     @Column(name = "chave", nullable = false, length = 160)
     public String chave;
 
-// colunas sombreadas
+//Colunas sombreadas
     @Column(name = "usuario_id", nullable = false, length = 64)
     public String usuarioId;
 
