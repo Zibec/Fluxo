@@ -38,8 +38,8 @@ public class OrcamentoController {
         }
     }
 
-    @PostMapping("/{usuarioId}/{categoriaId}/{anoMes}")
-    public ResponseEntity<Void> criarOrcamentoMensal(@PathVariable String usuarioId, @PathVariable String categoriaId, @PathVariable String anoMes, @RequestParam BigDecimal limite){
+    @PostMapping("/criar")
+    public ResponseEntity<Void> criarOrcamentoMensal(@RequestParam String usuarioId, @RequestParam String categoriaId, @RequestParam String anoMes, @RequestParam BigDecimal limite){
         try {
             var ym = YearMonth.parse(anoMes);
             service.criarOrcamentoMensal(usuarioId, categoriaId, ym, limite);
