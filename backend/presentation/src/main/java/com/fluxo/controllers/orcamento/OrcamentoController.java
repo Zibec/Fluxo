@@ -43,20 +43,22 @@ public class OrcamentoController {
     }
 
     @PostMapping("/criar")
-    public ResponseEntity<Void> criarOrcamentoMensal(@RequestParam String usuarioId, @RequestParam String categoriaId, @RequestParam String anoMes, @RequestParam BigDecimal limite){
+    public ResponseEntity<Void> criarOrcamentoMensal(@RequestBody java.util.Map<String, String> body){
         try {
-            if (usuarioRepo.obterUsuario(usuarioId).isEmpty())
-                return ResponseEntity.status(404).build(); //usuário não existe
-            if (categoriaRepo.obterCategoria(categoriaId).isEmpty())
-                return ResponseEntity.status(404).build(); //categoria não existe
+            var usuarioId   = body.get("usuarioId");
+            var categoriaId = body.get("categoriaId");
+            var anoMes      = java.time.YearMonth.parse(body.get("anoMes"));
+            var limite      = new java.math.BigDecimal(body.get("limite").replace(",", "."));
 
-            var ym = YearMonth.parse(anoMes);
-            service.criarOrcamentoMensal(usuarioId, categoriaId, ym, limite);
+            if (usuarioRepo.obterUsuario(usuarioId).isEmpty()
+                    || categoriaRepo.obterCategoria(categoriaId).isEmpty()) {
+                return ResponseEntity.status(404).build();
+            }
+            service.criarOrcamentoMensal(usuarioId, categoriaId, anoMes, limite);
             return ResponseEntity.status(201).build();
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).build();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
