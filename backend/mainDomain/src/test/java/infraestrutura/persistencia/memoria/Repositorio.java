@@ -194,9 +194,11 @@ public class Repositorio implements
     }
 
     @Override
-    public List<Categoria> listar() {
-        return List.of();
+    public List<Categoria> listarCategorias() {
+        return new ArrayList<>(categorias.values());
     }
+
+
 
     /*-----------------------------------------------------------------------*/
     // Conta
@@ -321,6 +323,11 @@ public class Repositorio implements
     public void deletarMeta(String metaId) {
         notNull(metaId, "O ID da meta não pode ser nulo");
         metas.remove(metaId);
+    }
+
+    @Override
+    public List<Meta> listar() {
+        return List.of();
     }
 
     /*-----------------------------------------------------------------------*/

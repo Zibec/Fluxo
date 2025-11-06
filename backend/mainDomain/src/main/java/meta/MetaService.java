@@ -52,6 +52,10 @@ public class MetaService {
     public Optional<Meta> obter(String id) {
         notNull(id, "O número do cartão não pode ser nulo");
 
+        if(metaRepositorio.obterMeta(id).isEmpty()) {
+            return Optional.empty();
+        }
+
         Meta meta = metaRepositorio.obterMeta(id).get();
 
         System.out.println("Aqui: " + meta.getSaldoAcumulado());

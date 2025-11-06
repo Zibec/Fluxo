@@ -46,8 +46,8 @@ public class CategoriaService {
         return categoriaRepositorio.obterCategoria(id);
     }
 
-    public List<Categoria> listar() {
-        return categoriaRepositorio.listar();
+    public List<Categoria> listarCategorias() {
+        return categoriaRepositorio.listarCategorias();
     }
 
 

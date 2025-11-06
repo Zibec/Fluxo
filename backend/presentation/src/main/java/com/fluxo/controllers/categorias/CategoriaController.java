@@ -19,7 +19,7 @@ public class CategoriaController {
 
     @GetMapping
     public ResponseEntity<List<Categoria>> listarTodas() {
-        var categorias = categoriaService.listar();
+        var categorias = categoriaService.listarCategorias();
 
         if (categorias.isEmpty()) {
             return ResponseEntity.noContent().build();
