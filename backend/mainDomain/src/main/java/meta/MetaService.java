@@ -36,6 +36,9 @@ public class MetaService {
         }
 
         contaPrincipal.realizarTransacao(valorDoAporte);
+
+        System.out.println("MetaService, Valor do aporte; " + valorDoAporte);
+
         meta.realizarAporte(valorDoAporte);
         metaRepositorio.salvar(meta);
         contaRepositorio.salvar(contaPrincipal);
@@ -48,7 +51,13 @@ public class MetaService {
 
     public Optional<Meta> obter(String id) {
         notNull(id, "O número do cartão não pode ser nulo");
-        return metaRepositorio.obterMeta(id);
+
+        Meta meta = metaRepositorio.obterMeta(id).get();
+
+        System.out.println("Aqui: " + meta.getSaldoAcumulado());
+
+        return Optional.of(meta);
+
     }
 
     public Optional<Meta> obterPorNome(String nomeMeta) {

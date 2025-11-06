@@ -127,7 +127,7 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<MetaJpa, Meta>() {
             @Override
             protected Meta convert(MetaJpa source) {
-                return new Meta(source.id, source.tipo, source.descricao, source.valorAlvo, source.prazo);
+                return new Meta(source.id, source.tipo, source.descricao, source.valorAlvo, source.saldoAcumulado, source.prazo);
             }
         });
 
@@ -270,6 +270,7 @@ public class Mapper extends ModelMapper {
                 jpa.tipo = source.getTipo();
                 jpa.descricao = source.getDescricao();
                 jpa.valorAlvo = source.getValorAlvo();
+                jpa.saldoAcumulado = source.getSaldoAcumulado();
                 jpa.prazo = source.getPrazo();
                 return jpa;
             }

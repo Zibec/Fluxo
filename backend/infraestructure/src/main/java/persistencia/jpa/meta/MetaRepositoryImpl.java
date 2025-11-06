@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,22 +20,31 @@ public class MetaRepositoryImpl implements MetaRepositorio {
     private Mapper mapper;
 
     @Override
-    public void salvar(Meta meta) {
-        MetaJpa jpa = mapper.map(meta, MetaJpa.class);
-        repository.save(jpa); // save faz update quando o ID existe
-    }
-
-    @Override
     public Optional<Meta> obterMeta(String metaId) {
-        return repository.findById(metaId)
-                .map(jpa -> mapper.map(jpa, Meta.class)); // <-- mapeia o conteúdo do Optional
+        MetaJpa metaJpa = repository.findById(metaId).get();
+        System.out.printf(String.valueOf(metaJpa.saldoAcumulado));
+        return Optional.of(mapper.map(metaJpa, Meta.class));
     }
 
     @Override
-    public Optional<Meta> obterMetaPorNome(String nomeMeta) {
-        MetaJpa jpa = repository.findByDescricao(nomeMeta);
-        return Optional.ofNullable(jpa)
-                .map(entity -> mapper.map(entity, Meta.class)); // <-- trata null corretamente
+    public Optional<Meta> obterMetaPorNome(String nome) {
+        return Optional.ofNullable(repository.findByDescricao(nome))
+                .map(jpa -> mapper.map(jpa, Meta.class));
+    }
+    @Override
+    public void salvar(Meta meta) {
+        MetaJpa jpa = repository.findById(meta.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Meta não encontrada: " + meta.getId()));
+
+        // Atualiza os campos da JPA a partir do domínio, sem criar um novo objeto
+        mapper.map(meta, jpa);
+
+        // Agora garante que o saldo seja realmente acumulado
+        BigDecimal saldoAtual = jpa.getSaldoAcumulado() != null ? jpa.getSaldoAcumulado() : BigDecimal.ZERO;
+        BigDecimal saldoNovo = saldoAtual.add(meta.getSaldoAcumulado());
+        jpa.setSaldoAcumulado(saldoNovo);
+
+        repository.save(jpa);
     }
 
     @Override
