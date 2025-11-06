@@ -20,6 +20,7 @@ public class Meta {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
         }
+
         this.id = id;
         this.tipo = tipo;
         this.descricao = descricao;
@@ -30,12 +31,14 @@ public class Meta {
     }
 
     public void realizarAporte(BigDecimal valorDoAporte) {
-        if (this.tipo != TipoMeta.POUPANCA) {
-            throw new IllegalStateException("Aportes só podem ser feitos em metas de poupança.");
-        }
         if (valorDoAporte == null || valorDoAporte.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Valor do aporte deve ser positivo.");
         }
+
+        if (this.saldoAcumulado == null) {
+            this.saldoAcumulado = BigDecimal.ZERO;
+        }
+
         this.saldoAcumulado = this.saldoAcumulado.add(valorDoAporte);
 
         if (this.saldoAcumulado.compareTo(this.valorAlvo) >= 0) {

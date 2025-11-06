@@ -1,5 +1,6 @@
 package com.fluxo.controllers.meta;
 
+import conta.Conta;
 import meta.Meta;
 import meta.MetaService;
 import org.springframework.http.ResponseEntity;
@@ -78,17 +79,16 @@ public class MetaController {
         }
     }
 
-    // Realizar aporte (ex: adicionar valor acumulado)
     @PostMapping("/{id}/aporte")
     public ResponseEntity<String> realizarAporte(
             @PathVariable String id,
-            @RequestParam BigDecimal valor) {
-
+            @RequestParam BigDecimal valor,
+            @RequestParam String contaId) {
         try {
-            metaService.realizarAporte(id, valor, null); // Conta vem do service/validação futura
+            metaService.realizarAporte(id, valor, contaId);
             return ResponseEntity.ok("Aporte de R$ " + valor + " realizado na meta " + id);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

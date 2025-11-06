@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,24 +20,33 @@ public class MetaRepositoryImpl implements MetaRepositorio {
 
     @Override
     public void salvar(Meta meta) {
-        var metaJpa = mapper.map(meta, MetaJpa.class);
-        repository.save(metaJpa);
+        MetaJpa jpa = mapper.map(meta, MetaJpa.class);
+        repository.save(jpa); // save faz update quando o ID existe
     }
 
     @Override
     public Optional<Meta> obterMeta(String metaId) {
-        var metaJpa = repository.findById(metaId);
-        return Optional.of( mapper.map(metaJpa, Meta.class));
+        return repository.findById(metaId)
+                .map(jpa -> mapper.map(jpa, Meta.class)); // <-- mapeia o conteúdo do Optional
     }
 
     @Override
     public Optional<Meta> obterMetaPorNome(String nomeMeta) {
-        var metaJpa = repository.findByDescricao(nomeMeta);
-        return Optional.of(mapper.map(metaJpa, Meta.class));
+        MetaJpa jpa = repository.findByDescricao(nomeMeta);
+        return Optional.ofNullable(jpa)
+                .map(entity -> mapper.map(entity, Meta.class)); // <-- trata null corretamente
     }
 
     @Override
     public void deletarMeta(String metaId) {
         repository.deleteById(metaId);
+    }
+
+    @Override
+    public List<Meta> listar() {
+        var metasJpa = repository.findAll();
+        return metasJpa.stream()
+                .map(c -> mapper.map(c, Meta.class))
+                .toList();
     }
 }
