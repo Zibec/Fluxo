@@ -38,8 +38,10 @@ import persistencia.jpa.metaInversa.MetaInversaJpa;
 import persistencia.jpa.orcamento.OrcamentoJpa;
 import persistencia.jpa.patrimonio.PatrimonioJpa;
 import persistencia.jpa.perfil.PerfilJpa;
+import persistencia.jpa.taxaSelic.TaxaSelicJpa;
 import persistencia.jpa.transacao.TransacaoJpa;
 import persistencia.jpa.usuario.UsuarioJpa;
+import taxaSelic.TaxaSelic;
 import transacao.FormaPagamentoId;
 import transacao.Transacao;
 import usuario.DataFormato;
@@ -114,6 +116,18 @@ public class Mapper extends ModelMapper {
             @Override
             protected HistoricoInvestimento convert(HistoricoInvestimentoJpa source) {
                 return new HistoricoInvestimento(source.investimentoId, source.valorAtualizado, source.data);
+            }
+        });
+
+        addConverter(new AbstractConverter<HistoricoInvestimento, HistoricoInvestimentoJpa>() {
+            @Override
+            protected HistoricoInvestimentoJpa convert (HistoricoInvestimento source){
+                var historicoInvestimentoJpa = new HistoricoInvestimentoJpa();
+                historicoInvestimentoJpa.historicoInvestimentoId = source.getHistoricoInvestimentoId();
+                historicoInvestimentoJpa.investimentoId = source.getInvestimentoId();
+                historicoInvestimentoJpa.valorAtualizado = source.getValorAtualizado();
+                historicoInvestimentoJpa.data = source.getData();
+                return historicoInvestimentoJpa;
             }
         });
 
@@ -330,6 +344,23 @@ public class Mapper extends ModelMapper {
                 jpa.formatoDataPreferido = source.getFormatoDataPreferido().name();
                 jpa.moedaPreferida = source.getMoedaPreferida().name();
                 return jpa;
+            }
+        });
+
+        addConverter(new AbstractConverter<TaxaSelic, TaxaSelicJpa>(){
+            @Override
+            protected  TaxaSelicJpa convert(TaxaSelic source){
+                var jpa = new TaxaSelicJpa();
+                jpa.id = source.getId();
+                jpa.valor = source.getValor();
+                return jpa;
+            }
+        });
+
+        addConverter(new AbstractConverter<TaxaSelicJpa, TaxaSelic>(){
+            @Override
+            protected  TaxaSelic convert(TaxaSelicJpa source){
+                return new TaxaSelic(source.id, source.valor);
             }
         });
     }

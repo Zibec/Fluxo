@@ -5,13 +5,21 @@ import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import categoria.CategoriaRepositorio;
 import categoria.CategoriaService;
+import historicoInvestimento.HistoricoInvestimentoRepositorio;
+import historicoInvestimento.HistoricoInvestimentoService;
+import investimento.InvestimentoRepositorio;
+import investimento.InvestimentoService;
 import meta.MetaRepositorio;
 import meta.MetaService;
 import orcamento.OrcamentoRepositorio;
 import orcamento.OrcamentoService;
+import perfil.PerfilRepository;
+import perfil.PerfilService;
+import selicApiClient.SelicApiClient;
+import taxaSelic.TaxaSelicRepository;
+import taxaSelic.TaxaSelicService;
 import transacao.TransacaoRepositorio;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import conta.ContaRepositorio;
 import conta.ContaService;
 import jakarta.annotation.PostConstruct;
@@ -75,6 +83,26 @@ public class FluxoApplication {
     @Bean
     public MetaService metaService(MetaRepositorio repositorio, ContaRepositorio repositorioConta) {
         return new MetaService(repositorio, repositorioConta);
+    }
+
+    @Bean
+    public TaxaSelicService taxaSelicService(SelicApiClient selicApiClient, TaxaSelicRepository taxaSelicRepository){
+        return new TaxaSelicService(selicApiClient, taxaSelicRepository);
+    }
+
+    @Bean
+    public PerfilService perfilService(PerfilRepository perfilRepository){
+        return  new PerfilService(perfilRepository);
+    }
+
+    @Bean
+    public InvestimentoService investimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio){
+        return new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio);
+    }
+
+    @Bean
+    public HistoricoInvestimentoService historicoInvestimentoService(HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio){
+        return new HistoricoInvestimentoService(historicoInvestimentoRepositorio);
     }
 
     @PostConstruct

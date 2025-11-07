@@ -11,6 +11,8 @@ public interface HistoricoInvestimentoRepositorio {
 
     List<HistoricoInvestimento> obterTodosHistoricos();
 
+    List<HistoricoInvestimento> obterTodosHistoricosPorInvestimento(String investimentoId);
+
     void deletarTodosHistoricosPorId(String investimentoId);
 
     void setStatus(boolean status);

@@ -288,6 +288,18 @@ public class Repositorio implements
         return historico;
     }
 
+    @Override
+    public List<HistoricoInvestimento> obterTodosHistoricosPorInvestimento(String investimentoId) {
+
+        List<HistoricoInvestimento> lista = new ArrayList<>();
+        for(HistoricoInvestimento histInv : historico){
+            if(investimentoId.equals(histInv.getInvestimentoId())){
+                lista.add(histInv);
+            }
+        }
+        return lista;
+    }
+
     public void deletarTodosHistoricosPorId(String investimentoId){
 
         if(status){
