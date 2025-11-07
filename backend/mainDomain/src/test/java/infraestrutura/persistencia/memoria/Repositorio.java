@@ -199,9 +199,11 @@ public class Repositorio implements
     }
 
     @Override
-    public List<Categoria> listar() {
-        return List.of();
+    public List<Categoria> listarCategorias() {
+        return new ArrayList<>(categorias.values());
     }
+
+
 
     /*-----------------------------------------------------------------------*/
     // Conta
@@ -333,6 +335,11 @@ public class Repositorio implements
         metas.remove(metaId);
     }
 
+    @Override
+    public List<Meta> listar() {
+        return List.of();
+    }
+
     /*-----------------------------------------------------------------------*/
     // Meta Inversa
     /*-----------------------------------------------------------------------*/
@@ -399,6 +406,8 @@ public class Repositorio implements
     public void limparOrcamento() {
         orcamentos.clear();
     }
+
+    public List<Orcamento> listarTodos(){return new ArrayList<>(orcamentos.values());}
 
     /*-----------------------------------------------------------------------*/
     // Patrimonio

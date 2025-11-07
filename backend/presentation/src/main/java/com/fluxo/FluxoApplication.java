@@ -5,6 +5,8 @@ import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import categoria.CategoriaRepositorio;
 import categoria.CategoriaService;
+import meta.MetaRepositorio;
+import meta.MetaService;
 import transacao.TransacaoRepositorio;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -55,6 +57,11 @@ public class FluxoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FluxoApplication.class, args);
+    }
+
+    @Bean
+    public MetaService metaService(MetaRepositorio repositorio, ContaRepositorio repositorioConta) {
+        return new MetaService(repositorio, repositorioConta);
     }
 
     @PostConstruct

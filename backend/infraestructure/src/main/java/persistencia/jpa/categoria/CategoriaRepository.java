@@ -46,12 +46,8 @@ public class CategoriaRepository implements CategoriaRepositorio {
     }
 
     @Override
-    public List<Categoria> listar() {
-        var categoriasJpa = repository.findAll();
-        return categoriasJpa.stream()
-                .map(c -> mapper.map(c, Categoria.class))
-                .toList();
+    public List<Categoria> listarCategorias() {
+        return List.of();
     }
-
 
 }

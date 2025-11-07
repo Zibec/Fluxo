@@ -22,7 +22,14 @@ public class MetaJpa {
 
     public String descricao;
     public BigDecimal valorAlvo;
-    public BigDecimal saldoAcumulado;
+    public BigDecimal saldoAcumulado = BigDecimal.ZERO;
     public LocalDate prazo;
+
+    public BigDecimal getSaldoAcumulado() {
+        return saldoAcumulado;
+    }
+    public void setSaldoAcumulado(BigDecimal saldoAcumulado) {
+        this.saldoAcumulado = saldoAcumulado;
+    }
 
 }

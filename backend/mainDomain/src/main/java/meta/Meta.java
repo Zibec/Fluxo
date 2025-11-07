@@ -20,6 +20,7 @@ public class Meta {
         if (id == null || id.trim().isEmpty()) {
             throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
         }
+
         this.id = id;
         this.tipo = tipo;
         this.descricao = descricao;
@@ -29,14 +30,34 @@ public class Meta {
         this.status = MetaStatus.ATIVA;
     }
 
-    public void realizarAporte(BigDecimal valorDoAporte) {
-        if (this.tipo != TipoMeta.POUPANCA) {
-            throw new IllegalStateException("Aportes só podem ser feitos em metas de poupança.");
+    public Meta(String id, TipoMeta tipo, String descricao, BigDecimal valorAlvo, BigDecimal saldoAcumulado, LocalDate prazo) {
+        if (valorAlvo == null || valorAlvo.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor alvo deve ser positivo.");
         }
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("O ID não pode ser nulo ou vazio.");
+        }
+
+        this.id = id;
+        this.tipo = tipo;
+        this.descricao = descricao;
+        this.valorAlvo = valorAlvo;
+        this.prazo = prazo;
+        this.saldoAcumulado = saldoAcumulado;
+        this.status = MetaStatus.ATIVA;
+    }
+
+    public void realizarAporte(BigDecimal valorDoAporte) {
         if (valorDoAporte == null || valorDoAporte.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Valor do aporte deve ser positivo.");
         }
+
+        System.out.println("Print 1 - meta - Saldo acumulado: " + valorDoAporte);
+
         this.saldoAcumulado = this.saldoAcumulado.add(valorDoAporte);
+
+        System.out.println("Print 2 - meta - Saldo acumulado: " + this.saldoAcumulado);
+
 
         if (this.saldoAcumulado.compareTo(this.valorAlvo) >= 0) {
             this.status = MetaStatus.CONCLUIDA;

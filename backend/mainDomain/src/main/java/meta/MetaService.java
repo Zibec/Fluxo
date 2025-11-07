@@ -2,8 +2,10 @@ package meta;
 
 import conta.Conta;
 import conta.ContaRepositorio;
+import jakarta.transaction.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -17,21 +19,27 @@ public class MetaService {
         this.contaRepositorio = contaRepositorio;
     }
 
-    public void realizarAporte(String metaId, BigDecimal valorDoAporte, Conta contaPrincipal) {
+    @Transactional
+    public void realizarAporte(String metaId, BigDecimal valorDoAporte, String contaId) {
         notNull(metaId, "O ID da meta não pode ser nulo");
         notNull(valorDoAporte, "O valor do aporte não pode ser nulo");
-        notNull(contaPrincipal, "A conta principal não pode ser nula");
+        notNull(contaId, "O ID da conta é obrigatório");
 
         Meta meta = metaRepositorio.obterMeta(metaId)
                 .orElseThrow(() -> new IllegalArgumentException("Meta não encontrada com o ID: " + metaId));
+
+        Conta contaPrincipal = contaRepositorio.obterConta(contaId)
+                .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada com o ID: " + contaId));
 
         if (!contaPrincipal.temSaldoSuficiente(valorDoAporte)) {
             throw new IllegalArgumentException("Saldo insuficiente na conta principal");
         }
 
         contaPrincipal.realizarTransacao(valorDoAporte);
-        meta.realizarAporte(valorDoAporte);
 
+        System.out.println("MetaService, Valor do aporte; " + valorDoAporte);
+
+        meta.realizarAporte(valorDoAporte);
         metaRepositorio.salvar(meta);
         contaRepositorio.salvar(contaPrincipal);
     }
@@ -43,7 +51,17 @@ public class MetaService {
 
     public Optional<Meta> obter(String id) {
         notNull(id, "O número do cartão não pode ser nulo");
-        return metaRepositorio.obterMeta(id);
+
+        if(metaRepositorio.obterMeta(id).isEmpty()) {
+            return Optional.empty();
+        }
+
+        Meta meta = metaRepositorio.obterMeta(id).get();
+
+        System.out.println("Aqui: " + meta.getSaldoAcumulado());
+
+        return Optional.of(meta);
+
     }
 
     public Optional<Meta> obterPorNome(String nomeMeta) {
@@ -60,4 +78,9 @@ public class MetaService {
 
         metaRepositorio.deletarMeta(metaId);
     }
+
+    public List<Meta> listar() {
+        return metaRepositorio.listar();
+    }
+
 }

@@ -39,14 +39,16 @@ public class MetaTest {
     @And("o saldo da minha Conta principal é de R$ {double}")
     public void oSaldoDaMinhaContaPrincipalEDe(Double saldoConta) {
         this.contaPrincipal = new Conta();
+        this.contaPrincipal.setId(UUID.randomUUID().toString());
         this.contaPrincipal.setSaldo(new BigDecimal(saldoConta));
+        contaRepositorio.salvar(this.contaPrincipal);
         // Em um sistema real, buscaríamos a conta do usuário, aqui criamos para o teste
     }
 
     @When("eu faço um aporte de R$ {double} para a meta {string}")
     public void euFacoUmAporteDeParaAMeta(Double valorAporte, String nomeMeta) {
         try {
-            metaService.realizarAporte(this.meta.getId(), new BigDecimal(valorAporte), this.contaPrincipal);
+            metaService.realizarAporte(this.meta.getId(), new BigDecimal(valorAporte), contaPrincipal.getId().getId());
         } catch (Exception e) {
             this.excecaoCapturada = e;
         }
@@ -67,7 +69,7 @@ public class MetaTest {
     @When("eu tento fazer um aporte de R$ {double} para a meta {string}")
     public void euTentoFazerUmAporteDeParaAMeta(Double valorAporte, String nomeMeta) {
         try {
-            metaService.realizarAporte(this.meta.getId(), new BigDecimal(valorAporte), this.contaPrincipal);
+            metaService.realizarAporte(this.meta.getId(), new BigDecimal(valorAporte), contaPrincipal.getId().getId());
         } catch (Exception e) {
             this.excecaoCapturada = e;
         }

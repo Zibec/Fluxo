@@ -18,5 +18,5 @@ public interface CategoriaRepositorio {
 
     int contagem();
 
-    List<Categoria> listar();
+    List<Categoria> listarCategorias();
 }
