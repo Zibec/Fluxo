@@ -1,8 +1,6 @@
 package meta;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.Validate.notNull;
@@ -18,5 +16,7 @@ public interface MetaRepositorio {
     void deletarMeta(String metaId);
 
     List<Meta> listar();
+
+    List<Meta> obterMetaPorUsuario(String usuario);
 
 }

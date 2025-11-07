@@ -1,10 +1,15 @@
 package com.fluxo.controllers.meta;
 
-import conta.Conta;
+import com.fluxo.config.security.SecurityFilter;
+import com.fluxo.config.security.TokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import meta.Meta;
 import meta.MetaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import usuario.Usuario;
+import usuario.UsuarioService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,23 +21,49 @@ public class MetaController {
 
     private final MetaService metaService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private SecurityFilter securityFilter;
+
     public MetaController(MetaService metaService) {
         this.metaService = metaService;
     }
 
-    // Criar meta
     @PostMapping
-    public ResponseEntity<Void> criar(@RequestBody Meta meta) {
+    public ResponseEntity<Void> criar(@RequestBody Meta meta, HttpServletRequest request) {
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        meta.setUsuarioId(usuario.getId());
         metaService.salvar(meta);
         return ResponseEntity.ok().build();
     }
 
-    // Buscar meta por ID
     @GetMapping("/id/{id}")
     public ResponseEntity<Meta> buscarPorId(@PathVariable String id) {
         Optional<Meta> meta = metaService.obter(id);
         return meta.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/by-user")
+    public ResponseEntity<List<Meta>> buscarPorUser(HttpServletRequest request) {
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        if(metaService.obterPorUsuario(usuario.getId()).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<Meta> meta = metaService.obterPorUsuario(usuario.getId());
+        return ResponseEntity.ok(meta);
     }
 
     // Buscar meta por nome
@@ -55,15 +86,20 @@ public class MetaController {
 
     // Atualizar meta (ex: descrição, valor alvo, prazo)
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizar(@PathVariable String id, @RequestBody Meta novaMeta) {
+    public ResponseEntity<Void> atualizar(@PathVariable String id, @RequestBody Meta novaMeta,  HttpServletRequest request) {
         var existente = metaService.obter(id);
         if (existente.isEmpty()) return ResponseEntity.notFound().build();
 
-        var meta = existente.get();
-        meta.setDescricao(novaMeta.getDescricao());
-        meta.setValorAlvo(novaMeta.getValorAlvo());
-        meta.setPrazo(novaMeta.getPrazo());
-        metaService.salvar(meta);
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        metaService.deletar(id);
+
+        novaMeta.setUsuarioId(usuario.getId());
+        novaMeta.setId(usuario.getId());
+        novaMeta.setSaldoAcumulado(novaMeta.getSaldoAcumulado());
+        metaService.salvar(novaMeta);
 
         return ResponseEntity.ok().build();
     }

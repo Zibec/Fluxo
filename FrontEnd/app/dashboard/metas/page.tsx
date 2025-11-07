@@ -1,81 +1,104 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BudgetsPageHeader } from "@/components/dedicated/budgets/budgets-page-header"
 import { GoalCard } from "@/components/dedicated/goals/goal-card"
 import { EditGoalDialog } from "@/components/dedicated/goals/edit-goal-dialog"
-
-interface Goal {
-  id: number
-  title: string
-  value: number
-  description: string
-  deadline?: Date
-}
+import { metaService } from "@/lib/service/meta/meta-service"
+import { Button } from "@/components/ui/button"
+import { AddGoalDialog } from "@/components/dedicated/goals/add-goal-dialog"
+import { createMetaFormData } from "@/lib/service/meta/meta-schema"
+import { useToast } from "@/hooks/use-toast"
+import { AddValueGoalDialog } from "@/components/dedicated/goals/add-value-goal-dialog"
 
 export default function MetasPage() {
-  const [balance] = useState(5420.5)
   const [editDialogOpen, setEditDialogOpen] = useState(false)
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [addValueDialogOpen, setAddValueDialogOpen] = useState(false)
+  const [selectedGoal, setSelectedGoal] = useState<createMetaFormData | null>(null)
+  const [goals, setGoals] = useState<createMetaFormData[]>()
 
-  const goals: Goal[] = [
-    {
-      id: 1,
-      title: "Meta de dívida",
-      value: 200,
-      description: "A dívida que eu tenho com Tio Jonas de 200 reais que preciso pagar até o final do mês",
-      deadline: new Date(2025, 10, 30),
-    },
-    {
-      id: 2,
-      title: "Meta de poupança",
-      value: 5000,
-      description: "Economizar para a viagem de férias no final do ano. Preciso juntar esse valor nos próximos 6 meses",
-      deadline: new Date(2025, 11, 31),
-    },
-    {
-      id: 3,
-      title: "Fundo de emergência",
-      value: 10000,
-      description: "Criar um fundo de emergência para imprevistos e segurança financeira da família",
-      deadline: new Date(2026, 5, 30),
-    },
-  ]
+  const { toast } = useToast()
 
-  const handleEditGoal = (goalId: number) => {
-    const goal = goals.find((g) => g.id === goalId)
+  useEffect(() => {
+    const fetchGoals = async () => {
+      const fetchedGoals = await metaService.getAllMetas()
+      setGoals(fetchedGoals)
+    }
+    fetchGoals()
+  }, [])
+
+  const handleEditGoal = (goalId: string) => {
+    const goal = goals?.find((g) => g.id === goalId)
     if (goal) {
       setSelectedGoal(goal)
       setEditDialogOpen(true)
     }
   }
 
-  const handleDeleteGoal = (goalId: number) => {
-    console.log("[v0] Delete goal:", goalId)
-    // TODO: Implement delete functionality
+  const handleAddValueGoal = (goalId: string) => {
+    const goal = goals?.find((g) => g.id === goalId)
+    if (goal) {
+      setSelectedGoal(goal)
+      setAddValueDialogOpen(true)
+    }
+  }
+
+  const handleDeleteGoal = async (goalId: string) => {
+    await metaService.deleteMeta(goalId)
+
+    setGoals((prev) => prev?.filter((g) => g.id !== goalId))
+
+    toast({
+      title: "Meta deletada",
+      description: "A meta foi deletada com sucesso.",
+    })
   }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
+    <div className="min-h-screen bg-background text-foreground">
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <h1 className="text-3xl font-bold text-neutral-900 mb-6">Minhas Metas</h1>
+        <div className="justify-between">
+          <h1 className="text-3xl font-bold mb-6 text-foreground">Minhas Metas</h1>
+
+          <Button
+            className="mb-6 bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={() => setAddDialogOpen(true)}
+          >
+            Adicionar Meta
+          </Button>
+        </div>
 
         <div className="space-y-4">
-          {goals.map((goal) => (
+          {goals?.map((goal) => (
             <GoalCard
               key={goal.id}
-              title={goal.title}
-              value={goal.value}
-              description={goal.description}
+              goal={goal}
               onEdit={() => handleEditGoal(goal.id)}
               onDelete={() => handleDeleteGoal(goal.id)}
+              onAddValue={() => handleAddValueGoal(goal.id)}
             />
           ))}
         </div>
       </main>
 
-      <EditGoalDialog open={editDialogOpen} onOpenChange={setEditDialogOpen} goal={selectedGoal} />
+      <EditGoalDialog
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+        goal={selectedGoal}
+      />
+
+      <AddGoalDialog
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+      />
+
+      <AddValueGoalDialog
+        open={addValueDialogOpen}
+        onOpenChange={setAddValueDialogOpen}
+        id={selectedGoal?.id || ""}
+      />
     </div>
   )
 }

@@ -340,6 +340,11 @@ public class Repositorio implements
         return List.of();
     }
 
+    @Override
+    public List<Meta> obterMetaPorUsuario(String usuario) {
+        return Optional.empty();
+    }
+
     /*-----------------------------------------------------------------------*/
     // Meta Inversa
     /*-----------------------------------------------------------------------*/
@@ -408,6 +413,11 @@ public class Repositorio implements
     }
 
     public List<Orcamento> listarTodos(){return new ArrayList<>(orcamentos.values());}
+
+    @Override
+    public List<Orcamento> listarTodosPorUsuario(String id) {
+        return List.of();
+    }
 
     /*-----------------------------------------------------------------------*/
     // Patrimonio

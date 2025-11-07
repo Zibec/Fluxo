@@ -7,6 +7,8 @@ import categoria.CategoriaRepositorio;
 import categoria.CategoriaService;
 import meta.MetaRepositorio;
 import meta.MetaService;
+import orcamento.OrcamentoRepositorio;
+import orcamento.OrcamentoService;
 import transacao.TransacaoRepositorio;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,6 +22,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import transacao.TransacaoService;
 import usuario.UsuarioRepositorio;
 import usuario.UsuarioService;
 
@@ -53,6 +56,16 @@ public class FluxoApplication {
     @Bean
     public CategoriaService categoriaService(CategoriaRepositorio repositorio, TransacaoRepositorio repositorioTransacao) {
         return new CategoriaService(repositorio, repositorioTransacao);
+    }
+
+    @Bean
+    public OrcamentoService orcamentoService(OrcamentoRepositorio orcamentoRepositorio, TransacaoService transacaoService){
+        return new OrcamentoService(orcamentoRepositorio, transacaoService);
+    }
+
+    @Bean
+    public TransacaoService transacaoService(TransacaoRepositorio transacaoRepositorio, ContaRepositorio contaRepositorio, CartaoRepositorio cartaoRepositorio){
+        return new TransacaoService(transacaoRepositorio, contaRepositorio, cartaoRepositorio);
     }
 
     public static void main(String[] args) {

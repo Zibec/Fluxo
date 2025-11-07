@@ -64,6 +64,10 @@ public class MetaService {
 
     }
 
+    public List<Meta> obterPorUsuario(String usuarioId) {
+        return metaRepositorio.obterMetaPorUsuario(usuarioId);
+    }
+
     public Optional<Meta> obterPorNome(String nomeMeta) {
         notNull(nomeMeta, "O nome da meta não pode ser nulo");
         return metaRepositorio.obterMetaPorNome(nomeMeta);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BudgetSection } from "@/components/dedicated/dashboard/budget-section";
 import { DebtSection } from "@/components/dedicated/dashboard/debt-section";
 import { SavingsSection } from "@/components/dedicated/dashboard/savings-section";
@@ -9,6 +9,8 @@ import { AddExpenseDialog } from "@/components/dedicated/dashboard/add-expense-d
 import { AddIncomeDialog } from "@/components/dedicated/dashboard/add-income-dialog";
 import { AddBudgetDialog } from "@/components/dedicated/dashboard/add-budget-dialog";
 import { AddGoalDialog } from "@/components/dedicated/dashboard/add-goal-dialog";
+import { set } from "date-fns";
+import { metaService } from "@/lib/service/meta/meta-service";
 
 const DashboardPage = () => {
   const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false);
@@ -28,11 +30,15 @@ const DashboardPage = () => {
     { name: "Empréstimo Pessoal", paid: 3000, total: 10000 },
   ];
 
-  const savings = [
-    { name: "Carro", saved: 90, goal: 50000 },
-    { name: "Viagem", saved: 2500, goal: 8000 },
-    { name: "Emergência", saved: 5000, goal: 15000 },
-  ];
+  const [savings, setSavings] = useState([])
+
+
+  useEffect(() => {
+    const fetchSavings = async () => {
+      setSavings(await metaService.getAllMetas())
+    }
+    fetchSavings()
+  }, [])
 
   const handleFabAction = (action: string) => {
     if (action === "Adicionar Despesa") setIsExpenseDialogOpen(true);

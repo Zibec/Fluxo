@@ -13,15 +13,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { metaService } from "@/lib/service/meta/meta-service"
 import { useToast } from "@/components/ui/use-toast"
-import { useEffect } from "react"
 
 interface AddGoalDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  goal: createMetaFormData | null
 }
 
-export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps) {
+export function AddGoalDialog({ open, onOpenChange }: AddGoalDialogProps) {
       const  {
           register,
           handleSubmit,
@@ -35,18 +33,8 @@ export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps)
 
   const { toast } = useToast()
 
-  useEffect(() => {
-    if (goal) {
-      setValue("descricao", goal.descricao)
-      setValue("valorAlvo", goal.valorAlvo)
-      setValue("prazo", goal.prazo)
-      setValue("tipo", goal.tipo)
-      setValue("status", goal.status)
-    }
-  }, [goal])
-
   const handleSave = async () => {
-    await metaService.updateMeta(goal?.id, getValues())
+    await metaService.createMeta(getValues())
 
     toast({
       title: "Meta criada",
@@ -65,12 +53,12 @@ export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps)
       <DialogContent className="sm:max-w-[500px]">
         <form className="space-y-4 py-4" onSubmit={handleSubmit(handleSave)}>
           <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">Editar Meta</DialogTitle>
+            <DialogTitle className="text-xl font-semibold">Adicionar Meta</DialogTitle>
           </DialogHeader>
           <div className="space-y-2">
-            <Label htmlFor="edit-description">Descrição:</Label>
+            <Label htmlFor="descricao">Descrição:</Label>
             <Input
-              id="edit-description"
+              id="descricao"
               placeholder="Ex: Viagem de férias"
               {...register("descricao")}
             />
@@ -78,11 +66,11 @@ export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-targetValue">Valor Alvo:</Label>
+            <Label htmlFor="valorAlvo">Valor Alvo:</Label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500">R$</span>
               <Input
-                id="edit-targetValue"
+                id="valorAlvo"
                 type="number"
                 placeholder="0.00"
                 className="pl-10"
@@ -119,7 +107,7 @@ export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-type">Tipo:</Label>
+            <Label htmlFor="type">Tipo:</Label>
             <Input
               id="edit-type"
               placeholder="Ex: Poupança ou Redução de Dívida"
@@ -129,9 +117,9 @@ export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps)
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-status">Status:</Label>
+            <Label htmlFor="status">Status:</Label>
             <Input
-              id="edit-status"
+              id="status"
               placeholder="Ex: Viagem de férias"
               {...register("status")}
             />

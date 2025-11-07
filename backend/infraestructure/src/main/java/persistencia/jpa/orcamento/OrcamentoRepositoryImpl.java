@@ -65,15 +65,21 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
     }
 
     @Override
+    public List<Orcamento> listarTodosPorUsuario(String id) {
+        return mapper.map(repositorio.findAllByUsuarioId(id), List.class);
+    }
+
+    @Override
     public Optional<Orcamento> obterOrcamento(OrcamentoChave chave) {
         String id = chaveToId(chave);
         return repositorio.findById(id).map(j -> {
-            //Reconstroi a chave de domínio direto das colunas sombreadas
             var ym = YearMonth.of(j.ano, j.mes);
             var chaveDomain = new OrcamentoChave(j.usuarioId, ym, j.categoriaId);
             return new Orcamento(chaveDomain, j.limite, j.dataLimite);
         });
     }
+
+
 
     @Override
     public void limparOrcamento() {

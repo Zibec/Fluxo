@@ -2,16 +2,23 @@ package meta;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public class Meta {
 
-    private final String id;
+    private String id;
     private TipoMeta tipo;
     private String descricao;
     private BigDecimal valorAlvo;
     private BigDecimal saldoAcumulado;
     private LocalDate prazo;
     private MetaStatus status;
+
+    private String usuarioId;
+
+    public Meta() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public Meta(String id, TipoMeta tipo, String descricao, BigDecimal valorAlvo, LocalDate prazo) {
         if (valorAlvo == null || valorAlvo.compareTo(BigDecimal.ZERO) <= 0) {
@@ -111,5 +118,17 @@ public class Meta {
     // Só para fins de testes
     public void setSaldoAcumulado(BigDecimal bigDecimal) {
         saldoAcumulado = bigDecimal;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

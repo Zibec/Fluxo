@@ -20,6 +20,8 @@ public class MetaJpa {
     @Enumerated(EnumType.STRING)
     public MetaStatus status;
 
+    public String usuarioId;
+
     public String descricao;
     public BigDecimal valorAlvo;
     public BigDecimal saldoAcumulado = BigDecimal.ZERO;

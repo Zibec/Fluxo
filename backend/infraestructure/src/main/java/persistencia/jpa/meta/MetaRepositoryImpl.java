@@ -4,6 +4,7 @@ import meta.Meta;
 import meta.MetaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.HttpClientErrorException;
 import persistencia.jpa.Mapper;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class MetaRepositoryImpl implements MetaRepositorio {
 
     @Override
     public Optional<Meta> obterMeta(String metaId) {
+        System.out.println(metaId);
         MetaJpa metaJpa = repository.findById(metaId).get();
         System.out.printf(String.valueOf(metaJpa.saldoAcumulado));
         return Optional.of(mapper.map(metaJpa, Meta.class));
@@ -33,18 +35,11 @@ public class MetaRepositoryImpl implements MetaRepositorio {
     }
     @Override
     public void salvar(Meta meta) {
-        MetaJpa jpa = repository.findById(meta.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Meta não encontrada: " + meta.getId()));
+        if(repository.findById(meta.getId()).isPresent()) {
+            return;
+        }
 
-        // Atualiza os campos da JPA a partir do domínio, sem criar um novo objeto
-        mapper.map(meta, jpa);
-
-        // Agora garante que o saldo seja realmente acumulado
-        BigDecimal saldoAtual = jpa.getSaldoAcumulado() != null ? jpa.getSaldoAcumulado() : BigDecimal.ZERO;
-        BigDecimal saldoNovo = saldoAtual.add(meta.getSaldoAcumulado());
-        jpa.setSaldoAcumulado(saldoNovo);
-
-        repository.save(jpa);
+        repository.save(mapper.map(meta, MetaJpa.class));
     }
 
     @Override
@@ -58,5 +53,11 @@ public class MetaRepositoryImpl implements MetaRepositorio {
         return metasJpa.stream()
                 .map(c -> mapper.map(c, Meta.class))
                 .toList();
+    }
+
+    @Override
+    public List<Meta> obterMetaPorUsuario(String usuario) {
+        var jpa = repository.findAllByUsuarioId(usuario);
+        return mapper.map(jpa, List.class);
     }
 }

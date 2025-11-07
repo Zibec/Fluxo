@@ -1,5 +1,7 @@
 package orcamento;
 
+import usuario.Usuario;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,5 +20,7 @@ public interface OrcamentoRepositorio {
     void limparOrcamento();
 
     List<Orcamento> listarTodos();
+
+    List<Orcamento> listarTodosPorUsuario(String id);
 
 }

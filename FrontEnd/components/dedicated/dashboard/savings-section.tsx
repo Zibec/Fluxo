@@ -1,14 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { createMetaFormData } from "@/lib/service/meta/meta-schema"
 import Link from "next/link"
 
-interface Saving {
-  name: string
-  saved: number
-  goal: number
-}
-
 interface SavingsSectionProps {
-  savings: Saving[]
+  savings: createMetaFormData[]
 }
 
 export function SavingsSection({ savings }: SavingsSectionProps) {
@@ -36,18 +31,18 @@ export function SavingsSection({ savings }: SavingsSectionProps) {
 
       <CardContent className="space-y-4">
         {savings.map((saving) => (
-          <div key={saving.name} className="space-y-1">
+          <div key={saving.id} className="space-y-1">
             <p
               className="text-sm font-medium"
               style={{ color: "var(--muted-foreground)" }}
             >
-              {saving.name}
+              {saving.descricao}
             </p>
             <p
               className="text-sm"
               style={{ color: "var(--muted-foreground)" }}
             >
-              R$ {saving.saved.toLocaleString("pt-BR")} / R$ {saving.goal.toLocaleString("pt-BR")}
+              R$ {saving.saldoAcumulado || 0} / R$ {saving.valorAlvo}
             </p>
           </div>
         ))}
