@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class HistoricoInvestimentoJpa {
 
     @Id
+    public String historicoInvestimentoId;
     public String investimentoId;
     public BigDecimal valorAtualizado;
     public LocalDate data;

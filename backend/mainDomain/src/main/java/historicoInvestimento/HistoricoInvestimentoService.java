@@ -28,4 +28,8 @@ public class HistoricoInvestimentoService {
         historicoInvestimentoRepositorio.deletarTodosHistoricosPorId(investimentoId);
     }
 
+    public List<HistoricoInvestimento> obterTodosHistoricosPorInvestimento(String investimentoId){
+        return historicoInvestimentoRepositorio.obterTodosHistoricosPorInvestimento(investimentoId);
+    }
+
 }

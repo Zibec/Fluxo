@@ -4,6 +4,7 @@ import divida.Divida;
 import divida.DividaRepositorio;
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
+import investimento.Investimento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
@@ -32,6 +33,12 @@ public class HistoricoInvestimentoRepositoryImpl implements HistoricoInvestiment
     }
 
     @Override
+    public List<HistoricoInvestimento> obterTodosHistoricosPorInvestimento(String investimentoId) {
+        var lista = repositorio.findAllByInvestimentoId(investimentoId);
+        return mapper.map(lista, List.class);
+    }
+
+    @Override
     public void deletarTodosHistoricosPorId(String investimentoId) {
         repositorio.deleteAllByInvestimentoId(investimentoId);
     }
@@ -40,4 +47,6 @@ public class HistoricoInvestimentoRepositoryImpl implements HistoricoInvestiment
     public void setStatus(boolean status) {
         //
     }
+
+
 }
