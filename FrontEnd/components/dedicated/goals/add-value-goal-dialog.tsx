@@ -13,31 +13,43 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { metaService } from "@/lib/service/meta/meta-service"
 import { useToast } from "@/components/ui/use-toast"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
 
 interface AddGoalDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   id: string
+  setMeta: React.Dispatch<React.SetStateAction<createMetaFormData[] | undefined>>
 }
 
-export function AddValueGoalDialog({ open, onOpenChange, id }: AddGoalDialogProps) {
+export function AddValueGoalDialog({ open, onOpenChange, id, setMeta }: AddGoalDialogProps) {
   const [value, setValue] = useState(0)
   const [selectedAccount, setSelectedAccount] = useState<string | null>(null)
   const [accounts, setAccounts] = useState<createContaFormData[]>([])
 
   const { toast } = useToast()
 
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const fetchedAccounts = await contasService.getAllContas()
+      setAccounts(fetchedAccounts)
+    }
+    fetchAccounts()
+  }, [])
+
   const handleSave = async () => {
-    await metaService.addValueToMeta(id, value)
+    console.log({ id, value, selectedAccount })
+    await metaService.addValueToMeta(id, value, selectedAccount!)
 
     toast({
       title: "Aporte realizado",
       description: "O aporte foi realizado com sucesso.",
     })
 
+    setMeta(await metaService.getAllMetas())
     onOpenChange(false)
   }
 
@@ -97,5 +109,3 @@ export function AddValueGoalDialog({ open, onOpenChange, id }: AddGoalDialogProp
     </Dialog>
   )
 }
-
-          

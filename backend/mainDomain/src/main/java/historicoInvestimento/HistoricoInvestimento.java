@@ -13,6 +13,7 @@ public class HistoricoInvestimento {
     private BigDecimal valorAtualizado;
     private LocalDate data;
 
+
     public HistoricoInvestimento(String investimentoId, BigDecimal valorAtualizado, LocalDate data) {
         this.historicoInvestimentoId = UUID.randomUUID().toString();
         this.investimentoId = investimentoId;

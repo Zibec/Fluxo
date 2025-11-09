@@ -19,9 +19,10 @@ interface AddGoalDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   goal: createMetaFormData | null
+  setMeta: React.Dispatch<React.SetStateAction<createMetaFormData[] | undefined>>
 }
 
-export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps) {
+export function EditGoalDialog({ open, onOpenChange, goal, setMeta }: AddGoalDialogProps) {
       const  {
           register,
           handleSubmit,
@@ -53,6 +54,7 @@ export function EditGoalDialog({ open, onOpenChange, goal }: AddGoalDialogProps)
       description: "A meta foi criada com sucesso.",
     })
 
+    setMeta(await metaService.getAllMetas())
     onOpenChange(false)
   }
 

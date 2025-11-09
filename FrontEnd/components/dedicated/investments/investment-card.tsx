@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card"
 interface InvestmentCardProps {
   name: string
   currentValue: number
-  onDelete: () => void
 }
 
 export function InvestmentCard({ name, currentValue, onDelete }: InvestmentCardProps) {
@@ -37,21 +36,6 @@ export function InvestmentCard({ name, currentValue, onDelete }: InvestmentCardP
             R$ {currentValue.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </div>
-
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onDelete}
-          className="
-            text-[var(--color-danger)] 
-            hover:bg-[var(--color-danger-bg-hover)] 
-            hover:text-[var(--color-danger-hover)]
-            transition-colors
-          "
-        >
-          <Trash2 className="h-5 w-5" />
-          <span className="sr-only">Excluir</span>
-        </Button>
       </div>
     </Card>
   )

@@ -8,6 +8,7 @@ import taxaSelic.TaxaSelicRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
@@ -39,6 +40,10 @@ public class InvestimentoService {
 
     public ArrayList<Investimento> obterTodos(){
         return investimentoRepositorio.obterTodosInvestimentos();
+    }
+
+    public List<Investimento> obterTodosPorUsuarioId(String id){
+        return investimentoRepositorio.obterTodosInvestimentosPorUsuarioId(id);
     }
 
     public void deletarInvestimento(String investimentoId){

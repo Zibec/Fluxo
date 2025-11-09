@@ -1,28 +1,44 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { InvestmentCard } from "@/components/dedicated/investments/investment-card"
 import { AddInvestmentDialog } from "@/components/dedicated/investments/add-investment-dialog"
 import { Button } from "@/components/ui/button"
+import { createInvestimentoFormData } from "@/lib/service/investimentos/investimento-schema"
+import { api } from "@/lib/axios"
+import { investimentoService } from "@/lib/service/investimentos/investimento-service"
 
 export default function InvestimentosPage() {
   const [balance] = useState(12500.0)
-  const [selicRate] = useState(13.75)
+  const [selicRate, setSelicRate] = useState(0.0)
   const [isAddInvestmentOpen, setIsAddInvestmentOpen] = useState(false)
-  const [investments, setInvestments] = useState([
-    { id: 1, name: "Investimento A", currentValue: 5000.0 },
-    { id: 2, name: "Tesouro Direto", currentValue: 8500.0 },
-    { id: 3, name: "CDB Banco XYZ", currentValue: 3200.0 },
-  ])
-
-  const handleDeleteInvestment = (id: number) => {
-    setInvestments(investments.filter((inv) => inv.id !== id))
-  }
+  const [investments, setInvestments] = useState<createInvestimentoFormData[]>([])
 
   const handleAddInvestment = () => {
     setIsAddInvestmentOpen(true)
   }
+
+  useEffect(() => {
+    async function fetchInvestments() {
+      await investimentoService.getInvestimentosByUserId().then((response) => {
+        setInvestments(response.data)
+      }).catch((error) => {
+        console.error("Error fetching investments:", error)
+      })
+    }
+
+    async function fetchSelicRate() {
+      await investimentoService.getTaxaSelic().then((response) => {
+        setSelicRate(response.data.valor)
+      }).catch((error) => {
+        console.error("Error fetching Selic rate:", error)
+      })
+    }
+
+    fetchInvestments()
+    fetchSelicRate()
+  }, [])
 
   return (
     <div
@@ -70,7 +86,7 @@ export default function InvestimentosPage() {
         >
           <p className="text-sm font-medium">
             Taxa Selic:{" "}
-            <span className="font-bold">{selicRate.toFixed(2)}%</span>
+            <span className="font-bold">{selicRate}%</span>
           </p>
         </div>
 
@@ -86,9 +102,8 @@ export default function InvestimentosPage() {
             investments.map((investment) => (
               <InvestmentCard
                 key={investment.id}
-                name={investment.name}
-                currentValue={investment.currentValue}
-                onDelete={() => handleDeleteInvestment(investment.id)}
+                name={investment.nome}
+                currentValue={investment.valorAtual}
               />
             ))
           )}

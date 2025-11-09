@@ -12,6 +12,7 @@ public class InvestimentoJpa {
 
     @Id
     public String id;
+    public String usuarioId;
     public String nome;
     public String descricao;
     public BigDecimal valorAtual;

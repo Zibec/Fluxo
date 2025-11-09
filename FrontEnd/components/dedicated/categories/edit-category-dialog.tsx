@@ -16,7 +16,6 @@ interface EditCategoryDialogProps {
 export function EditCategoryDialog({ open, onOpenChange, category, onSave }: EditCategoryDialogProps) {
   const [name, setName] = useState(category.name)
 
-  // Update the name when categoryName prop changes
   useEffect(() => {
     setName(category.name)
   }, [category.name])

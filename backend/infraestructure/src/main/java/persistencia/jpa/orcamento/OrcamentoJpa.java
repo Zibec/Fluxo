@@ -31,6 +31,8 @@ public class OrcamentoJpa {
     @Column(name= "categoria_id", nullable = false, length = 64)
     public String categoriaId;
 
+    public String titulo;
+
     @Column(name = "ano", nullable = false)
     public int ano;
 
@@ -43,5 +45,5 @@ public class OrcamentoJpa {
     @Column(name = "data_limite", nullable = false)
     public LocalDate dataLimite;
 
-    protected OrcamentoJpa() {}
+    public OrcamentoJpa() {}
 }

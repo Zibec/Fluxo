@@ -50,4 +50,15 @@ public class CategoriaRepository implements CategoriaRepositorio {
         return List.of();
     }
 
+    @Override
+    public List<Categoria> listarCategoriasPorUsuarioId(String id) {
+        List<?> categoriaJpa = repository.findAllByUsuarioId(id);
+
+        if(categoriaJpa.isEmpty()){
+            return List.of();
+        }
+
+        return mapper.map(categoriaJpa, List.class);
+    }
+
 }

@@ -1,25 +1,42 @@
 package com.fluxo.controllers.categorias;
 
 import categoria.*;
+import com.fluxo.config.security.SecurityFilter;
+import com.fluxo.config.security.TokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import persistencia.jpa.categoria.CategoriaRepository;
+import usuario.Usuario;
+import usuario.UsuarioService;
+
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/categoria")
 public class CategoriaController {
-    @Autowired
-    private CategoriaRepository categoriaRepository;
 
     @Autowired
     private CategoriaService categoriaService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
+    private SecurityFilter securityFilter;
+
     @GetMapping
-    public ResponseEntity<List<Categoria>> listarTodas() {
-        var categorias = categoriaService.listarCategorias();
+    public ResponseEntity<List<Categoria>> listarTodas(HttpServletRequest request) {
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        var categorias = categoriaService.listarCategoriasPorUsuarioId(usuario.getId());
 
         if (categorias.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -29,12 +46,18 @@ public class CategoriaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> criar(@RequestBody Categoria categoria) {
+    public ResponseEntity<Void> criar(@RequestBody Categoria categoria, HttpServletRequest request) {
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        categoria.setUsuarioId(usuario.getId());
+
         categoriaService.salvar(categoria);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("id/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Categoria> buscarPorId(@PathVariable String id) {
         var categoriaOpt = categoriaService.obterCategoria(id);
 

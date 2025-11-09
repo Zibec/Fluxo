@@ -19,4 +19,6 @@ public interface CategoriaRepositorio {
     int contagem();
 
     List<Categoria> listarCategorias();
+
+    List<Categoria> listarCategoriasPorUsuarioId(String id);
 }

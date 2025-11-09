@@ -10,4 +10,5 @@ public class PerfilJpa {
     @Id
     public String id;
     public String nome;
+    public String usuarioId;
 }

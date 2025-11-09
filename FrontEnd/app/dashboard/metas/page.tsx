@@ -87,17 +87,20 @@ export default function MetasPage() {
         open={editDialogOpen}
         onOpenChange={setEditDialogOpen}
         goal={selectedGoal}
+        setMeta={setGoals}
       />
 
       <AddGoalDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
+        setMeta={setGoals}
       />
 
       <AddValueGoalDialog
         open={addValueDialogOpen}
         onOpenChange={setAddValueDialogOpen}
         id={selectedGoal?.id || ""}
+        setMeta={setGoals}
       />
     </div>
   )

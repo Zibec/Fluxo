@@ -17,9 +17,10 @@ import { useToast } from "@/components/ui/use-toast"
 interface AddGoalDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  setMeta: (metas: createMetaFormData[]) => void
 }
 
-export function AddGoalDialog({ open, onOpenChange }: AddGoalDialogProps) {
+export function AddGoalDialog({ open, onOpenChange, setMeta }: AddGoalDialogProps) {
       const  {
           register,
           handleSubmit,
@@ -41,6 +42,7 @@ export function AddGoalDialog({ open, onOpenChange }: AddGoalDialogProps) {
       description: "A meta foi criada com sucesso.",
     })
 
+    setMeta && setMeta(await metaService.getAllMetas())
     onOpenChange(false)
   }
 

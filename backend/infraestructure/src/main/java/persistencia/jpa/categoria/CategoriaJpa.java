@@ -12,5 +12,7 @@ public class CategoriaJpa {
     public String id;
 
     public String nome;
+
+    public String usuarioId;
 }
 

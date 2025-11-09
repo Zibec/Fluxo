@@ -40,15 +40,42 @@ public class OrcamentoController {
         return ResponseEntity.ok(service.listarTodos());
     }
 
+    @GetMapping("/todos/by-user")
+    public ResponseEntity<List<Orcamento>> listarTodosByUser(HttpServletRequest request){
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
 
-    @GetMapping("/{usuarioId}/{categoriaId}/{anoMes}")
-    public ResponseEntity<Orcamento> obterOrcamento(@PathVariable String usuarioId,@PathVariable String categoriaId, @PathVariable String anoMes ){
+        return ResponseEntity.ok(service.listarTodosByUser(usuario.getId()));
+    }
+
+
+    @GetMapping("/{categoriaId}/{anoMes}")
+    public ResponseEntity<Orcamento> obterOrcamento(@PathVariable String categoriaId, @PathVariable String anoMes, HttpServletRequest request){
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
         try {
-            var chave = new OrcamentoChave(usuarioId, YearMonth.parse(anoMes), categoriaId);
+            var chave = new OrcamentoChave(usuario.getId(), YearMonth.parse(anoMes), categoriaId);
             return service.obterOrcamento(chave)
                     .map(ResponseEntity::ok)
                     .orElseGet(() -> ResponseEntity.notFound().build());
         } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/saldo-total/{categoriaId}/{anoMes}")
+    public Object obterSaldoTotal(@PathVariable String categoriaId, @PathVariable String anoMes, HttpServletRequest request){
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        try {
+            return service.saldoMensalTotal(usuario.getId(), categoriaId, YearMonth.parse(anoMes));
+        } catch (DateTimeParseException e) {
+
             return ResponseEntity.badRequest().build();
         }
     }
@@ -63,24 +90,28 @@ public class OrcamentoController {
             var usuarioId = usuario.getId();
             var categoriaId = body.get("categoriaId");
             var anoMes = java.time.YearMonth.parse(body.get("anoMes"));
+            System.out.println(anoMes);
             var limite = new java.math.BigDecimal(body.get("limite").replace(",", "."));
 
             service.criarOrcamentoMensal(usuarioId, categoriaId, anoMes, limite);
             return ResponseEntity.status(201).build();
         } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(409).build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @PutMapping("/{usuarioId}/{categoriaId}/{anoMes}")
-    public ResponseEntity<Void> atualizarOrcamento(HttpServletRequest request, @PathVariable String categoriaId, @PathVariable String anoMes, @RequestParam java.util.Map<String,String> body){
+    @PutMapping("/{categoriaId}/{anoMes}")
+    public ResponseEntity<Void> atualizarOrcamento(HttpServletRequest request, @PathVariable String categoriaId, @PathVariable String anoMes, @RequestBody java.util.Map<String,String> body){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
         try {
+            System.out.println(body);
             var ym = YearMonth.parse(anoMes);
             var limite = new java.math.BigDecimal(body.get("limite").replace(",", "."));
             service.atualizarOrcamento(usuario.getId(), categoriaId, ym, limite);

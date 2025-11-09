@@ -1,6 +1,5 @@
 package com.fluxo;
 
-import agendamento.AgendamentoService;
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import categoria.CategoriaRepositorio;
@@ -47,6 +46,11 @@ public class FluxoApplication {
     private ObjectMapper objectMapper;
 
     @Bean
+    public SelicApiClient selicApiClient() {
+        return new SelicApiClient(true);
+    };
+
+    @Bean
     public UsuarioService usuarioService(UsuarioRepositorio repositorio) {
         return new UsuarioService(repositorio);
     }
@@ -76,10 +80,6 @@ public class FluxoApplication {
         return new TransacaoService(transacaoRepositorio, contaRepositorio, cartaoRepositorio);
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(FluxoApplication.class, args);
-    }
-
     @Bean
     public MetaService metaService(MetaRepositorio repositorio, ContaRepositorio repositorioConta) {
         return new MetaService(repositorio, repositorioConta);
@@ -104,6 +104,12 @@ public class FluxoApplication {
     public HistoricoInvestimentoService historicoInvestimentoService(HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio){
         return new HistoricoInvestimentoService(historicoInvestimentoRepositorio);
     }
+
+    public static void main(String[] args) {
+        SpringApplication.run(FluxoApplication.class, args);
+    }
+
+
 
     @PostConstruct
     public void setUp() {

@@ -36,7 +36,6 @@ public class OrcamentoService {
         var orcamento = orcamentoRepositorio.obterOrcamento(chave)
                 .orElseThrow(() -> new IllegalStateException("Não existe um orçamento para essa chave"));
 
-        //usa a versão sem usuário, como você decidiu
         var totalGasto = transacaoService.calcularGastosConsolidadosPorCategoria(categoriaid, anoMes);
         return orcamento.getLimite().subtract(totalGasto);
     }
@@ -51,6 +50,10 @@ public class OrcamentoService {
 
     public List<Orcamento> listarTodos() {
         return orcamentoRepositorio.listarTodos();
+    }
+
+    public List<Orcamento> listarTodosByUser(String id) {
+        return orcamentoRepositorio.listarTodosPorUsuario(id);
     }
 
     //LÓGICA DE NOTIFICAÇÕES

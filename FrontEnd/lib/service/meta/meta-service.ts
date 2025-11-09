@@ -28,8 +28,8 @@ class MetaService {
         return response.data;
     }
 
-    async addValueToMeta(id: string, value: number) {
-        const response = await api.post(`/metas-poupanca/${id}/aporte`, { valor: value });
+    async addValueToMeta(id: string, value: number, accountId: string) {
+        const response = await api.post(`/metas-poupanca/${id}/aporte`, { valor: value, contaId: accountId });
         return response.data;
     }
 }

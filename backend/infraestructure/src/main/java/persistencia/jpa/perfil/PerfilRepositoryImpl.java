@@ -1,13 +1,12 @@
 package persistencia.jpa.perfil;
 
-import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import perfil.Perfil;
 import perfil.PerfilRepository;
 import persistencia.jpa.Mapper;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class PerfilRepositoryImpl implements PerfilRepository {
@@ -19,7 +18,7 @@ public class PerfilRepositoryImpl implements PerfilRepository {
 
     @Override
     public void salvarPerfil(Perfil perfil) {
-        var perfilJpa = mapper.map(perfil, PerfilJpa.class);
+        PerfilJpa perfilJpa = mapper.map(perfil, PerfilJpa.class);
         repository.save(perfilJpa);
     }
 
@@ -30,9 +29,9 @@ public class PerfilRepositoryImpl implements PerfilRepository {
     }
 
     @Override
-    public ArrayList<Perfil> obterTodosPerfis() {
+    public List<Perfil> obterTodosPerfis() {
         var perfilJpa = repository.findAll();
-        return mapper.map(perfilJpa, ArrayList.class);
+        return mapper.map(perfilJpa, List.class);
     }
 
     @Override
@@ -46,5 +45,11 @@ public class PerfilRepositoryImpl implements PerfilRepository {
     @Override
     public void deletarPerfil(String id) {
         repository.deleteById(id);
+    }
+
+    @Override
+    public List<Perfil> obterTodosPerfisPorUsuarioId(String id) {
+        var perfilJpa = repository.findAllByUsuarioId(id);
+        return mapper.map(perfilJpa, List.class);
     }
 }

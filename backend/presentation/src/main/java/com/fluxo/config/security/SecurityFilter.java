@@ -34,16 +34,13 @@ public class SecurityFilter extends OncePerRequestFilter {
             return;
         }
 
-        System.out.println("Autenticação");
         var token = this.recoverToken(request);
-        System.out.println("Token: " + token);
         if(token != null){
             var login = tokenService.validateToken(token);
 
             if(!Objects.equals(login, "")){
                 Usuario user = userRepository.obterUsuarioPorNome(login).get();
 
-                System.out.println("Usuario: " + login);
 
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
 

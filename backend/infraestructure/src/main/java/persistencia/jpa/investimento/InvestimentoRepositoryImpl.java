@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class InvestimentoRepositoryImpl implements InvestimentoRepositorio {
@@ -32,6 +33,13 @@ public class InvestimentoRepositoryImpl implements InvestimentoRepositorio {
     public ArrayList<Investimento> obterTodosInvestimentos() {
         var investimentoJpa = repositorio.findAll();
         ArrayList<Investimento> investimentos = mapper.map(investimentoJpa, ArrayList.class);
+
+        return investimentos;
+    }
+
+    public List<Investimento> obterTodosInvestimentosPorUsuarioId(String id) {
+        var investimentoJpa = repositorio.findAllByUsuarioId(id);
+        List<Investimento> investimentos = mapper.map(investimentoJpa, List.class);
 
         return investimentos;
     }

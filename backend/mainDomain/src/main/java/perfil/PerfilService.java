@@ -1,10 +1,12 @@
 package perfil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PerfilService {
 
     private PerfilRepository perfilRepository;
+
     public PerfilService(PerfilRepository perfilRepository) {
         this.perfilRepository = perfilRepository;
     }
@@ -17,7 +19,7 @@ public class PerfilService {
         return perfilRepository.obterPerfil(id);
     }
 
-    public ArrayList<Perfil> obterTodosPerfis(){
+    public List<Perfil> obterTodosPerfis(){
         return perfilRepository.obterTodosPerfis();
     }
 
@@ -28,4 +30,9 @@ public class PerfilService {
     public void deletarPerfil(String id){
         perfilRepository.deletarPerfil(id);
     }
+
+    public List<Perfil> obterTodosPerfisPorUsuarioId(String id){
+        return perfilRepository.obterTodosPerfisPorUsuarioId(id);
+    }
+
 }

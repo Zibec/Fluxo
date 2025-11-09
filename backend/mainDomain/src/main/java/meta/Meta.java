@@ -61,6 +61,10 @@ public class Meta {
 
         System.out.println("Print 1 - meta - Saldo acumulado: " + valorDoAporte);
 
+        if(this.saldoAcumulado == null) {
+            this.saldoAcumulado = BigDecimal.valueOf(0);
+        }
+
         this.saldoAcumulado = this.saldoAcumulado.add(valorDoAporte);
 
         System.out.println("Print 2 - meta - Saldo acumulado: " + this.saldoAcumulado);

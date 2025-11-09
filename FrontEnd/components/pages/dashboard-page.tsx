@@ -1,28 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { BudgetSection } from "@/components/dedicated/dashboard/budget-section";
-import { DebtSection } from "@/components/dedicated/dashboard/debt-section";
-import { SavingsSection } from "@/components/dedicated/dashboard/savings-section";
-import { FabButton } from "@/components/dedicated/dashboard/fab-button";
-import { AddExpenseDialog } from "@/components/dedicated/dashboard/add-expense-dialog";
-import { AddIncomeDialog } from "@/components/dedicated/dashboard/add-income-dialog";
-import { AddBudgetDialog } from "@/components/dedicated/dashboard/add-budget-dialog";
-import { AddGoalDialog } from "@/components/dedicated/dashboard/add-goal-dialog";
-import { set } from "date-fns";
-import { metaService } from "@/lib/service/meta/meta-service";
+import { useEffect, useState } from "react"
+import { BudgetSection } from "@/components/dedicated/dashboard/budget-section"
+import { DebtSection } from "@/components/dedicated/dashboard/debt-section"
+import { SavingsSection } from "@/components/dedicated/dashboard/savings-section"
+import { FabButton } from "@/components/dedicated/dashboard/fab-button"
+import { AddExpenseDialog } from "@/components/dedicated/dashboard/add-expense-dialog"
+import { AddIncomeDialog } from "@/components/dedicated/dashboard/add-income-dialog"
+import { metaService } from "@/lib/service/meta/meta-service"
+import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
+import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema"
+import { AddGoalDialog } from "../dedicated/goals/add-goal-dialog";
+import { AddBudgetDialog } from "../dedicated/budgets/add-budget-dialog";
+import { createMetaFormData } from "@/lib/service/meta/meta-schema";
 
 const DashboardPage = () => {
-  const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false);
-  const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState(false);
-  const [isBudgetDialogOpen, setIsBudgetDialogOpen] = useState(false);
-  const [isGoalDialogOpen, setIsGoalDialogOpen] = useState(false);
+  const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false)
+  const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState(false)
+  const [isBudgetDialogOpen, setIsBudgetDialogOpen] = useState(false)
+  const [isGoalDialogOpen, setIsGoalDialogOpen] = useState(false)
 
-  const budgets = [
-    { name: "Comida", spent: 90, total: 100 },
-    { name: "Transporte", spent: 45, total: 80 },
-    { name: "Lazer", spent: 120, total: 150 },
-  ];
+  const [budgets, setBudgets] = useState<createOrcamentoFormData[]>([])
 
   const debts = [
     { name: "Casas Bahia", paid: 150, total: 1700 },
@@ -30,7 +28,7 @@ const DashboardPage = () => {
     { name: "Empréstimo Pessoal", paid: 3000, total: 10000 },
   ];
 
-  const [savings, setSavings] = useState([])
+  const [savings, setSavings] = useState<createMetaFormData[]>([])
 
 
   useEffect(() => {
@@ -38,6 +36,13 @@ const DashboardPage = () => {
       setSavings(await metaService.getAllMetas())
     }
     fetchSavings()
+  }, [])
+
+  useEffect(() => {
+    const fetchBudgets = async () => {
+      setBudgets(await orcamentoService.getOrcamentos())
+    }
+    fetchBudgets()
   }, [])
 
   const handleFabAction = (action: string) => {
@@ -84,10 +89,12 @@ const DashboardPage = () => {
       <AddBudgetDialog
         open={isBudgetDialogOpen}
         onOpenChange={setIsBudgetDialogOpen}
+        setBudgets={setBudgets}
       />
       <AddGoalDialog
         open={isGoalDialogOpen}
         onOpenChange={setIsGoalDialogOpen}
+        setMeta={setSavings}
       />
     </div>
   );

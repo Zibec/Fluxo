@@ -16,6 +16,7 @@ public class CategoriaService {
         this.categoriaRepositorio = categoriaRepositorio;
         this.transacaoRepositorio = transacaoRepositorio;
     }
+
     public void salvar(Categoria categoria) {
         notNull(categoria, "A categoria não pode ser nula.");
         categoriaRepositorio.salvar(categoria);
@@ -24,6 +25,10 @@ public class CategoriaService {
     public Optional<Categoria> obterPorNome(String nome) {
         notNull(nome, "O nome da categoria não pode ser nulo.");
         return categoriaRepositorio.obterCategoriaPorNome(nome);
+    }
+
+    public List<Categoria> listarCategoriasPorUsuarioId(String id) {
+        return categoriaRepositorio.listarCategoriasPorUsuarioId(id);
     }
 
     public void deletar(String id) {

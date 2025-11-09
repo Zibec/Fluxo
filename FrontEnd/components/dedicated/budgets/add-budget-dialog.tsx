@@ -13,26 +13,18 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
 import { useToast } from "@/hooks/use-toast"
+import { set } from "date-fns"
 
-interface EditBudgetDialogProps {
+interface AddBudgetDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  budget: createOrcamentoFormData
   setBudgets: (budgets: createOrcamentoFormData[]) => void
 }
 
-export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: EditBudgetDialogProps) {
+export function AddBudgetDialog({ open, onOpenChange, setBudgets }: AddBudgetDialogProps) {
   const [categories, setCategories] = useState<createCategoriaFormData[]>([])
   const { toast } = useToast()
   const { register, handleSubmit, watch, getValues, setValue, reset, formState: { errors }} = useForm<createOrcamentoFormData>({ resolver: zodResolver(OrcamentoFormSchema)})
-
-  useEffect(() => {
-    if (budget) {
-      reset(budget)
-      console.log(budget)
-      setValue("anoMes", `${budget.ano}-${budget.mes.toString().padStart(2, '0')}`)
-    }
-  }, [budget])
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -45,21 +37,15 @@ export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: Edi
   }, [])
 
   const handleSave = async () => {
-    await orcamentoService.updateOrcamento(getValues()).then(async () => {
+    await orcamentoService.createOrcamento(getValues()).then(() => {
       toast({
-        title: "Orçamento atualizado",
-        description: "O orçamento foi atualizado com sucesso.",
+        title: "Orçamento criado",
+        description: "O orçamento foi criado com sucesso.",
       })
 
       reset()
-      setBudgets(await orcamentoService.getOrcamentos())
-    }).catch(() => {
-      toast({
-        title: "Erro ao atualizar orçamento",
-        description: "Ocorreu um erro ao atualizar o orçamento. Tente novamente."
-      })
     })
-
+    setBudgets(await orcamentoService.getOrcamentos())
     onOpenChange(false)
   }
 
@@ -73,16 +59,16 @@ export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: Edi
       <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={handleSubmit(handleSave)}>
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Editar Orçamento</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">Adicionar Orçamento</DialogTitle>
         </DialogHeader>
         <div className="space-y-4 py-4">
+
           <div className="space-y-2">
             <Label htmlFor="edit-budget-category">Categoria:</Label>
             <input type="hidden" {...register("categoriaId")} />
 
             <Select
               onValueChange={(value) => setValue("categoriaId", value)}
-              defaultValue={budget?.categoriaId?.toString()}
             >
               <SelectTrigger id="edit-budget-category" className="w-full">
                 <SelectValue placeholder="Selecione uma categoria" />
@@ -99,7 +85,7 @@ export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: Edi
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="edit-budget-value">Valor Limite:</Label>
+            <Label htmlFor="edit-budget-value">Limite:</Label>
             <Input
               id="edit-budget-value"
               type="number"
@@ -118,6 +104,10 @@ export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: Edi
             />
             <p className="text-sm text-red-600">{errors.anoMes?.message}</p>
           </div>
+
+
+
+
         </div>
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={handleCancel}>

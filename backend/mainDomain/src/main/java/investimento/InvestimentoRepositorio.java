@@ -14,6 +14,8 @@ public interface InvestimentoRepositorio {
 
     ArrayList<Investimento> obterTodosInvestimentos();
 
+    List<Investimento> obterTodosInvestimentosPorUsuarioId(String id);
+
     void atualizarInvestimento(String investimentoId, Investimento investimento);
 
     void deletarInvestimento(String investimentoId);

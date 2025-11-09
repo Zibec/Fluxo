@@ -8,6 +8,7 @@ public class Categoria {
 
     private String id;
     private String nome;
+    private String usuarioId;
 
     public Categoria() {
         this.id = UUID.randomUUID().toString();
@@ -34,6 +35,13 @@ public class Categoria {
 
     public void setId(String id){
         this.id = id;
+    }
+
+    public String getUsuarioId(){
+        return this.usuarioId;
+    }
+    public void setUsuarioId(String usuarioId){
+        this.usuarioId = usuarioId;
     }
 }
 

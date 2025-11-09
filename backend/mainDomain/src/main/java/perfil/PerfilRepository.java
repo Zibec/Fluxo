@@ -1,6 +1,7 @@
 package perfil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface PerfilRepository {
 
@@ -8,10 +9,12 @@ public interface PerfilRepository {
 
     Perfil obterPerfil(String id);
 
-    ArrayList<Perfil> obterTodosPerfis();
+    List<Perfil> obterTodosPerfis();
 
     void alterarPerfil(String id,Perfil perfil);
 
     void deletarPerfil(String id);
+
+    List<Perfil> obterTodosPerfisPorUsuarioId(String id);
 
 }

@@ -6,6 +6,11 @@ class CategoriaService {
         return response.data;
     }
 
+    async getCategoriaById(id: string) {
+        const response = await api.get(`/categoria/id/${id}`);
+        return response.data;
+    }
+
     async createCategoria(data: { nome: string }) {
         const response = await api.post('/categoria', data);
         return response.data;

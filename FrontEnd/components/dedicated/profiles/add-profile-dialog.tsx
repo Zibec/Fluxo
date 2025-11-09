@@ -5,18 +5,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { perfilService } from "@/lib/service/perfil/perfil-service"
+import { useToast } from "@/hooks/use-toast"
+import { createPerfilFormData } from "@/lib/service/perfil/perfil-schema"
 
 interface AddProfileDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  setProfiles: React.Dispatch<React.SetStateAction<createPerfilFormData[] | undefined>>
 }
 
-export function AddProfileDialog({ open, onOpenChange }: AddProfileDialogProps) {
+export function AddProfileDialog({ open, onOpenChange, setProfiles }: AddProfileDialogProps) {
   const [name, setName] = useState("")
 
+  const { toast } = useToast()
+
   const handleSaveProfile = () => {
-    console.log("[v0] Saving profile:", name)
+    perfilService.createPerfil({ nome: name })
+
+    toast({
+      title: "Perfil criado",
+      description: `O perfil "${name}" foi criado com sucesso.`
+    })
+
     setName("")
+    setProfiles(prev => prev ? [...prev, {nome: name, id: ""}] : [{nome: name, id: ""}])
     onOpenChange(false)
   }
 

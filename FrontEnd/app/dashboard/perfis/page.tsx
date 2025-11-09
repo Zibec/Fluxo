@@ -1,32 +1,39 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
 import { PageHeader } from "@/components/dedicated/accounts/page-header"
 import { ProfileItem } from "@/components/dedicated/profiles/profile-item"
 import { AddProfileDialog } from "@/components/dedicated/profiles/add-profile-dialog"
 import { EditProfileDialog } from "@/components/dedicated/profiles/edit-profile-dialog"
 import { Button } from "@/components/ui/button"
+import { createPerfilFormData } from "@/lib/service/perfil/perfil-schema"
+import { perfilService } from "@/lib/service/perfil/perfil-service"
 
 export default function PerfisPage() {
   const [isAddProfileOpen, setIsAddProfileOpen] = useState(false)
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false)
-  const [selectedProfile, setSelectedProfile] = useState("")
+  const [selectedProfile, setSelectedProfile] = useState<createPerfilFormData>()
 
-  const profiles = [
-    { id: 1, name: "Perfil Pessoal" },
-    { id: 2, name: "Perfil Trabalho" },
-    { id: 3, name: "Perfil Família" },
-  ]
+  const [profiles, setProfiles] = useState<createPerfilFormData[]>()
 
   const handleAddProfile = () => {
     setIsAddProfileOpen(true)
   }
 
-  const handleEditProfile = (profileName: string) => {
-    setSelectedProfile(profileName)
+  const handleEditProfile = (profileName: string, profileId: string) => {
+    setSelectedProfile({nome: profileName, id: profileId})
     setIsEditProfileOpen(true)
   }
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      await perfilService.getAllPerfis().then((data) => {
+        console.log(data)
+        setProfiles(data)})
+    }
+    fetchProfiles()
+  }, [])
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-foreground)] transition-colors">
@@ -55,19 +62,19 @@ export default function PerfisPage() {
 
         {/* Lista de Perfis */}
         <div className="space-y-3">
-          {profiles.map((profile) => (
+          {profiles &&profiles.map((profile) => (
             <ProfileItem
               key={profile.id}
-              name={profile.name}
-              onEdit={() => handleEditProfile(profile.name)}
+              name={profile.nome}
+              onEdit={() => handleEditProfile(profile?.nome, profile.id)}
             />
           ))}
         </div>
       </main>
 
       {/* Dialogs */}
-      <AddProfileDialog open={isAddProfileOpen} onOpenChange={setIsAddProfileOpen} />
-      <EditProfileDialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen} profileName={selectedProfile} />
+      <AddProfileDialog open={isAddProfileOpen} onOpenChange={setIsAddProfileOpen} setProfiles={setProfiles} />
+      <EditProfileDialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen} profile={selectedProfile} setProfiles={setProfiles} />
     </div>
   )
 }

@@ -13,6 +13,7 @@ import usuario.UsuarioService;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -118,11 +119,10 @@ public class MetaController {
     @PostMapping("/{id}/aporte")
     public ResponseEntity<String> realizarAporte(
             @PathVariable String id,
-            @RequestParam BigDecimal valor,
-            @RequestParam String contaId) {
+            @RequestBody Map<String, Object> body) {
         try {
-            metaService.realizarAporte(id, valor, contaId);
-            return ResponseEntity.ok("Aporte de R$ " + valor + " realizado na meta " + id);
+            metaService.realizarAporte(id, BigDecimal.valueOf((Integer) body.get("valor")), (String) body.get("contaId"));
+            return ResponseEntity.ok("Aporte de R$ " + body.get("valor") + " realizado na meta " + id);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

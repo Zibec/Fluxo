@@ -80,6 +80,11 @@ public class Repositorio implements
         return investimentos;
     }
 
+    @Override
+    public List<Investimento> obterTodosInvestimentosPorUsuarioId(String id) {
+        return null;
+    }
+
     public void atualizarInvestimento(String investimentoId, Investimento investimento){
 
         for (Investimento inv : investimentos){
@@ -354,7 +359,7 @@ public class Repositorio implements
 
     @Override
     public List<Meta> obterMetaPorUsuario(String usuario) {
-        return Optional.empty();
+        return List.of();
     }
 
     /*-----------------------------------------------------------------------*/
@@ -491,6 +496,11 @@ public class Repositorio implements
                 perfis.remove(perf);
             }
         }
+    }
+
+    @Override
+    public ArrayList<Perfil> obterTodosPerfisPorUsuarioId(String id) {
+        return null;
     }
 
     /*-----------------------------------------------------------------------*/

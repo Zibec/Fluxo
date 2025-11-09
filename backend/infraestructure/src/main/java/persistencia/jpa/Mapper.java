@@ -101,7 +101,9 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<CategoriaJpa, Categoria>() {
             @Override
             protected Categoria convert(CategoriaJpa source) {
-                return new Categoria(source.id, source.nome);
+                var categoria = new Categoria(source.id, source.nome);
+                categoria.setUsuarioId(source.usuarioId);
+                return categoria;
             }
         });
 
@@ -175,7 +177,9 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<PerfilJpa, Perfil>() {
             @Override
             protected Perfil convert(PerfilJpa source) {
-                return new Perfil(source.id, source.nome);
+                var perfil = new Perfil(source.id, source.nome);
+                perfil.setUsuarioId(source.usuarioId);
+                return perfil;
             }
         });
 
@@ -254,6 +258,7 @@ public class Mapper extends ModelMapper {
                 var jpa = new CategoriaJpa();
                 jpa.id = source.getId();
                 jpa.nome = source.getNome();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
             }
         });
@@ -277,7 +282,18 @@ public class Mapper extends ModelMapper {
                 jpa.nome = source.getNome();
                 jpa.descricao = source.getDescricao();
                 jpa.valorAtual = source.getValorAtual();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
+            }
+        });
+
+        addConverter(new AbstractConverter<InvestimentoJpa, Investimento>() {
+            @Override
+            protected Investimento convert(InvestimentoJpa source) {
+                var investimento = new Investimento(source.id, source.nome, source.descricao, source.valorAtual);
+                investimento.setUsuarioId(source.usuarioId);
+                return investimento;
+
             }
         });
 
@@ -329,6 +345,7 @@ public class Mapper extends ModelMapper {
                 var jpa = new PerfilJpa();
                 jpa.id = source.getId();
                 jpa.nome = source.getNome();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
             }
         });

@@ -1,6 +1,7 @@
 package investimento;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class Investimento {
 
@@ -10,7 +11,11 @@ public class Investimento {
     private String descricao;
     private BigDecimal valorAtual;
 
+    private String usuarioId;
 
+    public Investimento() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     public Investimento(String id, String nome, String descricao, BigDecimal valorAtual) {
 
@@ -58,6 +63,13 @@ public class Investimento {
 
     public void setValorAtual(BigDecimal valorAtual) {
         this.valorAtual = valorAtual;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
 

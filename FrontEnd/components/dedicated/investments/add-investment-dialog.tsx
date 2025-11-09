@@ -6,12 +6,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-
-interface InvestmentForm {
-  name: string
-  description: string
-  initialValue: string
-}
+import { createInvestimentoFormData, InvestimentoFormSchema } from "@/lib/service/investimentos/investimento-schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { investimentoService } from "@/lib/service/investimentos/investimento-service"
+import { useToast } from "@/hooks/use-toast"
 
 interface AddInvestmentDialogProps {
   open: boolean
@@ -19,38 +18,50 @@ interface AddInvestmentDialogProps {
 }
 
 export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogProps) {
-  const [investmentForm, setInvestmentForm] = useState<InvestmentForm>({
-    name: "",
-    description: "",
-    initialValue: "",
-  })
+  const [investmentForm, setInvestmentForm] = useState<createInvestimentoFormData>()
 
-  const handleInvestmentFormChange = (field: string, value: string) => {
-    setInvestmentForm((prev) => ({ ...prev, [field]: value }))
-  }
+    const  {
+          register,
+          handleSubmit,
+          watch,
+          getValues,
+          reset,
+          formState: { errors }
+      } = useForm<createInvestimentoFormData>({
+          resolver: zodResolver(InvestimentoFormSchema)
+        })
+
+  const { toast } = useToast()
 
   const handleSaveInvestment = () => {
-    console.log("[v0] Saving investment:", investmentForm)
-    setInvestmentForm({
-      name: "",
-      description: "",
-      initialValue: "",
-    })
+    console.log("Saving investment:", investmentForm)
+
+    investimentoService.createInvestimento(getValues()).then((response) => {
+        console.log("Investment created successfully:", response.data)
+
+        toast({
+          title: "Investimento criado com sucesso!",
+          description: `Investimento foi adicionado.`
+        })
+
+        reset()
+      })
+      .catch((error) => {
+        console.error("Error creating investment:", error)
+      })
+    
     onOpenChange(false)
   }
 
   const handleCancelInvestment = () => {
-    setInvestmentForm({
-      name: "",
-      description: "",
-      initialValue: "",
-    })
+    reset()
     onOpenChange(false)
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
+        <form onSubmit={handleSubmit(handleSaveInvestment)}>
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Adicionar Investimento</DialogTitle>
         </DialogHeader>
@@ -60,9 +71,9 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
             <Input
               id="name"
               placeholder="Ex: Tesouro Selic 2029"
-              value={investmentForm.name}
-              onChange={(e) => handleInvestmentFormChange("name", e.target.value)}
+              {...register("nome")}
             />
+          {errors.nome && <p className="text-sm text-red-600">{errors.nome.message}</p>}
           </div>
 
           <div className="space-y-2">
@@ -71,8 +82,7 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
               id="description"
               placeholder="Descreva o investimento..."
               rows={4}
-              value={investmentForm.description}
-              onChange={(e) => handleInvestmentFormChange("description", e.target.value)}
+              {...register("descricao")}
             />
           </div>
 
@@ -85,10 +95,11 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
                 type="number"
                 placeholder="0.00"
                 className="pl-10"
-                value={investmentForm.initialValue}
-                onChange={(e) => handleInvestmentFormChange("initialValue", e.target.value)}
+                {...register("valorAtual", { valueAsNumber: true })}
               />
+              
             </div>
+            {errors.valorAtual && <p className="text-sm text-red-600">{errors.valorAtual.message}</p>}
           </div>
         </div>
 
@@ -96,10 +107,11 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
           <Button variant="outline" onClick={handleCancelInvestment}>
             Cancelar
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleSaveInvestment}>
+          <Button className="bg-blue-600 hover:bg-blue-700" type="submit">
             Salvar
           </Button>
         </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

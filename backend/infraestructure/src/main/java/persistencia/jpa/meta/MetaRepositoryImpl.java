@@ -36,7 +36,7 @@ public class MetaRepositoryImpl implements MetaRepositorio {
     @Override
     public void salvar(Meta meta) {
         if(repository.findById(meta.getId()).isPresent()) {
-            return;
+            deletarMeta(meta.getId());
         }
 
         repository.save(mapper.map(meta, MetaJpa.class));
