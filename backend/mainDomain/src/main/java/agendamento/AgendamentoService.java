@@ -4,10 +4,7 @@ import conta.Conta;
 import transacao.TransacaoService;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class AgendamentoService {
 
@@ -24,6 +21,29 @@ public class AgendamentoService {
         agRepo.salvar(agendamento);
     }
 
+    public void deletarAgendamento(String id){
+        if(id==null || id.isBlank()){
+            throw new IllegalArgumentException("Id do agendamento obrigatorio");
+        }
+        if(agRepo.obterAgendamento(id).isEmpty()){
+            throw new NoSuchElementException("Agendamento não encontrado: " + id);
+        }
+        else{
+            agRepo.deletarAgendamento(id);
+        }
+    }
+
+    public void atualizarAgendamento(String id){
+        if(id == null || id.isBlank()){
+            throw new IllegalArgumentException("Id do agendamento obrigatorio");
+        }
+        if(agRepo.obterAgendamento(id).isEmpty()){
+            throw new NoSuchElementException("Agendamento não encontrado: " + id);
+        }
+        else{
+            agRepo.atualizarAgendamento(id);
+        }
+    }
 
     public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje) {
         Objects.requireNonNull(agendamento, "Agendamento obrigatório");
@@ -32,6 +52,10 @@ public class AgendamentoService {
             throw new IllegalArgumentException("Data inválida por estar no passado");
         }
         agRepo.salvar(agendamento);
+    }
+
+    public Iterable<Agendamento> buscarTodos(int pageSize){
+        return agRepo.buscarTodos(pageSize);
     }
 
     public Optional<Agendamento> obterAgendamento(String id) {

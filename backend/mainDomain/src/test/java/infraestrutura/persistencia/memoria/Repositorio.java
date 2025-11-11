@@ -117,8 +117,34 @@ public class Repositorio implements
         agendamento.put(a.getId(), a);
     }
 
+    @Override
+    public void deletarAgendamento(String id) {
+        if(agendamento.remove(id)==null){
+            throw new NoSuchElementException("Agendamento não encontrado: " + id);
+        }
+        else{
+            agendamento.remove(id);
+        }
+    }
+
+    @Override
+    public void atualizarAgendamento(String id) {
+        var atual = agendamento.get(id);
+        if(atual == null){
+            throw new NoSuchElementException("Agendamento não encontrado: " + id);
+        }
+        else{
+            agendamento.put(id, atual);
+        }
+    }
+
     public Optional<Agendamento> obterAgendamento(String id) {
         return Optional.ofNullable(agendamento.get(id));
+    }
+
+    @Override
+    public Iterable<Agendamento> buscarTodos(int pageSize) {
+        return agendamento.values().stream().sorted(Comparator.comparing(Agendamento::getProximaData, Comparator.nullsLast((Comparator.naturalOrder())))).toList();
     }
 
     /*-----------------------------------------------------------------------*/
