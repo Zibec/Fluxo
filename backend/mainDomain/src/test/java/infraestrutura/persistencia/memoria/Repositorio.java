@@ -234,6 +234,11 @@ public class Repositorio implements
         return new ArrayList<>(categorias.values());
     }
 
+    @Override
+    public List<Categoria> listarCategoriasPorUsuarioId(String id) {
+        return List.of();
+    }
+
 
 
     /*-----------------------------------------------------------------------*/
