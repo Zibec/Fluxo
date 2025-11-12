@@ -13,6 +13,7 @@ import java.util.List;
 import static org.apache.commons.lang3.Validate.notNull;
 
 public class InvestimentoService {
+    // implementa a interface observador que irá se registrar como observador do evento de atualização de taxa selic 
     private final InvestimentoRepositorio investimentoRepositorio;
     private final HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio;
     private final TaxaSelicRepository taxaSelicRepository;

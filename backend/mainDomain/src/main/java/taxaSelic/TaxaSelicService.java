@@ -5,7 +5,7 @@ import selicApiClient.SelicApiClient;
 import java.math.BigDecimal;
 
 public class TaxaSelicService {
-
+    // Fonte do observador que gera os eventos e possuia lista de observadores
     private SelicApiClient selicApiClient;
     private TaxaSelicRepository taxaSelicRepository;
 
