@@ -9,7 +9,7 @@ import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class Cartao implements FormaPagamento {
+public class Cartao extends FormaPagamento {
     private CartaoId id;
     private CartaoNumero numero;
     private String titular;
@@ -171,6 +171,7 @@ public class Cartao implements FormaPagamento {
         this.usuarioId = usuarioId;
     }
 
+    @Override
     public void realizarTransacao(BigDecimal valor) {
         if (fatura == null) {
             fatura = new Fatura(this, dataVencimentoFatura);

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class Conta implements FormaPagamento {
+public class Conta extends FormaPagamento {
 
     private ContaId id;
     private BigDecimal saldo;
@@ -56,6 +56,7 @@ public class Conta implements FormaPagamento {
         this.usuarioId = usuarioId;
     }
 
+    @Override
     public void realizarTransacao(BigDecimal valor) {
         if (!temSaldoSuficiente(valor)) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar o débito.");
