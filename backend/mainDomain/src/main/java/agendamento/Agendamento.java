@@ -30,6 +30,10 @@ public class Agendamento {
         return perfilId;
     }
 
+    public void setPerfilId(String perfilId) {
+        this.perfilId = perfilId;
+    }
+
     public String getId() { return id; }
     public String getDescricao() { return descricao; }
     public BigDecimal getValor() { return valor; }

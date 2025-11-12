@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -27,9 +28,15 @@ public class AgendamentoRepositoryImpl implements AgendamentoRepositorio {
     }
 
     @Override
-    public void atualizarAgendamento(String id){
-        AgendamentoJpa atual = repository.findById(id).orElseThrow(()-> new NoSuchElementException("Agendamento não existe: " + id));
-        repository.save(atual);
+    public void atualizarAgendamento(String id, BigDecimal valor){
+        var jpa = repository.findById(id).orElseThrow(()-> new NoSuchElementException("Agendamento não existe: " + id));
+        if (valor == null) {
+            throw new IllegalArgumentException("Valor obrigatório");
+        }
+        var dominio = jpa.toDomain();
+        dominio.setValor(valor);
+        repository.save(mapper.map(dominio, AgendamentoJpa.class));
+
     }
 
     @Override

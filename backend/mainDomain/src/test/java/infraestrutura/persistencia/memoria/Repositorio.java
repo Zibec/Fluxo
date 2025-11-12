@@ -34,6 +34,7 @@ import transacao.TransacaoRepositorio;
 import usuario.Usuario;
 import usuario.UsuarioRepositorio;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -128,14 +129,16 @@ public class Repositorio implements
     }
 
     @Override
-    public void atualizarAgendamento(String id) {
+    public void atualizarAgendamento(String id, BigDecimal valor) {
         var atual = agendamento.get(id);
         if(atual == null){
             throw new NoSuchElementException("Agendamento não encontrado: " + id);
         }
-        else{
-            agendamento.put(id, atual);
+        if(valor==null){
+            throw new IllegalArgumentException("Valor Obrigatorio");
         }
+        atual.setValor(valor);
+        agendamento.put(id, atual);
     }
 
     public Optional<Agendamento> obterAgendamento(String id) {

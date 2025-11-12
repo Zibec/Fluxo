@@ -1,5 +1,6 @@
 package agendamento;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 
@@ -9,7 +10,7 @@ public interface AgendamentoRepositorio {
 
     void deletarAgendamento(String id);
 
-    void atualizarAgendamento(String id);
+    void atualizarAgendamento(String id, BigDecimal valor);
 
     Optional<Agendamento> obterAgendamento(String id);
 

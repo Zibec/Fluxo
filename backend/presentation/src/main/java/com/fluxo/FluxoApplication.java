@@ -1,5 +1,7 @@
 package com.fluxo;
 
+import agendamento.AgendamentoRepositorio;
+import agendamento.AgendamentoService;
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import categoria.CategoriaRepositorio;
@@ -69,7 +71,10 @@ public class FluxoApplication {
     public CategoriaService categoriaService(CategoriaRepositorio repositorio, TransacaoRepositorio repositorioTransacao) {
         return new CategoriaService(repositorio, repositorioTransacao);
     }
-
+    @Bean
+    public AgendamentoService agendamentoService(AgendamentoRepositorio agendamentoRepo, TransacaoService transacaoService) {
+        return new AgendamentoService(agendamentoRepo, transacaoService);
+    }
     @Bean
     public OrcamentoService orcamentoService(OrcamentoRepositorio orcamentoRepositorio, TransacaoService transacaoService){
         return new OrcamentoService(orcamentoRepositorio, transacaoService);

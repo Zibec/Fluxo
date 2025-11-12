@@ -3,6 +3,7 @@ package agendamento;
 import conta.Conta;
 import transacao.TransacaoService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -33,16 +34,14 @@ public class AgendamentoService {
         }
     }
 
-    public void atualizarAgendamento(String id){
+    public void atualizarAgendamento(String id, BigDecimal novoValor){
         if(id == null || id.isBlank()){
             throw new IllegalArgumentException("Id do agendamento obrigatorio");
         }
-        if(agRepo.obterAgendamento(id).isEmpty()){
-            throw new NoSuchElementException("Agendamento não encontrado: " + id);
+        if (novoValor == null) {
+            throw new IllegalArgumentException("Valor obrigatório");
         }
-        else{
-            agRepo.atualizarAgendamento(id);
-        }
+        agRepo.atualizarAgendamento(id, novoValor);
     }
 
     public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje) {
