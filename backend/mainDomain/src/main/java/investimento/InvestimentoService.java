@@ -1,5 +1,6 @@
 package investimento;
 
+import generics.Observer;
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import taxaSelic.TaxaSelic;
@@ -12,7 +13,7 @@ import java.util.List;
 
 import static org.apache.commons.lang3.Validate.notNull;
 
-public class InvestimentoService {
+public class InvestimentoService implements Observer {
     // implementa a interface observador que irá se registrar como observador do evento de atualização de taxa selic 
     private final InvestimentoRepositorio investimentoRepositorio;
     private final HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio;
@@ -92,5 +93,14 @@ public class InvestimentoService {
         investimento.resgatarValor(valor);
 
         historicoInvestimentoRepositorio.salvar(new HistoricoInvestimento(investimentoId, investimento.getValorAtual(), LocalDate.now()));
+    }
+
+    @Override
+    public void update() {
+        ArrayList<Investimento> investimentos = obterTodos();
+
+        for (Investimento investimento : investimentos){
+            atualizarRendimento(investimento);
+        }
     }
 }

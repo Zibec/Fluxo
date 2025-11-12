@@ -1,13 +1,17 @@
 package taxaSelic;
 
+import generics.Observer;
 import selicApiClient.SelicApiClient;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class TaxaSelicService {
     // Fonte do observador que gera os eventos e possuia lista de observadores
     private SelicApiClient selicApiClient;
     private TaxaSelicRepository taxaSelicRepository;
+
+    private ArrayList<Observer> observers = new ArrayList<>();
 
     public void atualizarTaxaSelic(){
 
@@ -16,6 +20,8 @@ public class TaxaSelicService {
         TaxaSelic novaTaxaSelic = new TaxaSelic(valor);
 
         taxaSelicRepository.salvar(novaTaxaSelic);
+
+        notifyObservers();
 
     }
 
@@ -30,5 +36,15 @@ public class TaxaSelicService {
 
     public TaxaSelic obterTaxaSelic(){
         return taxaSelicRepository.obterTaxaSelic();
+    }
+
+    public void attach(Observer o){
+        observers.add(o);
+    }
+
+    private void notifyObservers(){
+        for (Observer o : observers){
+            o.update();
+        }
     }
 }
