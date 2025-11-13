@@ -9,13 +9,15 @@ import persistencia.jpa.Mapper;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public class CategoriaRepository implements CategoriaRepositorio {
-    @Autowired
-    private CategoriaJpaRepository repository;
 
-    @Autowired
+public class CategoriaRepository implements CategoriaRepositorio {
+    private CategoriaJpaRepository repository;
     private Mapper mapper;
+
+    public CategoriaRepository(CategoriaJpaRepository repository, Mapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     @Override
     public void salvar(Categoria categoria) {

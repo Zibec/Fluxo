@@ -5,6 +5,7 @@ import agendamento.AgendamentoService;
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import categoria.CategoriaRepositorio;
+import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
@@ -16,6 +17,9 @@ import orcamento.OrcamentoRepositorio;
 import orcamento.OrcamentoService;
 import perfil.PerfilRepository;
 import perfil.PerfilService;
+import persistencia.jpa.Mapper;
+import persistencia.jpa.categoria.CategoriaJpaRepository;
+import persistencia.jpa.categoria.CategoriaRepository;
 import selicApiClient.SelicApiClient;
 import taxaSelic.TaxaSelicRepository;
 import taxaSelic.TaxaSelicService;
@@ -65,6 +69,15 @@ public class FluxoApplication {
     @Bean
     public ContaService contaService(ContaRepositorio repositorio) {
         return new ContaService(repositorio);
+    }
+
+    @Bean
+    public CategoriaRepositorio categoriaRepositorio(CategoriaJpaRepository jpa, Mapper mapper) {
+        // implementação real
+        CategoriaRepositorio real = new CategoriaRepository(jpa, mapper);
+
+        // wrap com o proxy
+        return new CategoriaRepositorioProxy(real);
     }
 
     @Bean
