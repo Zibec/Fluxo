@@ -19,11 +19,13 @@ public class CategoriaRepositorioProxy implements CategoriaRepositorio {
 
     @Override
     public Optional<Categoria> obterCategoriaPorNome(String nome) {
+        System.out.println("[PROXY] obtendo categoria por nome...");
         return real.obterCategoriaPorNome(nome);
     }
 
     @Override
     public Optional<Categoria> obterCategoria(String id) {
+        System.out.println("[PROXY] obtendo categoria por Id...");
         return real.obterCategoria(id);
     }
 
@@ -35,16 +37,19 @@ public class CategoriaRepositorioProxy implements CategoriaRepositorio {
 
     @Override
     public int contagem() {
+        System.out.println("[PROXY] contagem de categorias...");
         return real.contagem();
     }
 
     @Override
     public List<Categoria> listarCategorias() {
+        System.out.println("[PROXY] listando categorias...");
         return real.listarCategorias();
     }
 
     @Override
     public List<Categoria> listarCategoriasPorUsuarioId(String id) {
+        System.out.println("[PROXY] listando categorias por usuario...");
         return real.listarCategoriasPorUsuarioId(id);
     }
 }
