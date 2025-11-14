@@ -34,6 +34,9 @@ public class AgendamentoJpa {
     @Column(name = "valor", nullable = false, precision = 19, scale = 2)
     public BigDecimal valor;
 
+    @Column(name = "categoria_id", nullable = true, length = 160)
+    private String categoriaId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     public Frequencia frequencia;
@@ -42,6 +45,8 @@ public class AgendamentoJpa {
     }
 
     public Agendamento toDomain(){
-        return new Agendamento(id, descricao, valor, frequencia, proximaData,perfilId);
+        Agendamento a=  new Agendamento(id, descricao, valor, frequencia, proximaData,perfilId);
+        a.setCategoriaId(categoriaId);
+        return a;
     }
 }

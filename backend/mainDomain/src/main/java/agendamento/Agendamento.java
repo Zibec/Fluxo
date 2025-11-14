@@ -14,6 +14,7 @@ public class Agendamento {
     private final Frequencia frequencia;
     private LocalDate proximaData;
     private boolean ativo = true;
+    private String categoriaId;
 
     private String perfilId;
     public Agendamento(String id, String descricao, BigDecimal valor, Frequencia frequencia, LocalDate proximaData, String perfilId) {
@@ -32,6 +33,14 @@ public class Agendamento {
 
     public void setPerfilId(String perfilId) {
         this.perfilId = perfilId;
+    }
+
+    public String getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(String categoriaId) {
+        this.categoriaId = categoriaId;
     }
 
     public String getId() { return id; }

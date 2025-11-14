@@ -4,6 +4,7 @@ package com.fluxo.controllers.agendamento;
 import agendamento.Agendamento;
 import agendamento.AgendamentoService;
 import agendamento.Frequencia;
+import categoria.CategoriaService;
 import com.fluxo.config.security.SecurityFilter;
 import com.fluxo.config.security.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,9 @@ public class AgendamentoController {
 
     @Autowired
     private AgendamentoService service;
+
+    @Autowired
+    private CategoriaService categoriaService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -66,11 +70,9 @@ public class AgendamentoController {
             String valorStr = body.get("valor");
             String freqStr  = body.get("frequencia");
             String dataStr  = body.get("proximaData");
+            String categoriaId = body.get("categoriaId");
 
-            if (descricao == null || descricao.isBlank()
-                    || valorStr == null || valorStr.isBlank()
-                    || freqStr == null || freqStr.isBlank()
-                    || dataStr == null || dataStr.isBlank()) {
+            if (descricao == null || descricao.isBlank() || valorStr == null || valorStr.isBlank() || freqStr == null || freqStr.isBlank() || dataStr == null || dataStr.isBlank()) {
                 return ResponseEntity.badRequest().build();
             }
 
@@ -103,6 +105,14 @@ public class AgendamentoController {
                     proximaData,
                     usuario.getId()
             );
+
+            if (categoriaId != null && !categoriaId.isBlank()) {
+                var catOpt = categoriaService.obterCategoria(categoriaId);
+                if (catOpt.isEmpty() || !catOpt.get().getUsuarioId().equals(usuario.getId())) {
+                    return ResponseEntity.notFound().build();
+                }
+                novo.setCategoriaId(categoriaId);
+            }
 
             service.salvarValidandoNaoNoPassado(novo, LocalDate.now());
             return ResponseEntity.status(201).build();
