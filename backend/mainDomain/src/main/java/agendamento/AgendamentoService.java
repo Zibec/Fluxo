@@ -57,6 +57,10 @@ public class AgendamentoService {
         return agRepo.buscarTodos(pageSize);
     }
 
+    public Iterable<Agendamento> buscarTodosPorPerfilId(String id, int pageSize){
+        return agRepo.buscarTodosPorPerfilId(id, pageSize);
+    }
+
     public Optional<Agendamento> obterAgendamento(String id) {
         return agRepo.obterAgendamento(id);
     }

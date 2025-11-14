@@ -28,6 +28,11 @@ public class AgendamentoRepositoryImpl implements AgendamentoRepositorio {
     }
 
     @Override
+    public Iterable<Agendamento> buscarTodosPorPerfilId(String perfilId, int pageSize) {
+        return new AgendamentosIterable(repository, pageSize);
+    }
+
+    @Override
     public void atualizarAgendamento(String id, BigDecimal valor){
         var jpa = repository.findById(id).orElseThrow(()-> new NoSuchElementException("Agendamento não existe: " + id));
         if (valor == null) {

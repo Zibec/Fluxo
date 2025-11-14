@@ -40,12 +40,16 @@ public class AgendamentoController {
     private SecurityFilter securityFilter;
 
     @GetMapping("/todos")
-    public Iterable<Agendamento> buscarTodos(@RequestParam(name = "pageSize", required = false) Integer pageSize){
+    public Iterable<Agendamento> buscarTodos(@RequestParam(name = "pageSize", required = false) Integer pageSize, HttpServletRequest request){
+        String token   = securityFilter.recoverToken(request);
+        String name    = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+ 
         int pS=100;
         if(pageSize != null && pageSize > 0){
             pS = pageSize;
         }
-        return service.buscarTodos(pS);
+        return service.buscarTodosPorPerfilId(usuario.getId(), pS);
     }
 
     @GetMapping("/{id}")

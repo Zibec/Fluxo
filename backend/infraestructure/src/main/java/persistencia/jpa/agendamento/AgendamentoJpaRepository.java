@@ -1,5 +1,7 @@
 package persistencia.jpa.agendamento;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -10,4 +12,5 @@ public interface AgendamentoJpaRepository extends JpaRepository<AgendamentoJpa, 
 
     List<AgendamentoJpa> findByAtivoTrueAndProximaDataLessThanEqual(LocalDate data);
 
+    Page<AgendamentoJpa> findAllByPerfilId(String perfilId, Pageable pageable);
 }

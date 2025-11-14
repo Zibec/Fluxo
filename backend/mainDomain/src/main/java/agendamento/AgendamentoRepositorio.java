@@ -15,4 +15,6 @@ public interface AgendamentoRepositorio {
     Optional<Agendamento> obterAgendamento(String id);
 
     Iterable<Agendamento> buscarTodos(int pageSize);
+
+    Iterable<Agendamento> buscarTodosPorPerfilId(String perfilId, int pageSize);
 }

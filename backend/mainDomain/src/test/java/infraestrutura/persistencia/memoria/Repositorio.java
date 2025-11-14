@@ -150,6 +150,11 @@ public class Repositorio implements
         return agendamento.values().stream().sorted(Comparator.comparing(Agendamento::getProximaData, Comparator.nullsLast((Comparator.naturalOrder())))).toList();
     }
 
+    @Override
+    public Iterable<Agendamento> buscarTodosPorPerfilId(String perfilId, int pageSize) {
+        return null;
+    }
+
     /*-----------------------------------------------------------------------*/
     // Cartao
     /*-----------------------------------------------------------------------*/

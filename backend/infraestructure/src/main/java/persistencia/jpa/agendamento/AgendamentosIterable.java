@@ -8,14 +8,27 @@ public class AgendamentosIterable implements Iterable<Agendamento> {
 
     private final AgendamentoJpaRepository agRepo;
     private final int pageSize;
+    private final String perfilId;
 
     public AgendamentosIterable(AgendamentoJpaRepository agRepo, int pageSize) {
         this.agRepo = agRepo;
         this.pageSize = pageSize;
+        this.perfilId = null;
+    }
+
+    public AgendamentosIterable(AgendamentoJpaRepository agRepo, String perfilId, int pageSize) {
+        this.agRepo = agRepo;
+        this.pageSize = pageSize;
+        this.perfilId = perfilId;
     }
 
     @Override
     public Iterator<Agendamento> iterator() {
-        return new PagedAgendamentoIterator(agRepo, pageSize);
+        if(perfilId == null){
+            return new PagedAgendamentoIterator(agRepo, pageSize);
+        }
+
+        return new PagedAgendamentoIterator(agRepo, perfilId, pageSize);
+
     }
 }

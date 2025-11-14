@@ -12,6 +12,7 @@ final class PagedAgendamentoIterator implements Iterator<Agendamento> {
     private final AgendamentoJpaRepository agRepo;
     private final int pageSize;
     private Page<AgendamentoJpa> page;
+    private String perfilId;
     private int index = 0;
 
     public PagedAgendamentoIterator(AgendamentoJpaRepository agRepo, int pageSize) {
@@ -20,6 +21,15 @@ final class PagedAgendamentoIterator implements Iterator<Agendamento> {
         var pageable = PageRequest.of(0, pageSize, Sort.by("proximaData"));
         this.page = agRepo.findAll(pageable);
     }
+
+    public PagedAgendamentoIterator(AgendamentoJpaRepository agRepo, String perfilId, int pageSize) {
+        this.agRepo = agRepo;
+        this.pageSize = pageSize;
+        var pageable = PageRequest.of(0, pageSize, Sort.by("proximaData"));
+        this.page = agRepo.findAllByPerfilId(perfilId, pageable);
+        this.perfilId = perfilId;
+    }
+
 
     @Override
     public boolean hasNext(){
