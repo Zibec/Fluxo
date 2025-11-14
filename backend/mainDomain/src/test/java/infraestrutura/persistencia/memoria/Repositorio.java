@@ -430,6 +430,10 @@ public class Repositorio implements
         metasInversas.clear();
     }
 
+    public List<MetaInversa> obterMetaInversaPorUsuario(String usuarioId) {
+        return List.of();
+    }
+
     /*-----------------------------------------------------------------------*/
     // Orçamento
     /*-----------------------------------------------------------------------*/

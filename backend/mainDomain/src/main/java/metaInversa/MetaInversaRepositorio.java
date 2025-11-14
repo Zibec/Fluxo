@@ -1,6 +1,7 @@
 package metaInversa;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,6 +14,8 @@ public interface MetaInversaRepositorio {
     Optional<MetaInversa> obterMetaInversa(String metaId);
 
     Optional<MetaInversa> obterMetaInversaPorNome(String nomeMeta);
+
+    List<MetaInversa> obterMetaInversaPorUsuario(String usuarioId);
 
     void deletarMetaInversa(String metaId);
 
