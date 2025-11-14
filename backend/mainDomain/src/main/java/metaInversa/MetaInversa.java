@@ -15,6 +15,8 @@ public class MetaInversa {
     private LocalDate dataLimite;
     private MetaInversaStatus status;
 
+    private String usuarioId;
+
     public MetaInversa(String id, String nome, BigDecimal valorDivida, String contaAssociada, LocalDate dataLimite) {
         this.id = id;
         this.nome = nome;
@@ -54,9 +56,16 @@ public class MetaInversa {
         return valorAcumulado.divide(valorDivida, 2, RoundingMode.HALF_UP);
     }
 
-    // Getters
     public String getId() {
         return id;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public BigDecimal getValorDivida() {

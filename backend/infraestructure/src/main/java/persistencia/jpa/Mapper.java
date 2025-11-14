@@ -153,8 +153,10 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<MetaInversaJpa, MetaInversa>() {
             @Override
             protected MetaInversa convert(MetaInversaJpa source) {
-                return new MetaInversa(source.id, source.nome, source.valorDivida, source.contaAssociadaId,
+                var meta = new MetaInversa(source.id, source.nome, source.valorDivida, source.contaAssociadaId,
                         source.dataLimite, source.valorAcumulado, source.status);
+                meta.setUsuarioId(source.usuarioId);
+                return meta;
             }
         });
 
@@ -324,6 +326,7 @@ public class Mapper extends ModelMapper {
                 jpa.dataLimite = source.getDataLimite();
                 jpa.valorAcumulado = source.getValorAmortizado();
                 jpa.status = source.getStatus();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
             }
         });

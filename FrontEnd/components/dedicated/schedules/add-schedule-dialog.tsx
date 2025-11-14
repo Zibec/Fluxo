@@ -12,16 +12,9 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-
-interface ScheduleForm {
-  title: string
-  value: string
-  startDate: Date | undefined
-  category: string
-  profile: string
-  paymentMethod: string
-  recurring: boolean
-}
+import { AgendamentoFormSchema, createAgendamentoFormData } from "@/lib/service/agendamentos/agendamento-schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 
 interface AddScheduleDialogProps {
   open: boolean
@@ -29,48 +22,27 @@ interface AddScheduleDialogProps {
 }
 
 export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps) {
-  const [scheduleForm, setScheduleForm] = useState<ScheduleForm>({
-    title: "",
-    value: "",
-    startDate: undefined,
-    category: "",
-    profile: "",
-    paymentMethod: "",
-    recurring: false,
-  })
+  const {
+          register,
+          handleSubmit,
+          watch,
+          getValues,
+          setValue
+          reset,
+          formState: { errors }
+      } = useForm<createAgendamentoFormData>({
+          resolver: zodResolver(AgendamentoFormSchema)
+        })
+
 
   const categories = ["Comida", "Transporte", "Lazer", "Saúde", "Educação", "Moradia", "Outros"]
   const profiles = ["Pessoal", "Trabalho", "Família", "Investimentos"]
-  const paymentMethods = ["Dinheiro", "Cartão de Crédito", "Cartão de Débito", "PIX", "Transferência Bancária"]
-
-  const handleFormChange = (field: string, value: string | Date | boolean | undefined) => {
-    setScheduleForm((prev) => ({ ...prev, [field]: value }))
-  }
 
   const handleSave = () => {
-    console.log("[v0] Saving schedule:", scheduleForm)
-    setScheduleForm({
-      title: "",
-      value: "",
-      startDate: undefined,
-      category: "",
-      profile: "",
-      paymentMethod: "",
-      recurring: false,
-    })
     onOpenChange(false)
   }
 
   const handleCancel = () => {
-    setScheduleForm({
-      title: "",
-      value: "",
-      startDate: undefined,
-      category: "",
-      profile: "",
-      paymentMethod: "",
-      recurring: false,
-    })
     onOpenChange(false)
   }
 
@@ -80,14 +52,14 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Transação Recorrente</DialogTitle>
         </DialogHeader>
+        <form onSubmit={handleSubmit(handleSave)}>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="title">Título da Transação</Label>
             <Input
               id="title"
               placeholder="Ex: Aluguel"
-              value={scheduleForm.title}
-              onChange={(e) => handleFormChange("title", e.target.value)}
+              {...register("descricao")}
             />
           </div>
 
@@ -100,20 +72,19 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
                 type="number"
                 placeholder="0.00"
                 className="pl-10"
-                value={scheduleForm.value}
-                onChange={(e) => handleFormChange("value", e.target.value)}
+                {...register("valor", { valueAsNumber: true })}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label>Data de início</Label>
+            <Label>Data Recorrente</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {scheduleForm.startDate ? (
-                    format(scheduleForm.startDate, "dd/MM/yyyy", { locale: ptBR })
+                  {watch("proximaData") ? (
+                    format(watch("proximaData"), "yyyy-MM-dd", { locale: ptBR })
                   ) : (
                     <span className="text-neutral-500">Selecione uma data</span>
                   )}
@@ -122,9 +93,8 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={scheduleForm.startDate}
-                  onSelect={(date) => handleFormChange("startDate", date)}
-                  initialFocus
+                  selected={watch("proximaData")}
+                  onSelect={(date) => setValue("proximaData", date)}
                 />
               </PopoverContent>
             </Popover>
@@ -148,7 +118,9 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
 
           <div className="space-y-2">
             <Label htmlFor="profile">Perfil</Label>
-            <Select value={scheduleForm.profile} onValueChange={(value) => handleFormChange("profile", value)}>
+            <input id="perfilId" hidden {...register("perfilId")} />
+
+            <Select>
               <SelectTrigger id="profile">
                 <SelectValue placeholder="Selecione um perfil" />
               </SelectTrigger>
@@ -164,19 +136,19 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
 
           <div className="space-y-2">
             <Label htmlFor="paymentMethod">Forma de pagamento</Label>
+            
             <Select
-              value={scheduleForm.paymentMethod}
-              onValueChange={(value) => handleFormChange("paymentMethod", value)}
+              
             >
               <SelectTrigger id="paymentMethod">
                 <SelectValue placeholder="Selecione uma forma de pagamento" />
               </SelectTrigger>
               <SelectContent>
-                {paymentMethods.map((method) => (
+                {/*paymentMethods.map((method) => (
                   <SelectItem key={method} value={method}>
                     {method}
                   </SelectItem>
-                ))}
+                ))*/}
               </SelectContent>
             </Select>
           </div>
@@ -184,8 +156,6 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
           <div className="flex items-center space-x-2">
             <Checkbox
               id="recurring"
-              checked={scheduleForm.recurring}
-              onCheckedChange={(checked) => handleFormChange("recurring", checked as boolean)}
             />
             <Label htmlFor="recurring" className="text-sm font-normal cursor-pointer">
               Recorrente
@@ -197,10 +167,11 @@ export function AddScheduleDialog({ open, onOpenChange }: AddScheduleDialogProps
           <Button variant="outline" onClick={handleCancel}>
             Cancelar
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700" onClick={handleSave}>
+          <Button className="bg-blue-600 hover:bg-blue-700" type="submit">
             Salvar
           </Button>
         </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

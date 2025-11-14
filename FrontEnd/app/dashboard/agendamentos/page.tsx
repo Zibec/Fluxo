@@ -1,33 +1,41 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { PageHeader } from "@/components/dedicated/accounts/page-header"
 import { ScheduleCard } from "@/components/dedicated/schedules/schedule-card"
 import { AddScheduleDialog } from "@/components/dedicated/schedules/add-schedule-dialog"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
+import { createAgendamentoFormData } from "@/lib/service/agendamentos/agendamento-schema"
+import { agendamentoService } from "@/lib/service/agendamentos/agendamento-service"
+import { useForm } from "react-hook-form"
 
 export default function AgendamentosPage() {
-  const [balance] = useState(12500.0)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
-  const [schedules, setSchedules] = useState([
-    { id: 1, title: "Aluguel", value: 1500.0, nextDate: "05/11/2025" },
-    { id: 2, title: "Netflix", value: 55.9, nextDate: "10/11/2025" },
-    { id: 3, title: "Conta de Luz", value: 180.0, nextDate: "15/11/2025" },
-  ])
+  const [schedules, setSchedules] = useState<createAgendamentoFormData[]>([])
+
+  useEffect(() => {
+    const fetchSchedules = async () => {
+      agendamentoService.getAllAgendamentos().then((data) => {
+        setSchedules(data)
+      })
+    }
+
+    fetchSchedules()
+  }, []) 
 
   const handleEdit = (id: number) => {
-    console.log("[v0] Edit schedule:", id)
+    
   }
 
   const handleDelete = (id: number) => {
-    console.log("[v0] Delete schedule:", id)
+    
     setSchedules(schedules.filter((schedule) => schedule.id !== id))
   }
 
   const handleAddSchedule = () => {
-    console.log("[v0] Add new schedule")
+
     setIsAddDialogOpen(true)
   }
 
@@ -68,9 +76,9 @@ export default function AgendamentosPage() {
           {schedules.map((schedule) => (
             <ScheduleCard
               key={schedule.id}
-              title={schedule.title}
-              value={schedule.value}
-              nextDate={schedule.nextDate}
+              title={schedule.descricao}
+              value={schedule.valor}
+              nextDate={schedule.proximaData.toString()}
               onEdit={() => handleEdit(schedule.id)}
               onDelete={() => handleDelete(schedule.id)}
             />

@@ -1,4 +1,5 @@
 import { api } from "@/lib/axios";
+import { createCategoriaFormData } from "./categoria-schemas";
 
 class CategoriaService {
     async getAllCategorias() {
@@ -11,12 +12,12 @@ class CategoriaService {
         return response.data;
     }
 
-    async createCategoria(data: { nome: string }) {
+    async createCategoria(data: createCategoriaFormData) {
         const response = await api.post('/categoria', data);
         return response.data;
     }
 
-    async updateCategoria(id: string, data: { id: string; nome: string }) {
+    async updateCategoria(id: string, data: createCategoriaFormData) {
         const response = await api.put(`/categoria/${id}`, data);
         return response.data;
     }

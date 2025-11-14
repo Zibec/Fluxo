@@ -14,6 +14,8 @@ public class MetaInversaJpa {
     @Id
     public String id;
 
+    public String usuarioId;
+
     @Enumerated(EnumType.STRING)
     public MetaInversaStatus status;
 
