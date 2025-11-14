@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import conta.Conta;
 
 public class MetaInversa {
-    private final String id;
+    private String id;
     private String nome;
     private BigDecimal valorDivida;
     private BigDecimal valorAcumulado;
@@ -94,6 +94,18 @@ public class MetaInversa {
 
     public void setNome (String nome) {
         this.nome = nome;
+    }
+
+    public void setContaAssociada(String id) {
+        this.contaAssociadaId = id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setValorAmortizado(BigDecimal valor) {
+        this.valorAcumulado = valor;
     }
 
 }

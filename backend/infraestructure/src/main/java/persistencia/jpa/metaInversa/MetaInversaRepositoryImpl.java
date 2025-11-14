@@ -4,8 +4,10 @@ import metaInversa.MetaInversa;
 import metaInversa.MetaInversaRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import persistencia.jpa.Mapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -44,4 +46,11 @@ public class MetaInversaRepositoryImpl implements MetaInversaRepositorio {
     public void limparMetaInversa() {
         repository.deleteAll();
     }
+
+    @Override
+    public List<MetaInversa> obterMetaInversaPorUsuario(String usuarioId) {
+        var jpa = repository.findAllByUsuarioId(usuarioId);
+        return mapper.map(jpa, List.class);
+    }
+
 }
