@@ -1,14 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { createDividaFormData } from "@/lib/service/dividas/divida-schema"
 import Link from "next/link"
 
-interface Debt {
-  name: string
-  paid: number
-  total: number
-}
-
 interface DebtSectionProps {
-  debts: Debt[]
+  debts: createDividaFormData[]
 }
 
 export function DebtSection({ debts }: DebtSectionProps) {
@@ -36,18 +31,18 @@ export function DebtSection({ debts }: DebtSectionProps) {
 
       <CardContent className="space-y-4">
         {debts.map((debt) => (
-          <div key={debt.name} className="space-y-1">
+          <div key={debt.nome} className="space-y-1">
             <p
               className="text-sm font-medium"
               style={{ color: "var(--muted-foreground)" }}
             >
-              {debt.name}
+              {debt.nome}
             </p>
             <p
               className="text-sm"
               style={{ color: "var(--muted-foreground)" }}
             >
-              Pago R$ {debt.paid} de R$ {debt.total}
+              Pago R$ {debt.valorAcumulado} de R$ {debt.valorAcumulado}
             </p>
           </div>
         ))}
