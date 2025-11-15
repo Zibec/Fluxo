@@ -3,8 +3,8 @@ package metaInversa;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.UUID;
 
-import conta.Conta;
 
 public class MetaInversa {
     private String id;
@@ -16,6 +16,11 @@ public class MetaInversa {
     private MetaInversaStatus status;
 
     private String usuarioId;
+
+    public MetaInversa() {
+        this.id = UUID.randomUUID().toString();
+        this.valorAcumulado = BigDecimal.ZERO;
+    }
 
     public MetaInversa(String id, String nome, BigDecimal valorDivida, String contaAssociada, LocalDate dataLimite) {
         this.id = id;
@@ -31,7 +36,7 @@ public class MetaInversa {
         this.id = id;
         this.nome = nome;
         this.valorDivida = valorDivida;
-        this.contaAssociadaId = contaAssociada;
+        this.contaAssociadaId = contaAssociada; 
         this.dataLimite = dataLimite;
         this.valorAcumulado = valorAcumulado;
         this.status = status;
@@ -53,6 +58,9 @@ public class MetaInversa {
     }
 
     public BigDecimal getProgresso() {
+        if (valorDivida == null || valorAcumulado == null || valorDivida.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
         return valorAcumulado.divide(valorDivida, 2, RoundingMode.HALF_UP);
     }
 

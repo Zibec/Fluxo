@@ -55,9 +55,8 @@ public class Transacao {
         this.perfilId = perfilId;
     }
 
-    public String getPerfilId() {
-        return perfilId;
-    }
+    public String getPerfilId() { return perfilId; }
+    public void setPerfilId(String perfilId) { this.perfilId = perfilId; }
     public String getId() { return id; }
     public String getOrigemAgendamentoId() { return origemAgendamentoId; }
     public String getDescricao() { return descricao; }
