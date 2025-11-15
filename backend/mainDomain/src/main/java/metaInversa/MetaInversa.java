@@ -5,8 +5,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import conta.Conta;
-
 public class MetaInversa {
     private String id;
     private String nome;
@@ -70,6 +68,9 @@ public class MetaInversa {
     }
 
     public BigDecimal getProgresso() {
+        if (valorDivida == null || valorAcumulado == null || valorDivida.compareTo(BigDecimal.ZERO) == 0) {
+            return BigDecimal.ZERO;
+        }
         return valorAcumulado.divide(valorDivida, 2, RoundingMode.HALF_UP);
     }
 

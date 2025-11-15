@@ -126,8 +126,8 @@ public class FluxoApplication {
     }
 
     @Bean
-    public MetaInversaService metaInversaService(MetaInversaRepositorio metaRepositorio, ContaRepositorio contaRepositorio) {
-        return new MetaInversaService(metaRepositorio, contaRepositorio);
+    public MetaInversaService metaInversaService(MetaInversaRepositorio metaInversaRepositorio, ContaRepositorio contaRepositorio){
+        return new MetaInversaService(metaInversaRepositorio, contaRepositorio);
     }
 
     public static void main(String[] args) {

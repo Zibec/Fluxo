@@ -8,7 +8,11 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "META_INVERSA")
+@Table(name = "META_INVERSA",
+        uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"usuarioId", "nome"})
+        })
+
 public class MetaInversaJpa {
 
     @Id
