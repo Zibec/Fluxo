@@ -42,7 +42,7 @@ public class MetaInversaController {
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
-        meta.setContaAssociada(usuario.getId());
+        meta.setUsuarioId(usuario.getId());
         metaInversaService.salvar(meta);
         return ResponseEntity.ok().build();
     }
@@ -87,8 +87,8 @@ public class MetaInversaController {
 
         metaInversaService.deletar(id);
 
-        novaMeta.setContaAssociada(usuario.getId());
-        novaMeta.setId(usuario.getId());
+        novaMeta.setUsuarioId(usuario.getId());
+        novaMeta.setId(id);
         novaMeta.setValorAmortizado(novaMeta.getValorAmortizado());
         metaInversaService.salvar(novaMeta);
 

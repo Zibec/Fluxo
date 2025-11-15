@@ -13,6 +13,8 @@ import investimento.InvestimentoRepositorio;
 import investimento.InvestimentoService;
 import meta.MetaRepositorio;
 import meta.MetaService;
+import metaInversa.MetaInversaRepositorio;
+import metaInversa.MetaInversaService;
 import orcamento.OrcamentoRepositorio;
 import orcamento.OrcamentoService;
 import perfil.PerfilRepository;
@@ -121,6 +123,11 @@ public class FluxoApplication {
     @Bean
     public HistoricoInvestimentoService historicoInvestimentoService(HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio){
         return new HistoricoInvestimentoService(historicoInvestimentoRepositorio);
+    }
+
+    @Bean
+    public MetaInversaService metaInversaService(MetaInversaRepositorio metaRepositorio, ContaRepositorio contaRepositorio) {
+        return new MetaInversaService(metaRepositorio, contaRepositorio);
     }
 
     public static void main(String[] args) {

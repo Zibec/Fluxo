@@ -16,6 +16,7 @@ import usuario.UsuarioService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
@@ -65,7 +66,6 @@ public class AgendamentoController {
     @PostMapping("/criar")
     public ResponseEntity<Void> salvarAgendamento(@RequestBody Map<String,String> body, HttpServletRequest request) {
         try {
-
             String token   = securityFilter.recoverToken(request);
             String name    = tokenService.extractUsername(token);
             Usuario usuario = usuarioService.obterPorNome(name);
@@ -77,6 +77,7 @@ public class AgendamentoController {
             String categoriaId = body.get("categoriaId");
 
             if (descricao == null || descricao.isBlank() || valorStr == null || valorStr.isBlank() || freqStr == null || freqStr.isBlank() || dataStr == null || dataStr.isBlank()) {
+                System.out.println("Erro");
                 return ResponseEntity.badRequest().build();
             }
 
@@ -86,17 +87,20 @@ public class AgendamentoController {
             try {
                 frequencia = Frequencia.valueOf(freqStr.trim().toUpperCase());
             } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
                 return ResponseEntity.badRequest().build();
             }
 
             LocalDate proximaData;
             try {
-                proximaData = LocalDate.parse(dataStr);
+                proximaData = LocalDate.parse(dataStr.split("T")[0]);
+                System.out.println(proximaData);
             } catch (DateTimeParseException e1) {
                 try {
                     var fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                     proximaData = LocalDate.parse(dataStr, fmt);
                 } catch (DateTimeParseException e2) {
+                    System.out.println(e2.getMessage());
                     return ResponseEntity.badRequest().build();
                 }
             }
@@ -122,8 +126,10 @@ public class AgendamentoController {
             return ResponseEntity.status(201).build();
 
         } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(409).build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
