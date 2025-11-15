@@ -22,13 +22,14 @@ import { perfilService } from "@/lib/service/perfil/perfil-service"
 import { agendamentoService } from "@/lib/service/agendamentos/agendamento-service"
 import { useToast } from "@/hooks/use-toast"
 
-interface AddScheduleDialogProps {
+interface EditScheduleDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   setSchedules: React.Dispatch<React.SetStateAction<createAgendamentoFormData[]>>
+  schedule?: createAgendamentoFormData
 }
 
-export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddScheduleDialogProps) {
+export function EditScheduleDialog({ open, onOpenChange, setSchedules, schedule }: EditScheduleDialogProps) {
   const {
           register,
           handleSubmit,
@@ -49,6 +50,12 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
   const { toast } = useToast()
 
   useEffect(() => {
+    if (schedule) {
+      reset(schedule)
+    }
+  }, [schedule, reset])
+
+  useEffect(() => {
     const fetchProfiles = async () => {
       perfilService.getAllPerfis().then((data) => {
         setProfiles(data)
@@ -59,13 +66,13 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
   }, [])
 
   const handleSave = () => {
-    agendamentoService.createAgendamento(getValues()).then(() => {
+    agendamentoService.updateAgendamento(schedule.id, getValues()).then(() => {
       console.log(getValues())
       reset()
 
       toast({
-        title: "Agendamento criado",
-        description: "O agendamento foi criado com sucesso.",
+        title: "Agendamento atualizado",
+        description: "O agendamento foi atualizado com sucesso.",
       })
 
       agendamentoService.getAllAgendamentos().then((data) => {
@@ -74,8 +81,8 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
     }).catch(() => {
       console.log(getValues())
       toast({
-        title: "Erro ao criar agendamento",
-        description: "Ocorreu um erro ao criar o agendamento. Tente novamente."
+        title: "Erro ao atualizar agendamento",
+        description: "Ocorreu um erro ao atualizar o agendamento. Tente novamente."
       })
     })
 
@@ -112,6 +119,7 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
               <Input
                 id="value"
                 type="number"
+                step="0.01"
                 placeholder="0.00"
                 className="pl-10"
                 {...register("valor", { valueAsNumber: true })}

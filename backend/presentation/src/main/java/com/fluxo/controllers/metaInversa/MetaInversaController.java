@@ -89,7 +89,7 @@ public class MetaInversaController {
 
         novaMeta.setUsuarioId(usuario.getId());
         novaMeta.setId(id);
-        novaMeta.setValorAmortizado(novaMeta.getValorAmortizado());
+        novaMeta.setValorAmortizado(existente.getValorAmortizado());
         metaInversaService.salvar(novaMeta);
 
         return ResponseEntity.ok().build();

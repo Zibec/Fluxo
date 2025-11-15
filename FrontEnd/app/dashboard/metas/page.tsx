@@ -1,13 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { BudgetsPageHeader } from "@/components/dedicated/budgets/budgets-page-header"
 import { GoalCard } from "@/components/dedicated/goals/goal-card"
 import { EditGoalDialog } from "@/components/dedicated/goals/edit-goal-dialog"
 import { metaService } from "@/lib/service/meta/meta-service"
 import { Button } from "@/components/ui/button"
 import { AddGoalDialog } from "@/components/dedicated/goals/add-goal-dialog"
-import { createMetaFormData } from "@/lib/service/meta/meta-schema"
+import { createMetaFormData, MetaFormSchema } from "@/lib/service/meta/meta-schema"
 import { useToast } from "@/hooks/use-toast"
 import { AddValueGoalDialog } from "@/components/dedicated/goals/add-value-goal-dialog"
 

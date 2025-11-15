@@ -75,6 +75,7 @@ export function AddGoalDialog({ open, onOpenChange, setMeta }: AddGoalDialogProp
                 id="valorAlvo"
                 type="number"
                 placeholder="0.00"
+                step="0.01"
                 className="pl-10"
                 {...register("valorAlvo", { valueAsNumber: true })}
               />

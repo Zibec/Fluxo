@@ -1,19 +1,23 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { PageHeader } from "@/components/dedicated/accounts/page-header"
 import { ScheduleCard } from "@/components/dedicated/schedules/schedule-card"
 import { AddScheduleDialog } from "@/components/dedicated/schedules/add-schedule-dialog"
+import { EditScheduleDialog } from "@/components/dedicated/schedules/edit-schedule-dialog"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { createAgendamentoFormData } from "@/lib/service/agendamentos/agendamento-schema"
 import { agendamentoService } from "@/lib/service/agendamentos/agendamento-service"
-import { useForm } from "react-hook-form"
+import { useToast } from "@/hooks/use-toast"
 
 export default function AgendamentosPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
   const [schedules, setSchedules] = useState<createAgendamentoFormData[]>([])
+  const [selectedSchedule, setSelectedSchedule] = useState<createAgendamentoFormData>()
+
+  const {toast} = useToast()
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -21,17 +25,27 @@ export default function AgendamentosPage() {
         setSchedules(data)
       })
     }
-
     fetchSchedules()
   }, []) 
 
-  const handleEdit = (id: number) => {
-    
+  const handleEdit = (schedule: createAgendamentoFormData) => {
+    setSelectedSchedule(schedule)
+    setIsEditDialogOpen(true)
   }
 
-  const handleDelete = (id: number) => {
-    
-    setSchedules(schedules.filter((schedule) => schedule.id !== id))
+  const handleDelete = (id: string) => {
+    agendamentoService.deleteAgendamento(id).then(() => {
+      setSchedules(schedules.filter((schedule) => schedule.id !== id))
+      toast({
+        title: "Agendamento deletado",
+        description: "O agendamento foi deletado com sucesso.",
+      })
+    }).catch(() => {
+      toast({
+        title: "Erro ao deletar agendamento",
+        description: "Ocorreu um erro ao deletar o agendamento. Tente novamente."
+      })
+    })
   }
 
   const handleAddSchedule = () => {
@@ -79,7 +93,7 @@ export default function AgendamentosPage() {
               title={schedule.descricao}
               value={schedule.valor}
               nextDate={schedule.proximaData.toString()}
-              onEdit={() => handleEdit(schedule.id)}
+              onEdit={() => handleEdit(schedule)}
               onDelete={() => handleDelete(schedule.id)}
             />
           ))}
@@ -106,6 +120,14 @@ export default function AgendamentosPage() {
       <AddScheduleDialog
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
+        setSchedules={setSchedules}
+      />
+
+      <EditScheduleDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        setSchedules={setSchedules}
+        schedule={selectedSchedule}
       />
     </div>
   )

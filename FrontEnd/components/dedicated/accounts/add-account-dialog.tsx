@@ -77,7 +77,7 @@ export function AddAccountDialog({ open, onOpenChange, setAccounts }: AddAccount
           <div className="space-y-2">
             <Label htmlFor="saldo">Saldo Inicial</Label>
             <div className="relative">
-              <Input type="number"
+              <Input type="number" step="0.01"
                 {...register("saldo", { valueAsNumber: true })}
               />
             </div>
