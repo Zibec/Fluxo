@@ -210,4 +210,8 @@ public class TransacaoService {
         Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
         return repo.obterTransacaoPorId(id);
     }
+
+    public List<Transacao> obterPorConta(String usuarioId) {
+        return repo.obterTransacaoPorConta(usuarioId);
+    }
 }

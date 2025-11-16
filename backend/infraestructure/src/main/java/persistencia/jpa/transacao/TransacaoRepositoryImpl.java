@@ -71,4 +71,10 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
     public void limparTransacao() {
         repositorio.deleteAll();
     }
+
+    @Override
+    public List<Transacao> obterTransacaoPorConta(String usuarioId) {
+        var jpa = repositorio.findAllByUsuarioId(usuarioId);
+        return mapper.map(jpa, List.class);
+    }
 }

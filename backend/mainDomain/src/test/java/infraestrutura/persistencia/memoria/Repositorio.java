@@ -633,6 +633,11 @@ public class Repositorio implements
         idxAgendamentoData.clear();
     }
 
+    public List<Transacao> obterTransacaoPorUsuario(String usuarioId) {
+        return List.of();
+    }
+
+
     /*-----------------------------------------------------------------------*/
     // Usuario
     /*-----------------------------------------------------------------------*/
