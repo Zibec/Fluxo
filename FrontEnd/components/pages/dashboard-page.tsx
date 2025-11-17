@@ -13,6 +13,8 @@ import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schem
 import { AddGoalDialog } from "../dedicated/goals/add-goal-dialog";
 import { AddBudgetDialog } from "../dedicated/budgets/add-budget-dialog";
 import { createMetaFormData } from "@/lib/service/meta/meta-schema";
+import { createDividaFormData } from "@/lib/service/dividas/divida-schema";
+import { dividaService } from "@/lib/service/dividas/divida-service";
 
 const DashboardPage = () => {
   const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false)
@@ -22,11 +24,7 @@ const DashboardPage = () => {
 
   const [budgets, setBudgets] = useState<createOrcamentoFormData[]>([])
 
-  const debts = [
-    { name: "Casas Bahia", paid: 150, total: 1700 },
-    { name: "Cartão de Crédito", paid: 800, total: 2500 },
-    { name: "Empréstimo Pessoal", paid: 3000, total: 10000 },
-  ];
+  const [debts, setDebts] = useState<createDividaFormData[]>([])
 
   const [savings, setSavings] = useState<createMetaFormData[]>([])
 
@@ -36,6 +34,13 @@ const DashboardPage = () => {
       setSavings(await metaService.getAllMetas())
     }
     fetchSavings()
+  }, [])
+
+  useEffect(() => {
+    const fetchDebts = async () => {
+      setDebts(await dividaService.getAllDividas())
+    }
+    fetchDebts()
   }, [])
 
   useEffect(() => {

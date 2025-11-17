@@ -41,7 +41,7 @@ export default function OrcamentosPage() {
             className="mb-6 bg-primary text-primary-foreground hover:bg-primary/90"
             onClick={() => setAddDialogOpen(true)}
           >
-          Adicionar Meta
+          Adicionar Orçamento
         </Button>
         
         <div className="space-y-6">

@@ -5,7 +5,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.UUID;
 
-
 public class MetaInversa {
     private String id;
     private String nome;
@@ -20,6 +19,17 @@ public class MetaInversa {
     public MetaInversa() {
         this.id = UUID.randomUUID().toString();
         this.valorAcumulado = BigDecimal.ZERO;
+        this.status = MetaInversaStatus.ATIVA;
+    }
+
+    public MetaInversa(String nome, BigDecimal valorDivida, String contaAssociada, LocalDate dataLimite) {
+        this.id = UUID.randomUUID().toString();
+        this.nome = nome;
+        this.valorDivida = valorDivida;
+        this.contaAssociadaId = contaAssociada;
+        this.dataLimite = dataLimite;
+        this.valorAcumulado = BigDecimal.ZERO;
+        this.status = MetaInversaStatus.ATIVA;
     }
 
     public MetaInversa(String id, String nome, BigDecimal valorDivida, String contaAssociada, LocalDate dataLimite) {
@@ -36,7 +46,7 @@ public class MetaInversa {
         this.id = id;
         this.nome = nome;
         this.valorDivida = valorDivida;
-        this.contaAssociadaId = contaAssociada; 
+        this.contaAssociadaId = contaAssociada;
         this.dataLimite = dataLimite;
         this.valorAcumulado = valorAcumulado;
         this.status = status;

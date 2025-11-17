@@ -94,6 +94,7 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
                 id="initialValue"
                 type="number"
                 placeholder="0.00"
+                step="0.01"
                 className="pl-10"
                 {...register("valorAtual", { valueAsNumber: true })}
               />

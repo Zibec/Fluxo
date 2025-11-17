@@ -104,6 +104,7 @@ export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: Edi
               id="edit-budget-value"
               type="number"
               placeholder="0.00"
+              step="0.01"
               {...register("limite", { valueAsNumber: true })}
             />
             <p className="text-sm text-red-600">{errors.limite?.message}</p>
