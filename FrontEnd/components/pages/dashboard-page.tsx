@@ -33,7 +33,7 @@ const DashboardPage = () => {
     const fetchSavings = async () => {
       setSavings(await metaService.getAllMetas())
     }
-    fetchSavings()
+    fetchSavings()        
   }, [])
 
   useEffect(() => {

@@ -19,8 +19,16 @@ class MetaService {
     }
 
     async getAllMetas() {
-        const response = await api.get('/metas-poupanca/by-user');
-        return response.data;
+        await api.get('/metas-poupanca/by-user').then(response => {
+            return response.data;
+        }).catch(error => {
+            if (error.response && error.response.status === 404) {
+                return []
+            } 
+
+            throw error
+        })
+        
     }
 
     async getMetaById(id: string) {

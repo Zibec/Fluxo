@@ -57,7 +57,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @PostMapping("/change-email")
+    @PostMapping("/alterar-email")
     public ResponseEntity<Usuario> changeEmail(HttpServletRequest request, @RequestBody Map<String, String> body){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
@@ -72,19 +72,16 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @PostMapping("/change-password")
+    @PostMapping("/alterar-senha")
     public ResponseEntity<Usuario> changePassword(HttpServletRequest request, @RequestBody Map<String, String> body){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = service.obterPorNome(name);
 
-        service.deletar(usuario.getId());
+        String oldPassword = body.get("currentPassword");
+        String newPassword = body.get("newPassword");
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(body.get("newPassword"));
-        usuario.setPassword(encryptedPassword);
-
-        service.salvar(usuario);
-
+        service.changePassword(usuario, oldPassword, newPassword);
         return ResponseEntity.ok(usuario);
     }
 }

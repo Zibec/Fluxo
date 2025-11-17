@@ -189,10 +189,8 @@ public class Mapper extends ModelMapper {
             @Override
             protected Transacao convert(TransacaoJpa source) {
                 FormaPagamentoId pagamentoId = new ContaId(source.pagamentoId);
-                System.out.println(source);
                 var t = new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor,
                         source.data, source.status, source.categoriaId, pagamentoId, source.avulsa, source.tipo, source.perfilId);
-                System.out.println(t.getId());
                 return t;
             }
         });

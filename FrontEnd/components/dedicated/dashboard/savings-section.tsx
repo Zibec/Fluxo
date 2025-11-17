@@ -30,7 +30,7 @@ export function SavingsSection({ savings }: SavingsSectionProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {savings.map((saving) => (
+        {savings && savings.map((saving) => (
           <div key={saving.id} className="space-y-1">
             <p
               className="text-sm font-medium"

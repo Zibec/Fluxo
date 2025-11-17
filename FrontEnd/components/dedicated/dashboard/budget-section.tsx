@@ -34,7 +34,7 @@ export function BudgetSection({ budgets }: BudgetSectionProps) {
       )
       setSpents(response)
     }
-    fetchSpents()
+    budgets &&fetchSpents()
   }, [budgets])
 
   const getCategoriaNameById = (id: string) => {
@@ -65,7 +65,7 @@ export function BudgetSection({ budgets }: BudgetSectionProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {budgets.map((budget, index) => {
+        { budgets && budgets.map((budget, index) => {
           const percentage = spents[index] / budget.limite * 100
           return (
             <div key={budget.categoriaId} className="space-y-2">

@@ -1,5 +1,6 @@
 package persistencia.jpa.usuario;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Repository;
@@ -7,6 +8,7 @@ import persistencia.jpa.Mapper;
 import usuario.Email;
 import usuario.Usuario;
 import usuario.UsuarioRepositorio;
+import usuario.UsuarioService;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,5 +76,17 @@ public class UsuarioRepositoryImpl implements UsuarioRepositorio {
     @Override
     public boolean usernameExistente(String username) {
         return repository.existsByUsername(username);
+    }
+
+    @Override
+    @Transactional
+    public void atualizarUsuario(Usuario usuario) {
+        var oldUsuarioObj = repository.findById(usuario.getId()).orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        oldUsuarioObj.username = usuario.getUsername();
+        oldUsuarioObj.userEmail = usuario.getEmail().getEndereco();
+        oldUsuarioObj.password = usuario.getPassword();
+        oldUsuarioObj.moedaPreferida = usuario.getMoedaPreferida().toString();
+        oldUsuarioObj.formatoDataPreferido = usuario.getFormatoDataPreferido().toString();
     }
 }

@@ -1,5 +1,7 @@
 package usuario;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.Objects;
 
 public class UsuarioService {
@@ -81,16 +83,17 @@ public class UsuarioService {
         } else {
             throw new IllegalArgumentException("Formato de e-mail inválido");
         }
+
+        usuarioRepositorio.atualizarUsuario(usuario);
     }
 
     public void changePassword(Usuario usuario, String oldPassword, String newPassword) {
-        if (!usuario.getPassword().equals(oldPassword)) {
+        BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder ();
+
+        if (!passwordEncoder.matches(oldPassword, usuario.getPassword())) {
             throw new SecurityException("Senha incorreta");
         }
 
-        if(Objects.equals(oldPassword, newPassword)) {
-            throw new IllegalArgumentException("A nova senha deve ser diferente da senha atual");
-        }
-        usuario.setPassword(newPassword);
+        usuario.setPassword(passwordEncoder.encode(newPassword));
     }
 }

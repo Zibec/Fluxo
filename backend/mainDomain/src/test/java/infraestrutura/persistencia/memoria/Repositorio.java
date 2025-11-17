@@ -689,4 +689,9 @@ public class Repositorio implements
         return usuarios.values().stream().anyMatch(u -> u.getUsername().equals(username));
     }
 
+    @Override
+    public void atualizarUsuario(Usuario usuario) {
+
+    }
+
 }

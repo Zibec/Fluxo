@@ -17,11 +17,12 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useToast } from '@/hooks/use-toast'
 import { AlertCircle } from 'lucide-react'
-import { SecurityFormValues, securitySchema } from '@/lib/service/usuario/usuario-schema'
+import { createSecurityFormData, securitySchema } from '@/lib/service/usuario/usuario-schema'
+import { usuarioService } from '@/lib/service/usuario/usuario-service'
 
 export function SecurityForm() {
   const { toast } = useToast()
-  const form = useForm<SecurityFormValues>({
+  const form = useForm<createSecurityFormData>({
     resolver: zodResolver(securitySchema),
     defaultValues: {
       currentPassword: '',
@@ -30,13 +31,14 @@ export function SecurityForm() {
     },
   })
 
-  function onSubmit(data: SecurityFormValues) {
-     
-    toast({
-      title: 'Senha alterada',
-      description: 'Sua senha foi atualizada com sucesso.',
+  async function onSubmit(data: createSecurityFormData) {
+    await usuarioService.alterarSenha(data).then(() => {
+      toast({
+        title: 'Senha alterada',
+        description: 'Sua senha foi atualizada com sucesso.',
+      })
+      form.reset()
     })
-    form.reset()
     console.log(data)
   }
 

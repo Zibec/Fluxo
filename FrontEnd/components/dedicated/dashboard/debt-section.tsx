@@ -30,7 +30,7 @@ export function DebtSection({ debts }: DebtSectionProps) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {debts.map((debt) => (
+        {debts && debts.map((debt) => (
           <div key={debt.nome} className="space-y-1">
             <p
               className="text-sm font-medium"

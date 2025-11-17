@@ -13,11 +13,13 @@ public interface UsuarioRepositorio {
 
     Optional<Usuario> obterUsuarioPorEmail(String contaEmail);
 
-        Optional<Usuario> obterPorNome(String username);
+    Optional<Usuario> obterPorNome(String username);
 
      void deletarUsuario(String id);
 
      boolean emailExistente(String email);
 
      boolean usernameExistente(String username);
+
+     void atualizarUsuario(Usuario usuario);
 }
