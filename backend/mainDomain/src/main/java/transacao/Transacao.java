@@ -70,6 +70,7 @@ public class Transacao {
     public boolean isAvulsa() { return avulsa; }
     public FormaPagamentoId getPagamentoId() { return pagamentoId; }
     public void setCategoriaId(String categoriaId) { this.categoriaId = categoriaId; }
+    public void setPagamentoId(FormaPagamentoId id) { this.pagamentoId = id; }
 
 
     /** Só pode atualizar enquanto PENDENTE */

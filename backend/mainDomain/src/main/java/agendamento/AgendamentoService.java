@@ -1,6 +1,7 @@
 package agendamento;
 
 import conta.Conta;
+import transacao.Transacao;
 import transacao.TransacaoService;
 
 import java.math.BigDecimal;
@@ -22,35 +23,62 @@ public class AgendamentoService {
         agRepo.salvar(agendamento);
     }
 
+    public void salvarComTransacao(Agendamento agendamento, Conta conta) {
+        System.out.println("Passou por aqui");
+        salvar(agendamento);
+        if (agendamento.getProximaData() != null) {
+            System.out.println("Passou por aqui kkkk ");
+             transacaoService.criarPendenteDeAgendamento(
+                    agendamento.getId(),
+                    agendamento.getDescricao(),
+                    agendamento.getValor(),
+                    agendamento.getProximaData(),
+                    conta,
+                    false,
+                    agendamento.getPerfilId()
+            );
+        }
+    }
+
+    public void atualizarComTransacao(Agendamento agendamento, LocalDate hoje){
+        agRepo.atualizarAgendamento(agendamento.getId(), agendamento.getValor());
+
+        Transacao t = transacaoService.listarPorOrigemAgendamentoId(agendamento.getId());
+
+        if (agendamento.getProximaData() != null && agendamento.getProximaData().isBefore(hoje)) {
+            throw new IllegalArgumentException("Data inválida por estar no passado");
+        }
+
+        t.atualizarValor(agendamento.getValor());
+
+        transacaoService.excluirTransacao(t.getId());
+        transacaoService.salvarTransacao(t);
+    }
+
+
     public void deletarAgendamento(String id){
-        if(id==null || id.isBlank()){
+        System.out.println("Passou por aqui");
+        if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id do agendamento obrigatorio");
         }
-        if(agRepo.obterAgendamento(id).isEmpty()){
+        System.out.println("Passou por aqui kkkk ");
+        var opt = agRepo.obterAgendamento(id);
+        if (opt.isEmpty()) {
             throw new NoSuchElementException("Agendamento não encontrado: " + id);
         }
-        else{
-            agRepo.deletarAgendamento(id);
-        }
+        System.out.println("Passou por aqui kkkk olaaa ");
+        transacaoService.excluirPorOrigemAgendamento(id);
+
+        agRepo.deletarAgendamento(id);
     }
 
-    public void atualizarAgendamento(String id, BigDecimal novoValor){
-        if(id == null || id.isBlank()){
-            throw new IllegalArgumentException("Id do agendamento obrigatorio");
-        }
-        if (novoValor == null) {
-            throw new IllegalArgumentException("Valor obrigatório");
-        }
-        agRepo.atualizarAgendamento(id, novoValor);
-    }
-
-    public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje) {
+    public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje, Conta conta) {
         Objects.requireNonNull(agendamento, "Agendamento obrigatório");
         Objects.requireNonNull(hoje, "Hoje obrigatório");
         if (agendamento.getProximaData() != null && agendamento.getProximaData().isBefore(hoje)) {
             throw new IllegalArgumentException("Data inválida por estar no passado");
         }
-        agRepo.salvar(agendamento);
+        salvarComTransacao(agendamento, conta);
     }
 
     public Iterable<Agendamento> buscarTodos(int pageSize){

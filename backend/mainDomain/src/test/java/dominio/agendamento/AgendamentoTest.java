@@ -350,7 +350,7 @@ public class AgendamentoTest {
             LocalDate referenciaHoje = (this.hoje != null ? this.hoje : LocalDate.now());
 
 
-            agService.salvarValidandoNaoNoPassado(ag, referenciaHoje);
+            agService.salvarValidandoNaoNoPassado(ag, referenciaHoje, conta);
 
 
             msgErro = null;

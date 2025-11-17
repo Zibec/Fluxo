@@ -36,10 +36,11 @@ public class TransacaoService {
      * Idempotente por (agendamentoId, data): se já existe, retorna a existente.
      */
     public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data, Conta conta, boolean avulsa, String perfilId) {
-        Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
-        if (existente.isPresent()) {
-            return existente.get(); // idempotência: não duplica
-        }
+        System.out.println("Chegou em transacao aqui");
+//        Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
+//        if (existente.isPresent()) {
+//            return existente.get(); // idempotência: não duplica
+//        }
 
         Transacao t = new Transacao(
                 UUID.randomUUID().toString(),
@@ -195,19 +196,41 @@ public class TransacaoService {
         Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
 
         Transacao removida = transacao.remove(id);
-        if (removida == null) {
-            throw new NoSuchElementException("Transação com ID " + id + " não encontrada para exclusão.");
-        }
 
-        // Remove também do índice auxiliar, se existir
-        if (removida.getOrigemAgendamentoId() != null) {
+        if (removida != null && removida.getOrigemAgendamentoId() != null) {
             idxAgendamentoData.remove(chave(removida.getOrigemAgendamentoId(), removida.getData()));
         }
+
+
         repo.excluirTransacao(id);
+    }
+
+    public void excluirPorOrigemAgendamento(String agendamentoId) {
+        Objects.requireNonNull(agendamentoId, "Id do agendamento não pode ser nulo");
+
+        System.out.println("Passou por excluir origem agendamento ");
+        List<Transacao> ligadas = repo.listarPorOrigemAgendamentoId(agendamentoId);
+
+        for (Transacao t : ligadas) {
+
+//            if (t.getStatus() == StatusTransacao.PENDENTE) {
+//                excluirTransacao(t.getId());
+//            }
+            System.out.println("antes de excluirTransacao ");
+            excluirTransacao(t.getId());
+        }
     }
 
     public Optional<Transacao> obterTransacaoPorId(String id){
         Objects.requireNonNull(id, "O ID da transação não pode ser nulo");
         return repo.obterTransacaoPorId(id);
+    }
+
+    public List<Transacao> obterPorConta(String usuarioId) {
+        return repo.obterTransacaoPorConta(usuarioId);
+    }
+
+    public Transacao listarPorOrigemAgendamentoId(String agendamentoId){
+        return repo.listarPorOrigemAgendamentoId(agendamentoId).getFirst();
     }
 }

@@ -633,6 +633,20 @@ public class Repositorio implements
         idxAgendamentoData.clear();
     }
 
+    @Override
+    public List<Transacao> obterTransacaoPorConta(String usuarioId) {
+        return List.of();
+    }
+
+    public List<Transacao> obterTransacaoPorUsuario(String usuarioId) {
+        return List.of();
+    }
+
+    @Override
+    public List<Transacao> listarPorOrigemAgendamentoId(String agendamentoId) {
+        return List.of();
+    }
+
     /*-----------------------------------------------------------------------*/
     // Usuario
     /*-----------------------------------------------------------------------*/

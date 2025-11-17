@@ -29,4 +29,8 @@ public interface TransacaoRepositorio {
 
     void limparTransacao();
 
+    List<Transacao> obterTransacaoPorConta(String usuarioId);
+
+    List<Transacao> listarPorOrigemAgendamentoId(String agendamentoId);
+
 }
