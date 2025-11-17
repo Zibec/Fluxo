@@ -7,6 +7,7 @@ import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoService;
 import investimento.Investimento;
 import investimento.InvestimentoService;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,11 @@ public class InvestimentoController {
 
     @Autowired
     private SecurityFilter securityFilter;
+
+    @PostConstruct
+    public void initialize() {
+        taxaSelicService.attach(investimentoService);
+    }
 
     @GetMapping("/")
     public ResponseEntity<List<Investimento>> getAllInvestimentos(HttpServletRequest request){

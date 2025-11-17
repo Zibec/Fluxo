@@ -7,6 +7,7 @@ import persistencia.jpa.Mapper;
 import transacao.Transacao;
 import transacao.TransacaoRepositorio;
 
+import java.sql.Array;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -39,8 +40,11 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
 
     @Override
     public List<Transacao> listarTodasTransacoes() {
-        var transacaoJpa = repositorio.findAll();
-        return mapper.map(transacaoJpa, List.class);
+        var transacoesJpa = repositorio.findAll();
+
+        return transacoesJpa.stream()
+                .map(jpa -> mapper.map(jpa, Transacao.class))
+                .toList();
     }
 
     @Override
