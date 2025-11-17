@@ -188,10 +188,12 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<TransacaoJpa, Transacao>() {
             @Override
             protected Transacao convert(TransacaoJpa source) {
-                ContaService contaService = new ContaService(new ContaRepositoryImpl());
                 FormaPagamentoId pagamentoId = new ContaId(source.pagamentoId);
-                return new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor,
+                System.out.println(source);
+                var t = new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor,
                         source.data, source.status, source.categoriaId, pagamentoId, source.avulsa, source.tipo, source.perfilId);
+                System.out.println(t.getId());
+                return t;
             }
         });
 

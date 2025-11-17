@@ -15,7 +15,6 @@ import cartao.CartaoRepositorio;
 import conta.Conta;
 import conta.ContaId;
 import conta.ContaRepositorio;
-import perfil.Perfil;
 
 public class TransacaoService {
     private final TransacaoRepositorio repo;
