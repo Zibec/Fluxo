@@ -151,7 +151,7 @@ public class AgendamentoController {
 
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<Void> atualizarValor(@PathVariable String id, @RequestBody Map<String,String> body) {
-        try {
+
 
             var existenteOpt = service.obterAgendamento(id);
             if (existenteOpt.isEmpty()) {
@@ -163,6 +163,9 @@ public class AgendamentoController {
             if (valorStr == null || valorStr.isBlank()) {
                 return ResponseEntity.badRequest().build();
             }
+            String contaId = body.get("conta_id");
+            Conta conta = contaRepo.obterConta(contaId)
+                    .orElseThrow(() -> new NoSuchElementException("Conta não encontrada"));
             BigDecimal novoValor = new BigDecimal(valorStr.replace(",", "."));
 
             Agendamento atualizado = new Agendamento(
@@ -174,14 +177,9 @@ public class AgendamentoController {
                     existente.getPerfilId()
             );
 
-            service.salvarValidandoNaoNoPassado(atualizado, LocalDate.now());
+            service.atualizarComTransacao(atualizado, LocalDate.now());
             return ResponseEntity.noContent().build();
 
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(409).build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @DeleteMapping("/deletar/{id}")

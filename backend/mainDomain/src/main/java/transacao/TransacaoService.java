@@ -208,14 +208,15 @@ public class TransacaoService {
     public void excluirPorOrigemAgendamento(String agendamentoId) {
         Objects.requireNonNull(agendamentoId, "Id do agendamento não pode ser nulo");
 
+        System.out.println("Passou por excluir origem agendamento ");
         List<Transacao> ligadas = repo.listarPorOrigemAgendamentoId(agendamentoId);
 
         for (Transacao t : ligadas) {
 
-            if (t.getStatus() == StatusTransacao.PENDENTE) {
-                excluirTransacao(t.getId());
-            }
-
+//            if (t.getStatus() == StatusTransacao.PENDENTE) {
+//                excluirTransacao(t.getId());
+//            }
+            System.out.println("antes de excluirTransacao ");
             excluirTransacao(t.getId());
         }
     }
@@ -227,5 +228,9 @@ public class TransacaoService {
 
     public List<Transacao> obterPorConta(String usuarioId) {
         return repo.obterTransacaoPorConta(usuarioId);
+    }
+
+    public Transacao listarPorOrigemAgendamentoId(String agendamentoId){
+        return repo.listarPorOrigemAgendamentoId(agendamentoId).getFirst();
     }
 }

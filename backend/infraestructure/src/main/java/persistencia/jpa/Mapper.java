@@ -189,9 +189,7 @@ public class Mapper extends ModelMapper {
             @Override
             protected Transacao convert(TransacaoJpa source) {
                 ContaService contaService = new ContaService(new ContaRepositoryImpl());
-                FormaPagamentoId pagamentoId = contaService.obter(source.pagamentoId).isPresent()
-                        ? new ContaId(source.pagamentoId)
-                        : new CartaoId(source.pagamentoId);
+                FormaPagamentoId pagamentoId = new ContaId(source.pagamentoId);
                 return new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor,
                         source.data, source.status, source.categoriaId, pagamentoId, source.avulsa, source.tipo, source.perfilId);
             }
