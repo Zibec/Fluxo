@@ -143,7 +143,7 @@ public class AgendamentoController {
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).build();
         } catch (Exception e) {
-            e.printStackTrace(); // põe isso pra ver no console o erro real
+            e.printStackTrace();
             return ResponseEntity.badRequest().build();
         }
     }
@@ -163,7 +163,7 @@ public class AgendamentoController {
             if (valorStr == null || valorStr.isBlank()) {
                 return ResponseEntity.badRequest().build();
             }
-            String contaId = body.get("conta_id");
+            String contaId = body.get("contaId");
             Conta conta = contaRepo.obterConta(contaId)
                     .orElseThrow(() -> new NoSuchElementException("Conta não encontrada"));
             BigDecimal novoValor = new BigDecimal(valorStr.replace(",", "."));
@@ -193,7 +193,6 @@ public class AgendamentoController {
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
-            // aqui você retorna 400 quando vier "Id do agendamento obrigatorio"
             return ResponseEntity.badRequest().build();
         }
     }
