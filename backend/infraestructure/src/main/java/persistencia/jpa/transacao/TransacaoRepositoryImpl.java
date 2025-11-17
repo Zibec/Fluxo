@@ -84,7 +84,7 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
 
     @Override
     public List<Transacao> obterTransacaoPorConta(String usuarioId) {
-        var jpa = repositorio.findAllByUsuarioId(usuarioId);
+        var jpa = repositorio.findAllByPagamentoId(usuarioId);
         return mapper.map(jpa, List.class);
     }
 }
