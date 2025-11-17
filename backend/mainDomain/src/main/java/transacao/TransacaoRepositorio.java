@@ -31,4 +31,6 @@ public interface TransacaoRepositorio {
 
     List<Transacao> obterTransacaoPorConta(String usuarioId);
 
+    List<Transacao> listarPorOrigemAgendamentoId(String agendamentoId);
+
 }

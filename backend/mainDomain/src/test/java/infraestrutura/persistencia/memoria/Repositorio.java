@@ -637,6 +637,10 @@ public class Repositorio implements
         return List.of();
     }
 
+    @Override
+    public List<Transacao> listarPorOrigemAgendamentoId(String agendamentoId) {
+        return List.of();
+    }
 
     /*-----------------------------------------------------------------------*/
     // Usuario

@@ -28,8 +28,8 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
 
     @Override
     public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data) {
-        var transacaoJpa = repositorio.findByOrigemAgendamentoIdAndData(agendamentoId, data);
-        return Optional.of(mapper.map(transacaoJpa, Transacao.class));
+        return repositorio.findByOrigemAgendamentoIdAndData(agendamentoId, data)
+                .map(jpa -> mapper.map(jpa, Transacao.class));
     }
 
     @Override
@@ -41,6 +41,16 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
     public List<Transacao> listarTodasTransacoes() {
         var transacaoJpa = repositorio.findAll();
         return mapper.map(transacaoJpa, List.class);
+    }
+
+    @Override
+    public List<Transacao> listarPorOrigemAgendamentoId(String agendamentoId) {
+        var listaJpa = repositorio.findAllByOrigemAgendamentoId(agendamentoId);
+
+        // opção 1: mapear "na mão"
+        return listaJpa.stream()
+                .map(jpa -> mapper.map(jpa, Transacao.class))
+                .toList();
     }
 
     @Override

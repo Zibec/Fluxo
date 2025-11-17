@@ -22,16 +22,37 @@ public class AgendamentoService {
         agRepo.salvar(agendamento);
     }
 
+    public void salvarComTransacao(Agendamento agendamento, Conta conta) {
+        System.out.println("Passou por aqui");
+        salvar(agendamento);
+        if (agendamento.getProximaData() != null) {
+            System.out.println("Passou por aqui kkkk ");
+            transacaoService.criarPendenteDeAgendamento(
+                    agendamento.getId(),
+                    agendamento.getDescricao(),
+                    agendamento.getValor(),
+                    agendamento.getProximaData(),
+                    conta,
+                    false,
+                    agendamento.getPerfilId()
+            );
+        }
+    }
+
+
     public void deletarAgendamento(String id){
-        if(id==null || id.isBlank()){
+        if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id do agendamento obrigatorio");
         }
-        if(agRepo.obterAgendamento(id).isEmpty()){
+
+        var opt = agRepo.obterAgendamento(id);
+        if (opt.isEmpty()) {
             throw new NoSuchElementException("Agendamento não encontrado: " + id);
         }
-        else{
-            agRepo.deletarAgendamento(id);
-        }
+
+        transacaoService.excluirPorOrigemAgendamento(id);
+
+        agRepo.deletarAgendamento(id);
     }
 
     public void atualizarAgendamento(String id, BigDecimal novoValor){

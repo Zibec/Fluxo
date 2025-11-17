@@ -2,15 +2,19 @@ package com.fluxo.controllers.agendamento;
 
 
 import agendamento.Agendamento;
+import agendamento.AgendamentoRepositorio;
 import agendamento.AgendamentoService;
 import agendamento.Frequencia;
 import categoria.CategoriaService;
 import com.fluxo.config.security.SecurityFilter;
 import com.fluxo.config.security.TokenService;
+import conta.Conta;
+import conta.ContaRepositorio;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import transacao.TransacaoService;
 import usuario.Usuario;
 import usuario.UsuarioService;
 
@@ -32,6 +36,9 @@ public class AgendamentoController {
     private AgendamentoService service;
 
     @Autowired
+    private TransacaoService Tservice;
+
+    @Autowired
     private CategoriaService categoriaService;
 
     @Autowired
@@ -42,6 +49,12 @@ public class AgendamentoController {
 
     @Autowired
     private SecurityFilter securityFilter;
+
+    @Autowired
+    private ContaRepositorio contaRepo;
+
+    @Autowired
+    private AgendamentoRepositorio agRepo;
 
     @GetMapping("/todos")
     public Iterable<Agendamento> buscarTodos(@RequestParam(name = "pageSize", required = false) Integer pageSize, HttpServletRequest request){
@@ -75,8 +88,9 @@ public class AgendamentoController {
             String freqStr  = body.get("frequencia");
             String dataStr  = body.get("proximaData");
             String categoriaId = body.get("categoriaId");
+            String contaId    = body.get("contaId");   // <- NOVO
 
-            if (descricao == null || descricao.isBlank() || valorStr == null || valorStr.isBlank() || freqStr == null || freqStr.isBlank() || dataStr == null || dataStr.isBlank()) {
+            if (descricao == null || descricao.isBlank() || valorStr == null || valorStr.isBlank() || freqStr == null || freqStr.isBlank() || dataStr == null || dataStr.isBlank()  || contaId   == null || contaId.isBlank()) {
                 return ResponseEntity.badRequest().build();
             }
 
@@ -101,6 +115,10 @@ public class AgendamentoController {
                 }
             }
 
+            Conta conta = contaRepo.obterConta(contaId)
+                    .orElseThrow(() -> new NoSuchElementException("Conta não encontrada"));
+
+
             Agendamento novo = new Agendamento(
                     randomUUID().toString(),
                     descricao.trim(),
@@ -118,12 +136,14 @@ public class AgendamentoController {
                 novo.setCategoriaId(categoriaId);
             }
 
-            service.salvarValidandoNaoNoPassado(novo, LocalDate.now());
+            System.out.println("Opa olha eu aqui");
+            service.salvarComTransacao(novo, conta );
             return ResponseEntity.status(201).build();
 
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).build();
         } catch (Exception e) {
+            e.printStackTrace(); // põe isso pra ver no console o erro real
             return ResponseEntity.badRequest().build();
         }
     }
@@ -165,15 +185,18 @@ public class AgendamentoController {
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarAgendamento(@PathVariable String id){
+    public ResponseEntity<Void> deletarAgendamento(@PathVariable String id) {
 
-        try{
+        System.out.println("ID recebido no controller: '" + id + "'");
+
+        try {
             service.deletarAgendamento(id);
             return ResponseEntity.noContent().build();
-        }catch (NoSuchElementException e){
-            return  ResponseEntity.notFound().build();
-        }catch (IllegalStateException e){
-            return ResponseEntity.badRequest().body(null);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            // aqui você retorna 400 quando vier "Id do agendamento obrigatorio"
+            return ResponseEntity.badRequest().build();
         }
     }
 }
