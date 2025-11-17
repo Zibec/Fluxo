@@ -11,7 +11,8 @@ const AgendamentoFormSchema = z.object({
         .default('MENSAL'),
     proximaData: z.date()
         .min(new Date(), "A data deve ser no futuro"), // Data mínima é hoje ou mais tarde
-    perfilId: z.string()
+    perfilId: z.string(),
+    contaId: z.string()
 })
 
 export type createAgendamentoFormData = z.infer<typeof AgendamentoFormSchema>

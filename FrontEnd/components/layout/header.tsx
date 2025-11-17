@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState } from "react";
-import { ArrowBigLeft, ArrowLeft, Settings, Sun } from "lucide-react";
+import { ArrowBigLeft, ArrowLeft, Cog, Settings, Sun } from "lucide-react";
 import Link from "next/link";
 import { redirect, usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -201,6 +201,11 @@ export function Header() {
               </nav>
             </SheetContent>
           </Sheet>
+          
+          <Button variant="ghost" size="icon" className="rounded-full" onClick={() => router.push('/dashboard/settings')}>
+            <Cog className="h-7 w-7" />
+          </Button>
+
         </div>
       </div>
     </header>

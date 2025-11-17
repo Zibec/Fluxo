@@ -21,6 +21,8 @@ import { createPerfilFormData } from "@/lib/service/perfil/perfil-schema"
 import { perfilService } from "@/lib/service/perfil/perfil-service"
 import { agendamentoService } from "@/lib/service/agendamentos/agendamento-service"
 import { useToast } from "@/hooks/use-toast"
+import { createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
+import { contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
 
 interface EditScheduleDialogProps {
   open: boolean
@@ -43,11 +45,20 @@ export function EditScheduleDialog({ open, onOpenChange, setSchedules, schedule 
         })
 
 
-  const categories = ["Comida", "Transporte", "Lazer", "Saúde", "Educação", "Moradia", "Outros"]
   const frequencia = z.enum(['DIARIA', 'SEMANAL', 'MENSAL', 'ANUAL']).options
 
   const [profiles, setProfiles] = useState<createPerfilFormData[]>()
+  const [contas, setContas] = useState<createContaFormData[]>([])
   const { toast } = useToast()
+
+  useEffect(() => {
+      const fetchContas = async () => {
+        const contasData = await contasService.getAllContas()
+        setContas(contasData)
+      }
+  
+      fetchContas()
+    }, [])
 
   useEffect(() => {
     if (schedule) {
@@ -152,23 +163,26 @@ export function EditScheduleDialog({ open, onOpenChange, setSchedules, schedule 
             <p className="text-sm text-red-600">{errors.proximaData?.message}</p>
           </div>
 
-          {/*<div className="space-y-2">
-            <Label htmlFor="category">Categoria</Label>
-            <input id="categoriaId" hidden {...register("categoriaId")} />
+          <div className="space-y-2">
+            <Label htmlFor="edit-budget-category">Conta Associada:</Label>
+            <input type="hidden" {...register("contaId")} />
 
-            <Select>
-              <SelectTrigger id="category">
+            <Select
+              onValueChange={(value) => setValue("contaId", value)}
+            >
+              <SelectTrigger id="edit-budget-category" className="w-full">
                 <SelectValue placeholder="Selecione uma categoria" />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
+                {contas && contas.map((conta) => (
+                  <SelectItem key={conta.id} value={conta.id}>
+                    {conta.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          </div>*/}
+            <p className="text-sm text-red-600">{errors.contaId?.message}</p>
+          </div>
 
           <div className="space-y-2">
             <Label htmlFor="category">Frequencia</Label>

@@ -6,9 +6,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import usuario.Email;
 import usuario.Usuario;
 import usuario.UsuarioService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -32,7 +36,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuario);
     }
 
-    @PostMapping("/me")
+    @PostMapping("/preferences")
     public ResponseEntity<Usuario> changeMoedaPreferia( HttpServletRequest request, @RequestBody UserPreferencesDTO userPreferences){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
@@ -47,6 +51,37 @@ public class UsuarioController {
         if(!userPreferences.moeda().isEmpty()) {
             usuario.setMoedaPreferida(userPreferences.moeda());
         }
+
+        service.salvar(usuario);
+
+        return ResponseEntity.ok(usuario);
+    }
+
+    @PostMapping("/change-email")
+    public ResponseEntity<Usuario> changeEmail(HttpServletRequest request, @RequestBody Map<String, String> body){
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = service.obterPorNome(name);
+
+        service.deletar(usuario.getId());
+
+        usuario.setEmail(new Email(body.get("newEmail")));
+
+        service.salvar(usuario);
+
+        return ResponseEntity.ok(usuario);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Usuario> changePassword(HttpServletRequest request, @RequestBody Map<String, String> body){
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = service.obterPorNome(name);
+
+        service.deletar(usuario.getId());
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode(body.get("newPassword"));
+        usuario.setPassword(encryptedPassword);
 
         service.salvar(usuario);
 
