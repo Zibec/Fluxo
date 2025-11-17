@@ -37,10 +37,10 @@ public class TransacaoService {
      */
     public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data, Conta conta, boolean avulsa, String perfilId) {
         System.out.println("Chegou em transacao aqui");
-//        Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
-//        if (existente.isPresent()) {
-//            return existente.get(); // idempotência: não duplica
-//        }
+        Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
+        if (existente.isPresent()) {
+            return existente.get(); // idempotência: não duplica
+        }
 
         Transacao t = new Transacao(
                 UUID.randomUUID().toString(),
