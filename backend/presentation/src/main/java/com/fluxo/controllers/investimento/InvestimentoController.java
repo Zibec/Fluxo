@@ -90,14 +90,14 @@ public class InvestimentoController {
     }
 
     @PostMapping("/resgate-total/{id}")
-    public ResponseEntity<Object> resgateTotal(@PathVariable String investimentoId){
-        investimentoService.resgateTotal(investimentoId);
+    public ResponseEntity<Object> resgateTotal(@PathVariable String id){
+        investimentoService.resgateTotal(id);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/resgate-parcial/{id}")
-    public ResponseEntity<Object> resgateParcial(@PathVariable String investimentoId, @RequestBody Map<Object, String> body){
-        investimentoService.resgateParcial(investimentoId, BigDecimal.valueOf(Integer.parseInt(body.get("valor"))));
+    public ResponseEntity<Object> resgateParcial(@PathVariable String id, @RequestBody Map<Object, String> body){
+        investimentoService.resgateParcial(id, BigDecimal.valueOf(Integer.parseInt(body.get("valor"))));
         return ResponseEntity.ok().build();
     }
 }

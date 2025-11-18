@@ -6,14 +6,14 @@ import { InvestmentCard } from "@/components/dedicated/investments/investment-ca
 import { AddInvestmentDialog } from "@/components/dedicated/investments/add-investment-dialog"
 import { Button } from "@/components/ui/button"
 import { createInvestimentoFormData } from "@/lib/service/investimentos/investimento-schema"
-import { api } from "@/lib/axios"
 import { investimentoService } from "@/lib/service/investimentos/investimento-service"
+import { useRouter } from "next/navigation"
 
 export default function InvestimentosPage() {
-  const [balance] = useState(12500.0)
   const [selicRate, setSelicRate] = useState(0.0)
   const [isAddInvestmentOpen, setIsAddInvestmentOpen] = useState(false)
   const [investments, setInvestments] = useState<createInvestimentoFormData[]>([])
+
 
   const handleAddInvestment = () => {
     setIsAddInvestmentOpen(true)
@@ -50,7 +50,6 @@ export default function InvestimentosPage() {
       "
     >
       <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Cabeçalho e botão adicionar */}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-[var(--color-foreground)]">
             Meus Investimentos
@@ -99,12 +98,13 @@ export default function InvestimentosPage() {
               </p>
             </div>
           ) : (
-            investments.map((investment) => (
-              <InvestmentCard
-                key={investment.id}
-                name={investment.nome}
-                currentValue={investment.valorAtual}
-              />
+            investments.map((investment) => (          
+                <InvestmentCard
+                  key={investment.id}
+                  id={investment.id}
+                  name={investment.nome}
+                  currentValue={investment.valorAtual}
+                />
             ))
           )}
         </div>

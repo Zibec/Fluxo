@@ -9,7 +9,7 @@ const InvestimentoFormSchema = z.object({
         .nonempty("Nome é obrigatório"),
     descricao: z.string()
         .nonempty("Descrição é obrigatória"),
-    valorAtual: z.number()
+    valorAtual: z.number(),
 })
 
 const HistoricoInvestimentoSchema = z.object({
