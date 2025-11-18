@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 import { createDividaFormData } from "@/lib/service/dividas/divida-schema"
+import { useEffect, useState } from "react"
+import { getCurrencySymbol } from "@/lib/utils"
 
 interface DividaCardProps {
   divida: createDividaFormData
@@ -41,7 +43,7 @@ export function DividaCard({ divida, onEdit, onDelete, onAddValue }: DividaCardP
           </h4>
 
           <p className="text-sm text-foreground leading-relaxed">
-             R$ {divida.valorAcumulado?.toFixed(2)} / {divida.valorDivida.toFixed(2)}
+             {getCurrencySymbol()} {divida.valorAcumulado?.toFixed(2)} / {divida.valorDivida.toFixed(2)}
           </p>
         </div>
 

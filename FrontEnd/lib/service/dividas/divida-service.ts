@@ -3,15 +3,13 @@ import { createDividaFormData } from "./divida-schema"
 
 class DividaService {
     async getAllDividas() {
-        await api.get("/metas-quitacao/by-user").then(response => {
-            return response.data;
-        }).catch(error => {
-            if (error.response && error.response.status === 404) {
-                return []
-            } 
+        const response = await api.get("/metas-quitacao/by-user")
 
-            throw error
-        })
+        if(response.status == 404) {
+            return []
+        }
+
+        return response.data
     }
 
     async createDivida(data: createDividaFormData) {

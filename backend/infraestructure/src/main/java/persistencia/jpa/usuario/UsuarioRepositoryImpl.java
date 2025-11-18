@@ -70,7 +70,7 @@ public class UsuarioRepositoryImpl implements UsuarioRepositorio {
 
     @Override
     public boolean emailExistente(String email) {
-        return repository.findByUserEmail(email);
+        return repository.existsByUserEmail(email);
     }
 
     @Override

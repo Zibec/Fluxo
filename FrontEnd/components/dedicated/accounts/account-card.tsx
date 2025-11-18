@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { ContaFormSchema, createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
 import { contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
+import { getCurrencySymbol } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { id } from "date-fns/locale"
 import { PencilIcon, Plus, TrashIcon } from "lucide-react"
@@ -86,6 +87,7 @@ export function AccountCard({id, account, setAccounts }: AccountCardProps) {
         <div>
           <h3 className="font-semibold text-[var(--color-foreground)]">{account.nome}</h3>
           <p className="text-sm text-[var(--color-muted-foreground)] font-mono">{account.tipo}</p>
+          <p className="text-sm text-[var(--color-muted-foreground)] font-mono">Saldo: {getCurrencySymbol()} {account.saldo}</p>
         </div>
         <div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -8,15 +8,13 @@ class OrcamentoService {
     }
 
     async getOrcamentos() {
-        await api.get('/orcamento/todos/by-user').then((res) => {
-            return res.data
-        }).catch((error) => {
-            if(error.response && error.response.status === 404) {
-                return [];
-            } else {
-                throw error;
-            }
-        })
+        const response = await api.get('/orcamento/todos/by-user')
+
+        if(response.status == 404) {
+            return []
+        }
+
+        return response.data
      }
 
     async getOrcamentoById(data: createOrcamentoFormData) {

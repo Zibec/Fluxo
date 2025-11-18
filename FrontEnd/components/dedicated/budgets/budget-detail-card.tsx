@@ -8,6 +8,7 @@ import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schem
 import { useEffect, useState } from "react"
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
 import { categoriasService } from "@/lib/service/categoria/categoria-service"
+import { getCurrencySymbol } from "@/lib/utils"
 
 interface BudgetDetailCardProps {
   budget: createOrcamentoFormData
@@ -48,7 +49,7 @@ export function BudgetDetailCard({ budget, onEdit }: BudgetDetailCardProps) {
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Progresso</span>
               <span className="font-medium">
-                R$ {spent.toFixed(2)} / R$ {budget.limite.toFixed(2)}
+                {getCurrencySymbol()} {spent.toFixed(2)} / {getCurrencySymbol()} {budget.limite.toFixed(2)}
               </span>
             </div>
             <Progress value={percentage} className="h-2" />

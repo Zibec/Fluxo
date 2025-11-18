@@ -13,4 +13,21 @@ export const securitySchema = z.object({
   path: ['confirmPassword'],
 })
 
+export const emailSchema = z.object({
+  emailAntigo: z.string().email('Email inválido'),
+  emailNovo: z.string().email('Email inválido'),
+}).refine((data) => data.emailAntigo !== data.emailNovo, {
+  message: 'O email novo deve ser diferente do antigo',
+  path: ['emailNovo'],
+})
+
+
+export const profileSchema = z.object({
+  username: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
+  formatoDataPreferido: z.string().optional(),
+  moedaPreferida: z.string().optional(),
+})
+
+export type   createProfileFormData = z.infer<typeof profileSchema>
 export type   createSecurityFormData = z.infer<typeof securitySchema>
+export type   createEmailFormData = z.infer<typeof emailSchema>

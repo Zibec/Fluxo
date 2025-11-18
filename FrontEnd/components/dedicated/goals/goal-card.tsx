@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 import { createMetaFormData } from "@/lib/service/meta/meta-schema"
+import { getCurrencySymbol } from "@/lib/utils"
 
 interface GoalCardProps {
   goal: createMetaFormData
@@ -21,7 +22,7 @@ export function GoalCard({ goal, onEdit, onDelete, onAddValue }: GoalCardProps) 
           <h3 className="text-lg font-semibold">{goal.tipo}</h3>
 
           <p className="text-2xl font-bold text-primary">
-            R$ {goal.saldoAcumulado || 0} / R$ {goal.valorAlvo.toFixed(2)}
+            {getCurrencySymbol()} {goal.saldoAcumulado || 0} / {getCurrencySymbol()} {goal.valorAlvo.toFixed(2)}
           </p>
         </div>
 

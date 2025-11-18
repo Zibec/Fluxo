@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { authService } from "@/lib/service/auth/auth-service";
 import { useTheme } from "next-themes";
+import { getCurrencySymbol } from "@/lib/utils";
 
 
 // Atualize a assinatura da função para incluir patrimony
@@ -120,7 +121,7 @@ export function Header() {
                 className="text-4xl font-bold cursor-pointer transition-colors"
                 style={{ color: "var(--foreground)" }}
               >
-                R$ {formatCurrency(balance)}
+                {getCurrencySymbol()} {formatCurrency(balance)}
               </p>
             )}
           </div>
@@ -129,7 +130,7 @@ export function Header() {
           <div className="mt-2">
             <p className="text-xs opacity-70">Patrimônio Total</p>
             <p className="text-lg font-semibold">
-              R$ {formatCurrency(patrimony)}
+              {getCurrencySymbol()} {formatCurrency(patrimony)}
             </p>
           </div>
         </div>

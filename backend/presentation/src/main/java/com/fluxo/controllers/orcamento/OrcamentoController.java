@@ -46,6 +46,8 @@ public class OrcamentoController {
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
+        System.out.println(service.listarTodosByUser(usuario.getId()));
+
         return ResponseEntity.ok(service.listarTodosByUser(usuario.getId()));
     }
 

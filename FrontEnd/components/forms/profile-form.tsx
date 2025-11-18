@@ -17,39 +17,49 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { useToast } from '@/hooks/use-toast'
-
-const profileSchema = z.object({
-  fullName: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
-  email: z.string().email('Email inválido'),
-  phone: z.string().optional(),
-  bio: z.string().max(160, 'Biografia não pode exceder 160 caracteres').optional(),
-  location: z.string().optional(),
-})
-
-type ProfileFormValues = z.infer<typeof profileSchema>
-
-const defaultValues: ProfileFormValues = {
-  fullName: 'João Silva',
-  email: 'joao@example.com',
-  phone: '+55 (11) 98765-4321',
-  bio: 'Desenvolvedor apaixonado por tecnologia',
-  location: 'São Paulo, Brasil',
-}
+import { useEffect } from 'react'
+import { api } from '@/lib/axios'
+import { usuarioService } from '@/lib/service/usuario/usuario-service'
+import { createProfileFormData, profileSchema } from '@/lib/service/usuario/usuario-schema'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { Router, useRouter } from 'next/router'
 
 export function ProfileForm() {
   const { toast } = useToast()
-  const form = useForm<ProfileFormValues>({
+  const form = useForm<createProfileFormData>({
     resolver: zodResolver(profileSchema),
-    defaultValues,
+    defaultValues: {
+      username: '',
+      moedaPreferida: ' ',
+      formatoDataPreferido: 'dd-MM-yyyy',
+    },
   })
 
-  function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: 'Perfil atualizado',
-      description: 'Suas informações foram salvas com sucesso.',
+  function onSubmit(data: createProfileFormData) {
+    usuarioService.alterarPreferencias(data).then(() => {
+      toast({
+        title: 'Perfil atualizado',
+        description: 'Suas informações foram salvas com sucesso.',
+      })
+      console.log(data)
+      window.location.reload()
+    }).catch((error) => {
+      toast({
+        title: 'Erro ao atualizar perfil',
+        description: error.message || 'Ocorreu um erro ao salvar suas informações.',
+        variant: 'destructive',
+      })
     })
-    console.log(data)
+
   }
+
+  useEffect(() => {
+    const fluxoUser = localStorage.getItem("fluxo_user")
+    if (fluxoUser) {
+      const user = JSON.parse(fluxoUser)
+      form.reset(user)
+    }
+  }, [])
 
   return (
     <Card>
@@ -60,15 +70,15 @@ export function ProfileForm() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6">
               <FormField
                 control={form.control}
-                name="fullName"
+                name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome Completo</FormLabel>
+                    <FormLabel>Nome de Usuário</FormLabel>
                     <FormControl>
-                      <Input placeholder="Seu nome completo" {...field} />
+                      <Input placeholder="Seu nome de usuário" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -76,65 +86,53 @@ export function ProfileForm() {
               />
               <FormField
                 control={form.control}
-                name="email"
+                name="formatoDataPreferido"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>Formato de Data Preferido</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="seu@email.com" {...field} />
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um formato de data" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="dd-MM-yyyy">DD/MM/YYYY</SelectItem>
+                            <SelectItem value="MM-dd-yyyy">MM/DD/YYYY</SelectItem>
+                            <SelectItem value="yyyy-MM-dd">YYYY/MM/DD</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="moedaPreferida"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Moeda Preferida</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione uma moeda" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem value="BRL">Real Brasileiro (BRL)</SelectItem>
+                            <SelectItem value="USD">Dólar Americano (USD)</SelectItem>
+                            <SelectItem value="EUR">Euro (EUR)</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Telefone</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+55 (11) 98765-4321" {...field} />
-                    </FormControl>
-                    <FormDescription>Incluindo o código do país</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Localização</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Cidade, Estado" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Biografia</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Conte um pouco sobre você" className="resize-none" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    {field.value?.length || 0}/160 caracteres
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <Button type="submit" className="w-full sm:w-auto">
               Salvar Alterações

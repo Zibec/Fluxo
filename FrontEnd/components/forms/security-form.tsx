@@ -17,7 +17,7 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useToast } from '@/hooks/use-toast'
 import { AlertCircle } from 'lucide-react'
-import { createSecurityFormData, securitySchema } from '@/lib/service/usuario/usuario-schema'
+import { createEmailFormData, createSecurityFormData, emailSchema, securitySchema } from '@/lib/service/usuario/usuario-schema'
 import { usuarioService } from '@/lib/service/usuario/usuario-service'
 
 export function SecurityForm() {
@@ -28,6 +28,14 @@ export function SecurityForm() {
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
+    },
+  })
+
+  const formEmail = useForm<createEmailFormData>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: {
+      emailAntigo: '',
+      emailNovo: '',
     },
   })
 
@@ -42,11 +50,23 @@ export function SecurityForm() {
     console.log(data)
   }
 
+  async function onSubmitEmail(data: createEmailFormData) {
+    await usuarioService.alterarEmail(data.emailNovo).then(() => {
+      toast({
+        title: 'Email alterado',
+        description: 'Seu email foi atualizado com sucesso.',
+      })
+      formEmail.reset()
+    }
+    )
+    console.log(data)
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Segurança</CardTitle>
-        <CardDescription>Altere sua senha e configure opções de segurança</CardDescription>
+        <CardDescription>Configure opções de segurança</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <Alert>
@@ -107,11 +127,41 @@ export function SecurityForm() {
         </Form>
 
         <div className="mt-8 pt-8 border-t">
-          <h3 className="text-lg font-semibold mb-4">Sessões Ativas</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Você está conectado em 3 dispositivos
-          </p>
-          <Button variant="outline">Encerrar Todas as Sessões</Button>
+          <Form {...formEmail}>
+            <form onSubmit={formEmail.handleSubmit(onSubmitEmail)} className="space-y-6">
+              <FormField
+                control={formEmail.control}
+                name="emailAntigo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email Antigo</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="seu-email@exemplo.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={formEmail.control}
+                name="emailNovo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Novo Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="seu-email@exemplo.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full sm:w-auto">
+                Atualizar Email
+              </Button>
+            </form>
+          </Form>
         </div>
       </CardContent>
     </Card>

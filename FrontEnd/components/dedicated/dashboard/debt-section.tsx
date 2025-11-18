@@ -42,7 +42,7 @@ export function DebtSection({ debts }: DebtSectionProps) {
               className="text-sm"
               style={{ color: "var(--muted-foreground)" }}
             >
-              Pago R$ {debt.valorAcumulado} de R$ {debt.valorAcumulado}
+              Pago R$ {debt.valorAcumulado} de R$ {debt.valorDivida}
             </p>
           </div>
         ))}

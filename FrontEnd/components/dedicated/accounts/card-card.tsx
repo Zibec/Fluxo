@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { CartaoFormSchema, createCartaoFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
 import { cartoesService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
+import { getCurrencySymbol } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Dialog, DialogTitle } from "@radix-ui/react-dialog"
 import { PencilIcon, Plus, TrashIcon } from "lucide-react"
@@ -151,7 +152,7 @@ export function CardCard({id, card, setCards }: CardCardProps) {
                   <div className="space-y-2">
                     <Label htmlFor="limite">Limite Total</Label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600">R$</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600">{getCurrencySymbol()}</span>
                       <Input
                         type="number"
                         {...register("limite", { valueAsNumber: true })}

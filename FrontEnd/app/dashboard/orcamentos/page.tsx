@@ -16,9 +16,8 @@ export default function OrcamentosPage() {
 
   useEffect(() => {
     const fetchBudgets = async () => {
-      await orcamentoService.getOrcamentos().then((data) => {
-        setBudgets(data)
-      })
+      const response = await orcamentoService.getOrcamentos()
+      setBudgets(response)
     }
     fetchBudgets()
   }, [])

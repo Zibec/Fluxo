@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { getCurrencySymbol } from "@/lib/utils"
 import { Pencil, Trash2 } from "lucide-react"
 
 interface ScheduleCardProps {
@@ -36,7 +37,7 @@ export function ScheduleCard({ title, value, nextDate, onEdit, onDelete }: Sched
             className="text-2xl font-bold mb-2"
             style={{ color: "var(--primary)" }}
           >
-            R$ {value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {getCurrencySymbol()} {value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
 
           <p

@@ -3,6 +3,7 @@
 import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { getCurrencySymbol } from "@/lib/utils"
 
 interface InvestmentCardProps {
   name: string
@@ -33,7 +34,7 @@ export function InvestmentCard({ name, currentValue, onDelete }: InvestmentCardP
             Valor Atual:
           </p>
           <p className="text-2xl font-bold text-[var(--color-primary)]">
-            R$ {currentValue.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {getCurrencySymbol()} {currentValue.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
         </div>
       </div>

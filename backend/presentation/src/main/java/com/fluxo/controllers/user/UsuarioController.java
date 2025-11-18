@@ -28,52 +28,54 @@ public class UsuarioController {
     private SecurityFilter securityFilter;
 
     @GetMapping("/me")
-    public ResponseEntity<Usuario> getUser(HttpServletRequest request){
+    public ResponseEntity<Object> getUser(HttpServletRequest request){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = service.obterPorNome(name);
 
-        return ResponseEntity.ok(usuario);
+
+
+        return ResponseEntity.ok(new UserPreferencesDTO(usuario.getUsername(), usuario.getFormatoDataPreferido().getFormato(), usuario.getMoedaPreferida().getCodigo()));
     }
 
     @PostMapping("/preferences")
-    public ResponseEntity<Usuario> changeMoedaPreferia( HttpServletRequest request, @RequestBody UserPreferencesDTO userPreferences){
+    public ResponseEntity<Object> changeMoedaPreferia( HttpServletRequest request, @RequestBody UserPreferencesDTO userPreferences){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = service.obterPorNome(name);
 
-        service.deletar(usuario.getId());
-
-        if(!userPreferences.formatoData().isEmpty()) {
-            usuario.setFormatoDataPreferido(userPreferences.formatoData());
+        if(!userPreferences.username().equals(usuario.getUsername())){
+            usuario.setUsername(userPreferences.username());
         }
 
-        if(!userPreferences.moeda().isEmpty()) {
-            usuario.setMoedaPreferida(userPreferences.moeda());
+        if(!userPreferences.formatoDataPreferido().isEmpty()) {
+            usuario.setFormatoDataPreferido(userPreferences.formatoDataPreferido());
         }
 
-        service.salvar(usuario);
+        if(!userPreferences.moedaPreferida().isEmpty()) {
+            usuario.setMoedaPreferida(userPreferences.moedaPreferida());
+        }
 
-        return ResponseEntity.ok(usuario);
+        service.changePreferences(usuario, usuario.getPassword());
+
+        return ResponseEntity.ok(new UserPreferencesDTO(usuario.getUsername(), usuario.getFormatoDataPreferido().getFormato(), usuario.getMoedaPreferida().getCodigo()));
     }
 
     @PostMapping("/alterar-email")
-    public ResponseEntity<Usuario> changeEmail(HttpServletRequest request, @RequestBody Map<String, String> body){
+    public ResponseEntity<Object> changeEmail(HttpServletRequest request, @RequestBody Map<String, String> body){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = service.obterPorNome(name);
 
-        service.deletar(usuario.getId());
+        String newEmail = body.get("newEmail");
 
-        usuario.setEmail(new Email(body.get("newEmail")));
+        service.changeEmail(usuario, usuario.getEmail(), newEmail, usuario.getPassword());
 
-        service.salvar(usuario);
-
-        return ResponseEntity.ok(usuario);
+        return ResponseEntity.ok(new UserPreferencesDTO(usuario.getUsername(), usuario.getFormatoDataPreferido().getFormato(), usuario.getMoedaPreferida().getCodigo()));
     }
 
     @PostMapping("/alterar-senha")
-    public ResponseEntity<Usuario> changePassword(HttpServletRequest request, @RequestBody Map<String, String> body){
+    public ResponseEntity<Object> changePassword(HttpServletRequest request, @RequestBody Map<String, String> body){
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = service.obterPorNome(name);
@@ -82,6 +84,6 @@ public class UsuarioController {
         String newPassword = body.get("newPassword");
 
         service.changePassword(usuario, oldPassword, newPassword);
-        return ResponseEntity.ok(usuario);
+        return ResponseEntity.ok(new UserPreferencesDTO(usuario.getUsername(), usuario.getFormatoDataPreferido().getFormato(), usuario.getMoedaPreferida().getCodigo()));
     }
 }

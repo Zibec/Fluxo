@@ -53,19 +53,12 @@ public class UsuarioService {
         return usuarioRepositorio.usernameExistente(username);
     }
 
-    public void changeUsername(String usuarioId, String newUsername, String password) {
-        Usuario usuario = obter(usuarioId);
-
+    public void changePreferences(Usuario usuario, String password) {
         if (!usuario.getPassword().equals(password)) {
-            throw new IllegalArgumentException("Senha incorreta");
+            throw new SecurityException("Senha incorreta");
         }
 
-        if (usernameExistente(newUsername)) {
-            throw new IllegalArgumentException("Nome de usuário já está em uso");
-        }
-        usuario.setUsername(newUsername);
-        usuarioRepositorio.deletarUsuario(usuarioId);
-        salvar(usuario);
+        usuarioRepositorio.atualizarUsuario(usuario);
     }
 
     public void changeEmail(Usuario usuario, Email oldEmail, String newEmail, String password) {
@@ -95,5 +88,6 @@ public class UsuarioService {
         }
 
         usuario.setPassword(passwordEncoder.encode(newPassword));
+        usuarioRepositorio.atualizarUsuario(usuario);
     }
 }

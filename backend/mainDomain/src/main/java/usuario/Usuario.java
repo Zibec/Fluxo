@@ -53,7 +53,7 @@ public class Usuario {
         return formatoDataPreferido;
     }
     public void setFormatoDataPreferido(String formatoDataPreferido) {
-        this.formatoDataPreferido = DataFormato.valueOf(formatoDataPreferido);
+        this.formatoDataPreferido = DataFormato.valueOf(formatoDataPreferido.toUpperCase().replaceAll("-", ""));
     }
     public void setUsername(String newUsername) {
         this.username = newUsername;
