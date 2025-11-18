@@ -7,6 +7,7 @@ import cartao.CartaoService;
 import categoria.CategoriaRepositorio;
 import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
+import divida.DividaRepositorio;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
 import investimento.InvestimentoRepositorio;
@@ -17,6 +18,8 @@ import metaInversa.MetaInversaRepositorio;
 import metaInversa.MetaInversaService;
 import orcamento.OrcamentoRepositorio;
 import orcamento.OrcamentoService;
+import patrimonio.PatrimonioRepositorio;
+import patrimonio.PatrimonioService;
 import perfil.PerfilRepository;
 import perfil.PerfilService;
 import persistencia.jpa.Mapper;
@@ -128,6 +131,11 @@ public class FluxoApplication {
     @Bean
     public MetaInversaService metaInversaService(MetaInversaRepositorio metaInversaRepositorio, ContaRepositorio contaRepositorio){
         return new MetaInversaService(metaInversaRepositorio, contaRepositorio);
+    }
+
+    @Bean
+    public PatrimonioService patrimonioService(ContaRepositorio contaRepositorio, InvestimentoRepositorio investimentoRepositorio, DividaRepositorio dividaRepositorio, PatrimonioRepositorio patrimonioRepositorio) {
+        return new PatrimonioService(contaRepositorio, investimentoRepositorio, dividaRepositorio, patrimonioRepositorio);
     }
 
     public static void main(String[] args) {
