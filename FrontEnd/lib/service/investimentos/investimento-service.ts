@@ -33,7 +33,7 @@ class InvestimentoService {
     }
 
     async resgateParcial(id: string, valor: number) {
-        const data = api.post(`/investimentos/resgate-parcial/${id}`, { valor })
+        const data = api.put(`/investimentos/resgate-parcial/${id}`, { valor: valor })
         return data;
     }
 

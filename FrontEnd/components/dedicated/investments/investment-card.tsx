@@ -4,13 +4,18 @@ import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { getCurrencySymbol } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface InvestmentCardProps {
+  id: string
   name: string
   currentValue: number
 }
 
-export function InvestmentCard({ name, currentValue, onDelete }: InvestmentCardProps) {
+export function InvestmentCard({ id, name, currentValue }: InvestmentCardProps) {
+  const router = useRouter()
+
   return (
     <Card
       className="
@@ -25,6 +30,7 @@ export function InvestmentCard({ name, currentValue, onDelete }: InvestmentCardP
         duration-200
       "
     >
+      <Link href={`/dashboard/investimentos/${id}`} className="no-underline">
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">
@@ -38,6 +44,7 @@ export function InvestmentCard({ name, currentValue, onDelete }: InvestmentCardP
           </p>
         </div>
       </div>
+      </Link>
     </Card>
   )
 }
