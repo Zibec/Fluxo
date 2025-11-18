@@ -3,6 +3,7 @@ package persistencia.jpa.conta;
 import conta.Conta;
 import conta.ContaId;
 import conta.ContaRepositorio;
+import investimento.Investimento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
@@ -49,7 +50,9 @@ public class ContaRepositoryImpl implements ContaRepositorio {
             return List.of();
         }
 
-        return mapper.map(contasJpa, List.class);
+        return contasJpa.stream()
+                .map(jpa -> mapper.map(jpa, Conta.class))
+                .toList();
     }
 
     @Override
@@ -70,6 +73,8 @@ public class ContaRepositoryImpl implements ContaRepositorio {
             return List.of();
         }
 
-        return mapper.map(contasJpa, List.class);
+        return contasJpa.stream()
+                .map(jpa -> mapper.map(jpa, Conta.class))
+                .toList();
     }
 }

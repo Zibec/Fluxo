@@ -77,7 +77,7 @@ public class Repositorio implements
         return null;
     }
 
-    public ArrayList<Investimento> obterTodosInvestimentos(){
+    public List<Investimento> obterTodosInvestimentos(){
         return investimentos;
     }
 

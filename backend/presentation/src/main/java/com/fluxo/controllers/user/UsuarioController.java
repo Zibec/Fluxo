@@ -33,8 +33,6 @@ public class UsuarioController {
         String name = tokenService.extractUsername(token);
         Usuario usuario = service.obterPorNome(name);
 
-
-
         return ResponseEntity.ok(new UserPreferencesDTO(usuario.getUsername(), usuario.getFormatoDataPreferido().getFormato(), usuario.getMoedaPreferida().getCodigo()));
     }
 

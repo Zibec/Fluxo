@@ -186,7 +186,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o investimento deve ser removido do sistema")
     public void investimentoRemovido(){
-        ArrayList<Investimento> investimentos = investimentoService.obterTodos();
+        List<Investimento> investimentos = investimentoService.obterTodos();
         assertTrue(investimentos.isEmpty());
     }
 
@@ -194,7 +194,7 @@ public class RastreamentoDeInvestimentosTest {
 
     @Then("o investimento não deve ser removido")
     public void investimentoNaoRemovido(){
-        ArrayList<Investimento> investimentos = investimentoService.obterTodos();
+        List<Investimento> investimentos = investimentoService.obterTodos();
         assertFalse(investimentos.isEmpty());
     }
 

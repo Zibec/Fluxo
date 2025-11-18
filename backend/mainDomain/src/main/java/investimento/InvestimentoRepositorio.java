@@ -12,7 +12,7 @@ public interface InvestimentoRepositorio {
 
     Investimento obterInvestimento(String investimentoId);
 
-    ArrayList<Investimento> obterTodosInvestimentos();
+    List<Investimento> obterTodosInvestimentos();
 
     List<Investimento> obterTodosInvestimentosPorUsuarioId(String id);
 

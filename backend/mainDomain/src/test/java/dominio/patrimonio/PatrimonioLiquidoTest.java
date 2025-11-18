@@ -148,14 +148,14 @@ public class PatrimonioLiquidoTest {
 
     @When("eu solicitar o meu patrimônio líquido")
     public void eu_solicitar_o_meu_patrimonio_liquido() {
-        this.resultadoPatrimonio = patrimonioService.calcularPatrimonioLiquido();
+        this.resultadoPatrimonio = patrimonioService.calcularPatrimonioLiquido("");
     }
 
     @When("eu tentar solicitar o meu patrimônio líquido")
     public void eu_tentar_solicitar_o_meu_patrimonio_liquido() {
         if (this.excecaoCapturada == null) {
             try {
-                this.resultadoPatrimonio = patrimonioService.calcularPatrimonioLiquido();
+                this.resultadoPatrimonio = patrimonioService.calcularPatrimonioLiquido("");
             } catch (Exception e) {
                 this.excecaoCapturada = e;
                 this.mensagemDeErro = e.getMessage() != null ? e.getMessage() : "Erro inesperado ao calcular patrimônio.";
@@ -167,7 +167,7 @@ public class PatrimonioLiquidoTest {
     @When("o processo automático de snapshot for executado")
     public void o_processo_automatico_de_snapshot_for_executado() {
         try {
-            patrimonioService.gerarEsalvarSnapshot(this.dataDoTeste);
+            patrimonioService.gerarEsalvarSnapshot(this.dataDoTeste, "");
         } catch (Exception e) {
             this.excecaoCapturada = e; // Guarda caso algo inesperado ocorra
             this.mensagemDeErro = "Erro inesperado ao tentar gerar snapshot: " + e.getMessage();

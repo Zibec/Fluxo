@@ -5,6 +5,7 @@ import investimento.InvestimentoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
+import transacao.Transacao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +31,21 @@ public class InvestimentoRepositoryImpl implements InvestimentoRepositorio {
     }
 
     @Override
-    public ArrayList<Investimento> obterTodosInvestimentos() {
+    public List<Investimento> obterTodosInvestimentos() {
         var investimentoJpa = repositorio.findAll();
-        ArrayList<Investimento> investimentos = mapper.map(investimentoJpa, ArrayList.class);
 
-        return investimentos;
+
+        return investimentoJpa.stream()
+                .map(jpa -> mapper.map(jpa, Investimento.class))
+                .toList();
     }
 
     public List<Investimento> obterTodosInvestimentosPorUsuarioId(String id) {
         var investimentoJpa = repositorio.findAllByUsuarioId(id);
-        List<Investimento> investimentos = mapper.map(investimentoJpa, List.class);
 
-        return investimentos;
+        return investimentoJpa.stream()
+                .map(jpa -> mapper.map(jpa, Investimento.class))
+                .toList();
     }
 
     @Override

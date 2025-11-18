@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 // --- IMPORTS CORRIGIDOS ---
 import patrimonio.PatrimonioService;
 import patrimonio.Patrimonio; // Usando a classe correta que está no seu Service
+import usuario.Usuario;
 import usuario.UsuarioService;
 // --------------------------
 
@@ -39,7 +40,11 @@ public class PatrimonioController {
 
     @GetMapping("/atual")
     public ResponseEntity<BigDecimal> getPatrimonioAtual(HttpServletRequest request) {
-        BigDecimal valorAtual = service.calcularPatrimonioLiquido();
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        BigDecimal valorAtual = service.calcularPatrimonioLiquido(usuario.getId());
         return ResponseEntity.ok(valorAtual);
     }
 
@@ -51,8 +56,12 @@ public class PatrimonioController {
     }
 
     @PostMapping("/snapshot")
-    public ResponseEntity<Void> gerarSnapshotManual() {
-        service.gerarEsalvarSnapshot(LocalDate.now());
+    public ResponseEntity<Void> gerarSnapshotManual(HttpServletRequest request) {
+        String token = securityFilter.recoverToken(request);
+        String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
+
+        service.gerarEsalvarSnapshot(LocalDate.now(), usuario.getId());
         return ResponseEntity.ok().build();
     }
 }

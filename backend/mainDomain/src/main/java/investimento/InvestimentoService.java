@@ -40,7 +40,7 @@ public class InvestimentoService implements Observer {
         investimentoRepositorio.atualizarInvestimento(investimentoId, investimento);
     }
 
-    public ArrayList<Investimento> obterTodos(){
+    public List<Investimento> obterTodos(){
         return investimentoRepositorio.obterTodosInvestimentos();
     }
 
@@ -97,7 +97,7 @@ public class InvestimentoService implements Observer {
 
     @Override
     public void update() {
-        ArrayList<Investimento> investimentos = obterTodos();
+        List<Investimento> investimentos = obterTodos();
 
         for (Investimento investimento : investimentos){
             atualizarRendimento(investimento);
