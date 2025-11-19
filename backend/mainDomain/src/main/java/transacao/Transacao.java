@@ -3,6 +3,7 @@ package transacao;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.UUID;
 
 import generics.FormaPagamento;
 
@@ -13,17 +14,22 @@ public class Transacao {
 
     private final String id;              // pode ser UUID
     private final String origemAgendamentoId; // pra rastrear de qual agendamento veio (idempotência/ auditoria)
-    private final String descricao;
+    private String descricao;
     private BigDecimal valor;
     private LocalDate data;
     private StatusTransacao status;
     private String categoriaId;
-    private final Tipo tipo;
+    private Tipo tipo;
     private String transacaoOriginalId;
     private FormaPagamentoId pagamentoId;
     private boolean avulsa;
 
     private String perfilId;
+
+    public Transacao() {
+        this.id = UUID.randomUUID().toString();
+        this.origemAgendamentoId = null;
+    }
 
     public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId, FormaPagamentoId pagamentoId, boolean avulsa, Tipo tipo, String perfilId) {
         this.id = Objects.requireNonNull(id);
