@@ -61,14 +61,8 @@ public class Conta extends FormaPagamento {
         if (!temSaldoSuficiente(valor)) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar o débito.");
         }
-        this.saldo = this.saldo.subtract(valor);
-    }
 
-    public void creditar(BigDecimal valor) {
-        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do crédito deve ser positivo.");
-        }
-        this.saldo = this.saldo.add(valor);
+        super.realizarTransacao(valor);
     }
 
     public boolean temSaldoSuficiente(BigDecimal valor) {

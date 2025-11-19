@@ -3,14 +3,13 @@ package conta;
 import generics.FormaPagamento;
 import transacao.FormaPagamentoId;
 
-public class ContaId implements FormaPagamentoId {
-    private final String id;
-
+public class ContaId extends FormaPagamentoId {
     public ContaId(String id) {
-        this.id = id;
+        super(id);
+        super.setType("conta");
     }
 
     public String getId() {
-        return id;
+        return super.getId();
     }
 }

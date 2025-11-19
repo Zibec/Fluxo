@@ -2,16 +2,15 @@ package cartao;
 
 import transacao.FormaPagamentoId;
 
-public class CartaoId implements FormaPagamentoId {
-    private final String id;
-
+public class CartaoId extends FormaPagamentoId {
     public CartaoId(String id) {
-        this.id = id;
+        super(id);
+        super.setType("cartao");
     }
 
     @Override
     public String getId() {
-        return id;
+        return super.getId();
     }
 
 }

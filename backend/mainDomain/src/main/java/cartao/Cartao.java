@@ -187,13 +187,13 @@ public class Cartao extends FormaPagamento {
     public void fecharFatura() {
         notNull(fatura, "Não há fatura aberta para fechar.");
         fatura.fecharFatura();
-        saldo = saldo.subtract(fatura.getValorTotal());
+        super.realizarTransacao(fatura.getValorTotal());
 
     }
 
     public void pagarFatura() {
         notNull(fatura, "Não há fatura aberta para pagar.");
-        saldo = saldo.subtract(fatura.getValorTotal());
+        super.realizarTransacao(fatura.getValorTotal());
         fatura.pagarFatura();
         fatura = null;
     }
