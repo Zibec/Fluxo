@@ -26,4 +26,9 @@ public class DividaRepositoryImpl implements DividaRepositorio {
     public void limparDivida() {
 
     }
+
+    @Override
+    public List<Divida> obterDividaPorUsuarioId(String usuarioId) {
+        return List.of();
+    }
 }
