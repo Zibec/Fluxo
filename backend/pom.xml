@@ -20,6 +20,7 @@
         <module>mainDomain</module>
         <module>infraestructure</module>
         <module>presentation</module>
+        <module>application</module>
     </modules>
 
     <dependencyManagement>
