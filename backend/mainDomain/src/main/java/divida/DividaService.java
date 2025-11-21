@@ -23,4 +23,8 @@ public class DividaService {
         dividaRepositorio.limparDivida();
     }
 
+    public List<Divida> obterDividasPorUsuario(String usuarioId) {
+        return dividaRepositorio.obterDividaPorUsuarioId(usuarioId);
+    }
+
 }

@@ -18,4 +18,5 @@ public class DividaJpa {
 
     public String nome;
     public BigDecimal valorDevedor;
+    public String usuarioId;
 }

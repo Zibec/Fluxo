@@ -8,6 +8,7 @@ import categoria.CategoriaRepositorio;
 import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
 import divida.DividaRepositorio;
+import divida.DividaService;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
 import investimento.InvestimentoRepositorio;
@@ -136,6 +137,11 @@ public class FluxoApplication {
     @Bean
     public PatrimonioService patrimonioService(ContaRepositorio contaRepositorio, InvestimentoRepositorio investimentoRepositorio, DividaRepositorio dividaRepositorio, PatrimonioRepositorio patrimonioRepositorio) {
         return new PatrimonioService(contaRepositorio, investimentoRepositorio, dividaRepositorio, patrimonioRepositorio);
+    }
+
+    @Bean
+    public DividaService dividaService(DividaRepositorio repositorio) {
+        return new DividaService(repositorio);
     }
 
     public static void main(String[] args) {
