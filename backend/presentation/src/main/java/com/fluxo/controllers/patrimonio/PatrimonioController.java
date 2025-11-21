@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// --- IMPORTS CORRIGIDOS ---
 import patrimonio.PatrimonioService;
-import patrimonio.Patrimonio; // Usando a classe correta que está no seu Service
+import patrimonio.Patrimonio;
 import usuario.Usuario;
 import usuario.UsuarioService;
-// --------------------------
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList; // Importante
+import java.util.Iterator;  // Importante
 import java.util.List;
 
 @RestController
@@ -41,6 +41,8 @@ public class PatrimonioController {
     @GetMapping("/atual")
     public ResponseEntity<BigDecimal> getPatrimonioAtual(HttpServletRequest request) {
         String token = securityFilter.recoverToken(request);
+        if (token == null) return ResponseEntity.status(401).build();
+
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
@@ -48,16 +50,26 @@ public class PatrimonioController {
         return ResponseEntity.ok(valorAtual);
     }
 
-    // Ajustado para retornar List<Patrimonio>
     @GetMapping("/historico")
     public ResponseEntity<List<Patrimonio>> getHistoricoEvolucao() {
-        List<Patrimonio> historico = service.obterHistoricoDePatrimonio();
-        return ResponseEntity.ok(historico);
+        List<Patrimonio> listaOriginal = service.obterHistoricoDePatrimonio();
+
+        List<Patrimonio> listaResposta = new ArrayList<>();
+        Iterator<Patrimonio> it = listaOriginal.iterator();
+
+        while(it.hasNext()) {
+            Patrimonio p = it.next();
+            listaResposta.add(p);
+        }
+
+        return ResponseEntity.ok(listaResposta);
     }
 
     @PostMapping("/snapshot")
     public ResponseEntity<Void> gerarSnapshotManual(HttpServletRequest request) {
         String token = securityFilter.recoverToken(request);
+        if (token == null) return ResponseEntity.status(401).build();
+
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 

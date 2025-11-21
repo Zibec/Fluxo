@@ -14,4 +14,6 @@ public interface DividaRepositorio {
     List<Divida> obterTodosDivida();
 
     void limparDivida();
+
+    List<Divida> obterDividaPorUsuarioId(String usuarioId);
 }
