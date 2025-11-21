@@ -11,6 +11,7 @@ import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
 import com.fluxo.agendador.AgendadorTarefas;
 import divida.DividaRepositorio;
+import divida.DividaService;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
 import investimento.InvestimentoRepositorio;
@@ -146,6 +147,11 @@ public class FluxoApplication {
     @Bean
     public RelatoriosService relatoriosService(CartaoService cartaoService, ContaService contaService) {
         return new RelatoriosService(contaService, cartaoService);
+    }
+
+    @Bean
+    public DividaService dividaService(DividaRepositorio repositorio) {
+        return new DividaService(repositorio);
     }
 
     public static void main(String[] args) {
