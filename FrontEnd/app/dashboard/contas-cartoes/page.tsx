@@ -11,6 +11,7 @@ import { Plus } from "lucide-react"
 import { cartoesService, contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
 import { createCartaoFormData, createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
 import { useToast } from "@/hooks/use-toast"
+import Link from "next/link"
 
 export default function ContasCartoesPage() {
   const [addAccountOpen, setAddAccountOpen] = useState(false)
@@ -47,7 +48,6 @@ export default function ContasCartoesPage() {
       "
     >
       <main className="max-w-4xl mx-auto px-6 py-8 space-y-10">
-        {/* Contas */}
         <section>
           <div className="flex justify-between">
             <h2 className="text-lg font-bold text-[var(--color-foreground)] mb-4">CONTAS</h2>

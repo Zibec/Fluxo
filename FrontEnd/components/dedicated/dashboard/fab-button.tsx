@@ -9,7 +9,7 @@ interface FabButtonProps {
 }
 
 export function FabButton({ onActionSelect }: FabButtonProps) {
-  const fabActions = ["Adicionar Despesa", "Adicionar Receita", "Criar Novo Orçamento", "Criar Nova Meta"]
+  const fabActions = ["Adicionar Despesa", "Criar Novo Orçamento", "Criar Nova Meta"]
 
   return (
     <DropdownMenu>

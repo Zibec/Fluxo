@@ -8,10 +8,11 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { CartaoFormSchema, createCartaoFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
 import { cartoesService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
-import { getCurrencySymbol } from "@/lib/utils"
+import { formatCardNumber, getCurrencySymbol } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Dialog, DialogTitle } from "@radix-ui/react-dialog"
 import { PencilIcon, Plus, TrashIcon } from "lucide-react"
+import Link from "next/link"
 import { use, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -82,16 +83,17 @@ export function CardCard({id, card, setCards }: CardCardProps) {
         text-[var(--color-card-foreground)]
         border border-[var(--color-border)]
         rounded-[var(--radius-md)]
-        shadow-sm hover:shadow-md
-        transition-shadow
+        hover:shadow-md hover:bg-accent/40 transition-all
         p-4
       "
     >
       <div className="flex items-center justify-between">
-        <div>
-          <h3 className="font-semibold text-[var(--color-foreground)]">{card.titular}</h3>
-          <p className="text-sm text-[var(--color-muted-foreground)] font-mono">{card.numero}</p>
-        </div>
+        <Link href={`/dashboard/contas-cartoes/cartao/${card.id}`} className="no-underline z-0">
+          <div>
+            <h3 className="font-semibold text-[var(--color-foreground)]">{card.titular}</h3>
+            <p className="text-sm text-[var(--color-muted-foreground)] font-mono">{formatCardNumber(card.numero)}</p>
+          </div>
+        </Link>
         <div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -99,7 +101,7 @@ export function CardCard({id, card, setCards }: CardCardProps) {
               <DialogTrigger asChild>
                 <Button variant="ghost" onClick={() => setIsDialogOpen(true)}><PencilIcon color="blue" /></Button>
               </DialogTrigger>
-              <Button variant="ghost" onClick={() => handleDeleteCard(id)}><TrashIcon color="red"/></Button>
+              <Button variant="ghost" className="z-10" onClick={() => handleDeleteCard(id)}><TrashIcon color="red"/></Button>
             </div>
             <DialogContent>
               <form onSubmit={handleSubmit(handleSaveEditedCard)} className="space-y-4">

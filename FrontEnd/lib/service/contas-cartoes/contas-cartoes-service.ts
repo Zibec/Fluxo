@@ -1,10 +1,17 @@
 import { AxiosError } from 'axios';
 import { api } from '../../axios';
 
+export interface Fatura {
+    cartaoId: string,
+    valorTotal: number,
+    dataVencimento: Date,
+    status: string,
+    transacoes: string[]
+}
+
 class ContaService {
     async getAllContas() {
         try {
-            console.log('Fetching all contas in ' + api.defaults.baseURL + '/conta/by-user');
             const response = await api.get('/conta/by-user');
             return response.data;
         } catch (error) {
@@ -13,8 +20,7 @@ class ContaService {
             }
             console.error('Error fetching contas:', error);
             throw error;
-        }
-        
+        } 
     }
 
     async getContaById(id: string) {
@@ -52,6 +58,23 @@ class CartaoService {
             throw error;
         }
         
+    }
+
+    async getFaturaByCartaoId(id: string) {
+        const response = await api.get(`/cartao/fatura/${id}`);
+        return response.data;
+    }
+
+    async closeFaturaByCartaoId(id: string) {
+        const response = await api.post(`/cartao/fatura/${id}/fechar`);
+        return response.data;
+    }
+
+    async payFaturaByCartaoId(id: string) {
+        const response = await api.post(`/cartao/fatura/${id}/pagar`);
+        return response.data;
+
+
     }
 
     async getCartaoById(id: string) {

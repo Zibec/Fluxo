@@ -26,12 +26,14 @@ const CartaoFormSchema = z.object({
     cvv: z.string()
         .min(3, "CVV deve ter 3 dígitos")
         .max(4, "CVV deve ter 4 dígitos"),
+    saldo: z.number()
+        .min(0, "Saldo inicial não pode ser negativo"),
     limite: z.number()
         .min(0, "Limite do cartão não pode ser negativo"),
-    dataFechamentoFatura: z.string(),
-        //.min(1, "Data de fechamento deve ser entre 1 e 31")
-    dataVencimentoFatura: z.string()
-        //.min(1, "Data de vencimento deve ser entre 1 e 31")
+    dataFechamentoFatura: z.date()
+        .min(new Date(), "A data não pode ser antes do dia de hoje."),
+    dataVencimentoFatura: z.date()
+        .min(new Date(), "A data não pode ser antes do dia de hoje.")
 })
 
 export type createContaFormData = z.infer<typeof ContaFormSchema>

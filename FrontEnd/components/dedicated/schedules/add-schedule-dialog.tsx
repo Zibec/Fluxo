@@ -53,6 +53,7 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
   useEffect(() => {
     const fetchContas = async () => {
       const contasData = await contasService.getAllContas()
+      console.log(contasData)
       setContas(contasData)
     }
 

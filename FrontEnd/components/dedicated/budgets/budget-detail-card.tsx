@@ -3,12 +3,16 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 } from "lucide-react"
+import { ChevronsDown, ChevronsUp, ChevronsUpDown, Pencil, Trash2 } from "lucide-react"
 import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema"
 import { useEffect, useState } from "react"
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
 import { categoriasService } from "@/lib/service/categoria/categoria-service"
 import { getCurrencySymbol } from "@/lib/utils"
+import { createTransacaoFormData } from "@/lib/service/transacao/transacao-schema"
+import { transacaoService } from "@/lib/service/transacao/transacao-service"
+import { TransactionCard } from "../history/transaction-card"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 interface BudgetDetailCardProps {
   budget: createOrcamentoFormData
@@ -18,6 +22,8 @@ interface BudgetDetailCardProps {
 export function BudgetDetailCard({ budget, onEdit }: BudgetDetailCardProps) {
   const [spent, setSpent] = useState<number>(0)
   const [categoriaNome, setCategoriaNome] = useState<string>("")
+  const [transacoes, setTransacoes] = useState<createTransacaoFormData[]>()
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchSpent = async () => {
@@ -37,6 +43,14 @@ export function BudgetDetailCard({ budget, onEdit }: BudgetDetailCardProps) {
     fetchCategoriaNome()
   }, [budget.categoriaId])
 
+  useEffect(() => {
+    const fetchTransacoes = async() => {
+      const transacoes: createTransacaoFormData[] = await transacaoService.getTransacoesByUser()
+      setTransacoes(transacoes.filter(t => t.categoriaId === budget.categoriaId))
+    }
+    fetchTransacoes()
+  }, [])
+
 
   const percentage = (spent / budget.limite) * 100
 
@@ -53,26 +67,29 @@ export function BudgetDetailCard({ budget, onEdit }: BudgetDetailCardProps) {
               </span>
             </div>
             <Progress value={percentage} className="h-2" />
+            <div className="flex items-center text-sm gap-2">
+              <p className="text-muted-foreground">Data Limite:</p>
+              <p className="font-medium">
+                {`${budget.ano?.toString().substring(2)}/${budget.mes < 10 ? "0" + budget.mes?.toString() : budget.mes?.toString()}`}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-muted-foreground">Transações</h4>
-          <div className="space-y-2">
-             {/* transactions.map((transaction, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between text-sm py-2 border-b border-border last:border-0"
-              >
-                <span>{transaction.description}</span>
-                <div className="flex items-center gap-3">
-                  <span className="font-medium">R$ {transaction.value.toFixed(2)}</span>
-                  <span className="text-xs text-muted-foreground">dia {transaction.date}</span>
-                </div>
-              </div>
-            ))*/} 
-          </div>
-        </div>
+        <Collapsible className="space-y-2">
+          <CollapsibleTrigger className="flex flex-row" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <><ChevronsUp />Transações</> : <><ChevronsDown />Transações</>}
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-2">
+            {transacoes && transacoes.map((transaction) => (
+              <TransactionCard
+                key={transaction.id}
+                transaction={transaction}
+                onClick={() => (true)}
+              />
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
 
         <div className="flex items-center gap-3 pt-2">
           <Button

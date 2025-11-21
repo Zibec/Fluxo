@@ -8,7 +8,6 @@ class PerfilService {
 
     async getAllPerfis() {
         const response = await api.get('/perfis/');
-        console.log(response.data)
         return response.data;
     }
 

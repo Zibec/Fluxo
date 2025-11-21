@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -9,7 +8,13 @@ import { CartaoFormSchema, createCartaoFormData } from "@/lib/service/contas-car
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useToast } from "@/hooks/use-toast"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import { cartoesService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { CalendarIcon } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar"
+import { formatDateByUserPreference } from "@/lib/utils"
 
 interface AddCardDialogProps {
   open: boolean
@@ -23,6 +28,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
           handleSubmit,
           watch,
           getValues,
+          setValue,
           formState: { errors }
       } = useForm<createCartaoFormData>({
           resolver: zodResolver(CartaoFormSchema)
@@ -122,21 +128,51 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="dataFechamento">Data de Fechamento</Label>
-              <Input
-                type="string"
-                {...register("dataFechamentoFatura")}
-              />
+              <Label>Data de Fechamento</Label>
+              <Popover>
+                <PopoverTrigger  asChild>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {watch("dataFechamentoFatura") ? (
+                      formatDateByUserPreference(watch("dataFechamentoFatura"))
+                    ) : (
+                      <span className="text-neutral-500">Selecione uma data</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={watch("dataFechamentoFatura")}
+                    onSelect={(date) => setValue("dataFechamentoFatura", date)}
+                  />
+                </PopoverContent>
+              </Popover>
               <p className="text-sm text-red-600">{errors.dataFechamentoFatura?.message}</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dataVencimento">Data de Vencimento</Label>
-              <Input
-                type="string"
-                {...register("dataVencimentoFatura")}
-              />
-              <p className="text-sm text-red-600">{errors.dataVencimentoFatura?.message}</p>
+              <Label>Data de Vencimento</Label>
+              <Popover>
+                <PopoverTrigger  asChild>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal bg-transparent">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {watch("dataVencimentoFatura") ? (
+                      formatDateByUserPreference(watch("dataVencimentoFatura"))
+                    ) : (
+                      <span className="text-neutral-500">Selecione uma data</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={watch("dataVencimentoFatura")}
+                    onSelect={(date) => setValue("dataVencimentoFatura", date)}
+                  />
+                </PopoverContent>
+              </Popover>
+              <p className="text-sm text-red-600">{errors.dataFechamentoFatura?.message}</p>
             </div>
           </div>
         </div>

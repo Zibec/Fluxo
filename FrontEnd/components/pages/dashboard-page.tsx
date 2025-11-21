@@ -18,7 +18,6 @@ import { dividaService } from "@/lib/service/dividas/divida-service";
 
 const DashboardPage = () => {
   const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false)
-  const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState(false)
   const [isBudgetDialogOpen, setIsBudgetDialogOpen] = useState(false)
   const [isGoalDialogOpen, setIsGoalDialogOpen] = useState(false)
 
@@ -32,6 +31,8 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchSavings = async () => {
       setSavings(await metaService.getAllMetas())
+          console.log(budgets)
+
     }
     fetchSavings()        
   }, [])
@@ -52,7 +53,6 @@ const DashboardPage = () => {
 
   const handleFabAction = (action: string) => {
     if (action === "Adicionar Despesa") setIsExpenseDialogOpen(true);
-    if (action === "Adicionar Receita") setIsIncomeDialogOpen(true);
     if (action === "Criar Novo Orçamento") setIsBudgetDialogOpen(true);
     if (action === "Criar Nova Meta") setIsGoalDialogOpen(true);
   };
@@ -86,10 +86,6 @@ const DashboardPage = () => {
       <AddExpenseDialog
         open={isExpenseDialogOpen}
         onOpenChange={setIsExpenseDialogOpen}
-      />
-      <AddIncomeDialog
-        open={isIncomeDialogOpen}
-        onOpenChange={setIsIncomeDialogOpen}
       />
       <AddBudgetDialog
         open={isBudgetDialogOpen}

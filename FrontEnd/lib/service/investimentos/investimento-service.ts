@@ -19,6 +19,7 @@ class InvestimentoService {
 
     async getHistoricoInvestimento(id: string) {
         const data = api.get(`/investimentos/historicos/${id}`)
+        console.log(data)
         return data;
     }
 

@@ -80,6 +80,7 @@ export function AccountCard({id, account, setAccounts }: AccountCardProps) {
         border border-[var(--color-border)]
         rounded-[var(--radius-md)]
         shadow-sm hover:shadow-md
+        hover:shadow-md hover:bg-accent/40 transition-all
         transition-shadow
       "
     >
