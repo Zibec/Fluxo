@@ -310,6 +310,11 @@ public class Repositorio implements
         dividas.clear();
     }
 
+    @Override
+    public List<Divida> obterDividaPorUsuarioId(String usuarioId) {
+        return List.of();
+    }
+
     /*-----------------------------------------------------------------------*/
     // HistoricoInvestimento
     /*-----------------------------------------------------------------------*/

@@ -24,6 +24,8 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
     @Override
     public void salvarTransacao(Transacao t) {
         var transacaoJpa =  mapper.map(t, TransacaoJpa.class);
+        transacaoJpa.setCategoriaId(t.getCategoriaId()); 
+        transacaoJpa.setPerfilId(t.getPerfilId());
         repositorio.save(transacaoJpa);
     }
 

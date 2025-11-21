@@ -39,5 +39,21 @@ public class TransacaoJpa {
     public String pagamentoId;
     public boolean avulsa;
     public String perfilId;
+
+    public String getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(String categoriaId) {
+        this.categoriaId = categoriaId;
+    }
+
+    public String getPerfilId() {
+        return perfilId;
+    }
+
+    public void setPerfilId(String perfilId) {
+        this.perfilId = perfilId;
+    }
 }
 

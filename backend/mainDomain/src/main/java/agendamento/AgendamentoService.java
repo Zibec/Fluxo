@@ -33,6 +33,7 @@ public class AgendamentoService {
                     agendamento.getDescricao(),
                     agendamento.getValor(),
                     agendamento.getProximaData(),
+                     agendamento.getCategoriaId(),
                     conta,
                     false,
                     agendamento.getPerfilId()
@@ -101,7 +102,7 @@ public class AgendamentoService {
         if (!execucoesDoDia.add(chave)) return false;
 
         transacaoService.criarPendenteDeAgendamento(
-                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, new Conta(), false, agendamento.getPerfilId()
+                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, agendamento.getCategoriaId(), new Conta(), false, agendamento.getPerfilId()
         );
 
         agendamento.avancarProximaData();

@@ -49,4 +49,12 @@ public class AgendamentoJpa {
         a.setCategoriaId(categoriaId);
         return a;
     }
+
+    public String getCategoriaId() {
+        return categoriaId;
+    }
+
+    public void setCategoriaId(String categoriaId) {
+        this.categoriaId = categoriaId;
+    }
 }

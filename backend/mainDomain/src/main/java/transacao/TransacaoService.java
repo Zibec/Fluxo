@@ -36,7 +36,7 @@ public class TransacaoService {
      * Cria uma transação PENDENTE oriunda de agendamento.
      * Idempotente por (agendamentoId, data): se já existe, retorna a existente.
      */
-    public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data, Conta conta, boolean avulsa, String perfilId) {
+    public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data,String categoriaId, Conta conta, boolean avulsa, String perfilId) {
         System.out.println("Chegou em transacao aqui");
         Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
         if (existente.isPresent()) {
@@ -50,6 +50,7 @@ public class TransacaoService {
                 valor,
                 data,
                 StatusTransacao.PENDENTE,
+                categoriaId,
                 conta.getId(),
                 avulsa,
                 Tipo.DESPESA,

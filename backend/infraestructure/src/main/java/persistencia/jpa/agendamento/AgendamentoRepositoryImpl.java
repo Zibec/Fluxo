@@ -55,6 +55,7 @@ public class AgendamentoRepositoryImpl implements AgendamentoRepositorio {
     @Override
     public void salvar(Agendamento a) {
         AgendamentoJpa agendamento = mapper.map(a, AgendamentoJpa.class);
+        agendamento.setCategoriaId(a.getCategoriaId());
         repository.save(agendamento);
     }
 
