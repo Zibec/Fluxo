@@ -245,9 +245,6 @@ public class TransacaoController {
 
     @PostMapping("/reembolso")
     public ResponseEntity<Object> criarReembolso(@RequestBody TransacaoDTO dto, HttpServletRequest request) {
-        String token = securityFilter.recoverToken(request);
-        if (token == null) return ResponseEntity.status(401).build();
-
         if (dto.valor() == null || dto.transacaoOriginalId() == null) {
             return ResponseEntity.badRequest().body("Valor e ID da transação original são obrigatórios.");
         }

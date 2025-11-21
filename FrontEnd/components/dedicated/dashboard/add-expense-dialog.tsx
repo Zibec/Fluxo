@@ -198,10 +198,6 @@ export function AddExpenseDialog({ open, onOpenChange }: AddExpenseDialogProps) 
             <Button onClick={() => setTipo("RECEITA")} variant={tipo === "RECEITA" ? "default" : "secondary"}>
               Receita
             </Button>
-
-            <Button onClick={() => setTipo("REEMBOLSO")} variant={tipo === "REEMBOLSO"  ? "default" : "secondary"}>
-              Reembolso
-            </Button>
             <p>{errors.tipo?.message}</p>
           </div>
 

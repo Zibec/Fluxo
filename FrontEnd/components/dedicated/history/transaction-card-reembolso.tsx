@@ -15,7 +15,7 @@ interface TransactionCardProps {
   onClick?: () => void
 }
 
-export function TransactionCard({ transaction, profiles, onClick }: TransactionCardProps) {
+export function TransactionCardWithReembolso({ transaction, profiles }: TransactionCardProps) {
   // Cores adaptadas ao tema global, sem fixar tons neutros
   const getTypeStyles = () => {
     switch (transaction.tipo) {
@@ -30,9 +30,21 @@ export function TransactionCard({ transaction, profiles, onClick }: TransactionC
     }
   }
 
+  const {toast} = useToast()
+
+  const handleClick = () => {
+    transacaoService.useReembolso(transaction).then(() => {
+      toast({
+        title: "Transação Reembolsada",
+        description: "A Transação foi reembolsada com sucesso."
+      })
+
+      window.location.reload()
+    })
+  }
+
   return (
-    <button
-      onClick={onClick}
+    <div
       className="w-full bg-card text-card-foreground rounded-lg border border-border p-4 shadow-sm hover:shadow-md hover:bg-accent/40 transition-all text-left"
     >
       <div className="flex items-center justify-between">
@@ -63,7 +75,12 @@ export function TransactionCard({ transaction, profiles, onClick }: TransactionC
             <span>{transaction.status}</span>
           </div>
         </div>
+        <div>
+          <Button className="hover:cursor-pointer" onClick={() => handleClick()}>
+            Reembolsar
+          </Button>
+        </div>
       </div>
-    </button>
+    </div>
   )
 }

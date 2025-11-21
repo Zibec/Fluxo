@@ -1,5 +1,6 @@
 package patrimonio;
 
+import cartao.CartaoRepositorio;
 import conta.ContaRepositorio;
 import divida.DividaRepositorio;
 import investimento.InvestimentoRepositorio;
@@ -18,32 +19,39 @@ public class PatrimonioService {
     private final DividaRepositorio dividaRepositorio;
     private final PatrimonioRepositorio snapshotRepositorio;
     private final MetaInversaRepositorio metaInversaRepositorio;
+    private final CartaoRepositorio cartaoRepositorio;
 
     public PatrimonioService(ContaRepositorio contaRepositorio,
                              InvestimentoRepositorio investimentoRepositorio,
                              DividaRepositorio dividaRepositorio,
-                             PatrimonioRepositorio snapshotRepositorio) {
+                             PatrimonioRepositorio snapshotRepositorio, CartaoRepositorio cartaoRepositorio) {
         this.contaRepositorio = notNull(contaRepositorio, "contaRepositorio não pode ser nulo.");
         this.investimentoRepositorio = notNull(investimentoRepositorio, "investimentoRepositorio não pode ser nulo.");
         this.dividaRepositorio = notNull(dividaRepositorio, "dividaRepositorio não pode ser nulo.");
         this.snapshotRepositorio = notNull(snapshotRepositorio, "snapshotRepositorio não pode ser nulo.");
+        this.cartaoRepositorio = cartaoRepositorio;
         this.metaInversaRepositorio = null;
     }
 
     public PatrimonioService(ContaRepositorio contaRepositorio,
                              InvestimentoRepositorio investimentoRepositorio,
                              MetaInversaRepositorio metaInversaRepositorio,
-                             PatrimonioRepositorio snapshotRepositorio) {
+                             PatrimonioRepositorio snapshotRepositorio, CartaoRepositorio cartaoRepositorio) {
         this.contaRepositorio = notNull(contaRepositorio, "contaRepositorio não pode ser nulo.");
         this.investimentoRepositorio = notNull(investimentoRepositorio, "investimentoRepositorio não pode ser nulo.");
         this.metaInversaRepositorio = notNull(metaInversaRepositorio, "metaInversaRepositorio não pode ser nulo.");
         this.snapshotRepositorio = notNull(snapshotRepositorio, "snapshotRepositorio não pode ser nulo.");
+        this.cartaoRepositorio = cartaoRepositorio;
         this.dividaRepositorio = null;
     }
 
     public BigDecimal calcularPatrimonioLiquido(String usuarioId) {
         BigDecimal totalContas = contaRepositorio.obterContaPorUsuarioId(usuarioId).stream()
                 .map(conta -> conta.getSaldo())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalCartoes = cartaoRepositorio.obterCartaoPorUsarioId(usuarioId).stream()
+                .map(cartao -> cartao.getSaldo())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal totalInvestimentos = investimentoRepositorio.obterTodosInvestimentosPorUsuarioId(usuarioId).stream()
@@ -62,7 +70,7 @@ public class PatrimonioService {
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
-        return totalContas.add(totalInvestimentos).subtract(totalDividas);
+        return totalContas.add(totalInvestimentos).subtract(totalDividas).add(totalCartoes);
     }
 
     public void gerarEsalvarSnapshot(LocalDate data, String usuarioId) {

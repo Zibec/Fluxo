@@ -64,7 +64,8 @@ public class PatrimonioLiquidoTest {
                 contaRepositorio,
                 investimentoRepositorio,
                 dividaRepositorio,
-                snapshotRepositorio
+                snapshotRepositorio,
+                new Repositorio()
         );
         resultadoPatrimonio = null;
         historicoResultado = null;

@@ -1,6 +1,7 @@
 package persistencia.jpa.cartao;
 
 import cartao.*;
+import conta.Conta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
@@ -65,7 +66,9 @@ public class CartaoRepositoryImpl implements CartaoRepositorio {
             return null;
         }
 
-        return mapper.map(cartoes, List.class);
+        return cartoes.stream()
+                .map(jpa -> mapper.map(jpa, Cartao.class))
+                .toList();
     }
 
     @Override
@@ -76,7 +79,9 @@ public class CartaoRepositoryImpl implements CartaoRepositorio {
             return null;
         }
 
-        return mapper.map(cartoes, List.class);
+        return cartoes.stream()
+                .map(jpa -> mapper.map(jpa, Cartao.class))
+                .toList();
     }
 
     @Override

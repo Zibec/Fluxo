@@ -2,12 +2,14 @@ package com.fluxo;
 
 import agendamento.AgendamentoRepositorio;
 import agendamento.AgendamentoService;
+import analise.RelatoriosService;
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
 import cartao.FaturaRepositorio;
 import categoria.CategoriaRepositorio;
 import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
+import com.fluxo.agendador.AgendadorTarefas;
 import divida.DividaRepositorio;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
 import historicoInvestimento.HistoricoInvestimentoService;
@@ -137,8 +139,13 @@ public class FluxoApplication {
     }
 
     @Bean
-    public PatrimonioService patrimonioService(ContaRepositorio contaRepositorio, InvestimentoRepositorio investimentoRepositorio, DividaRepositorio dividaRepositorio, PatrimonioRepositorio patrimonioRepositorio) {
-        return new PatrimonioService(contaRepositorio, investimentoRepositorio, dividaRepositorio, patrimonioRepositorio);
+    public PatrimonioService patrimonioService(ContaRepositorio contaRepositorio, InvestimentoRepositorio investimentoRepositorio, DividaRepositorio dividaRepositorio, PatrimonioRepositorio patrimonioRepositorio, CartaoRepositorio cartaoRepositorio) {
+        return new PatrimonioService(contaRepositorio, investimentoRepositorio, dividaRepositorio, patrimonioRepositorio, cartaoRepositorio);
+    }
+
+    @Bean
+    public RelatoriosService relatoriosService(CartaoService cartaoService, ContaService contaService) {
+        return new RelatoriosService(contaService, cartaoService);
     }
 
     public static void main(String[] args) {

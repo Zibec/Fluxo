@@ -116,8 +116,16 @@ public class TransacaoService {
         String novoId = UUID.randomUUID().toString();
         String descricaoReembolso = "Reembolso de: " + despesaOriginal.getDescricao();
 
-        Conta contaDaDespesaOriginal = contaRepo.obterConta(despesaOriginal.getPagamentoId().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Conta da despesa original não encontrada"));
+        FormaPagamentoId pagamentoId;
+
+        if(Objects.equals(despesaOriginal.getPagamentoId().getType(), "CONTA")) {
+            Conta contaDaDespesaOriginal = contaRepo.obterConta(despesaOriginal.getPagamentoId().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Conta da despesa original não encontrada"));
+            pagamentoId = contaDaDespesaOriginal.getId();
+        } else {
+            Cartao cartaoDaDespesaOriginal = cartaoRepositorio.obterCartaoPorId(despesaOriginal.getPagamentoId().getId());
+            pagamentoId = cartaoDaDespesaOriginal.getId();
+        }
 
         Transacao reembolso = new Transacao(
                 novoId,
@@ -127,11 +135,13 @@ public class TransacaoService {
                 LocalDate.now(),
                 StatusTransacao.EFETIVADA,
                 despesaOriginal.getCategoriaId(),
-                contaDaDespesaOriginal.getId(),
+                pagamentoId,
                 true,
                 Tipo.REEMBOLSO,
                 despesaOriginal.getPerfilId()
         );
+
+        reembolso.setUsuarioId(despesaOriginal.getUsuarioId());
 
         reembolso.setTransacaoOriginalId(idDespesaOriginal);
         repo.salvarTransacao(reembolso);

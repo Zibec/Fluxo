@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowBigLeft, ArrowLeft, Cog, Settings, Sun } from "lucide-react";
 import Link from "next/link";
 import { redirect, usePathname, useRouter } from "next/navigation";
@@ -16,20 +16,16 @@ import {
 import { authService } from "@/lib/service/auth/auth-service";
 import { useTheme } from "next-themes";
 import { getCurrencySymbol } from "@/lib/utils";
+import { relatorioService } from "@/lib/service/relatorio/relatorio-service";
 
 
 // Atualize a assinatura da função para incluir patrimony
 export function Header() {
-  const [isEditingBalance, setIsEditingBalance] = useState(false)
-  const [tempBalance, setTempBalance] = useState("")
   const router = useRouter()
   const [balance, setBalance] = useState(0)
   const { theme, setTheme } = useTheme()
   const path = usePathname()
 
-  const onBalanceChange = (newBalance: number) => {
-    setBalance(newBalance);
-  };
   const [patrimony, setPatrimony] = useState(0);
 
   const menuItems = [
@@ -41,34 +37,6 @@ export function Header() {
     { label: "Histórico", route: "dashboard/historico" },
   ];
 
-  const handleBalanceClick = () => {
-    setIsEditingBalance(true);
-    setTempBalance(balance.toString());
-  };
-
-  const handleBalanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Permite números e vírgula/ponto para decimais
-    const value = e.target.value.replace(/[^0-9,.]/g, "");
-    setTempBalance(value);
-  };
-
-  const handleBalanceBlur = () => {
-    // Converte vírgula para ponto antes de converter para número
-    const numericValue = Number.parseFloat(tempBalance.replace(",", "."));
-    const newBalance = isNaN(numericValue) ? 0 : numericValue; // Se não for número, define como 0
-    onBalanceChange(newBalance);
-    setIsEditingBalance(false);
-  };
-
-
-  const handleBalanceKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleBalanceBlur();
-    } else if (e.key === "Escape") {
-      setIsEditingBalance(false);
-    }
-  };
-
   // Função para formatar moeda
   const formatCurrency = (value: number) => {
     return value.toLocaleString("pt-BR", {
@@ -76,6 +44,22 @@ export function Header() {
       maximumFractionDigits: 2,
     });
   };
+
+  useEffect(() => {
+    const fetchPatrimonio = async () => {
+      const data = await relatorioService.getPatrimonio()
+      setPatrimony(data)
+    }
+    fetchPatrimonio()
+  }, [])
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const data = await relatorioService.getDinheiroTotal()
+      setBalance(data)
+    }
+    fetchBalance()
+  }, [])
 
   return (
     <header
@@ -100,30 +84,14 @@ export function Header() {
         <div className="text-center flex flex-col items-center">
           <div>
             <p className="text-sm opacity-70 mb-1">Dinheiro na conta</p>
-            {isEditingBalance ? (
-              <input
-                type="text"
-                value={tempBalance}
-                onChange={handleBalanceChange}
-                onBlur={handleBalanceBlur}
-                onKeyDown={handleBalanceKeyDown}
-                autoFocus
-                className="text-4xl font-bold bg-transparent border-b-2 outline-none text-center w-64"
-                style={{
-                  borderColor: "var(--primary)",
-                  color: "var(--foreground)",
-                }}
-                placeholder="0,00"
-              />
-            ) : (
-              <p
-                onClick={handleBalanceClick}
-                className="text-4xl font-bold cursor-pointer transition-colors"
-                style={{ color: "var(--foreground)" }}
-              >
-                {getCurrencySymbol()} {formatCurrency(balance)}
-              </p>
-            )}
+
+            {/* Saldo somente leitura */}
+            <p
+              className="text-4xl font-bold"
+              style={{ color: "var(--foreground)" }}
+            >
+              {getCurrencySymbol()} {formatCurrency(balance)}
+            </p>
           </div>
 
           {/* Patrimônio total */}

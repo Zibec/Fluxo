@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Filter } from "lucide-react"
 import { createTransacaoFormData } from "@/lib/service/transacao/transacao-schema"
 import { transacaoService } from "@/lib/service/transacao/transacao-service"
+import { createPerfilFormData } from "@/lib/service/perfil/perfil-schema"
+import { perfilService } from "@/lib/service/perfil/perfil-service"
+import { TransactionCardWithReembolso } from "@/components/dedicated/history/transaction-card-reembolso"
 
 export default function HistoricoPage() {
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -15,16 +18,27 @@ export default function HistoricoPage() {
 
   useEffect(() => {
     const fetchTransacoes = async () => {
-      const fetchedDividas = await transacaoService.getTransacoesByUser()
+      const fetchedDividas: createTransacaoFormData[] = await transacaoService.getTransacoesByUser()
+      fetchedDividas.reverse()
       setTransactions(fetchedDividas)
     }
     fetchTransacoes()
   }, [])
 
-  const handleTransactionClick = (id: number) => {
-    console.log("[v0] Transaction clicked:", id)
-    // TODO: abrir modal de detalhes
-  }
+  const [profiles, setProfiles] = useState<createPerfilFormData[]>()
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      perfilService.getAllPerfis().then((data) => {
+        setProfiles(data)
+      })
+    } 
+
+    fetchProfiles()
+  }, [])
+
+
+  
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -45,10 +59,10 @@ export default function HistoricoPage() {
         {/* Lista de transações */}
         <div className="space-y-3">
           {transactions && transactions.map((transaction) => (
-            <TransactionCard
+            <TransactionCardWithReembolso
               key={transaction.id}
               transaction={transaction}
-              onClick={() => handleTransactionClick(transaction.id)}
+              profiles={profiles}
             />
           ))}
         </div>

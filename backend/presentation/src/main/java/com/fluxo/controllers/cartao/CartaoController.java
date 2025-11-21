@@ -57,6 +57,23 @@ public class CartaoController {
 
         List<Cartao> cartoes =  service.obterPorUsuarioId(usuario.getId());
 
+        cartoes.stream()
+                .map(c -> {
+                    var cartaoDTO = new CartaoDTO();
+                    cartaoDTO.usuarioId = c.getUsuarioId();
+                    cartaoDTO.dataVencimentoFatura = c.getDataVencimentoFatura().toString();
+                    cartaoDTO.dataFechamentoFatura = c.getDataFechamentoFatura().toString();
+                    cartaoDTO.saldo = c.getSaldo();
+                    cartaoDTO.titular = c.getTitular();
+                    cartaoDTO.validade = c.getValidade();
+                    cartaoDTO.cvv = c.getCvv().getCodigo();
+                    cartaoDTO.limite = c.getLimite();
+                    cartaoDTO.numero = c.getNumero().getCodigo();
+                    cartaoDTO.id = c.getId().getId();
+                    return cartaoDTO;
+                })
+                .toList();
+
         return ResponseEntity.ok(cartoes);
     }
 
