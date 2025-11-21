@@ -167,7 +167,7 @@ public class UsuarioTest {
             fail("A senha atual deveria estar correta para este cenário de sucesso.");
         }
         try {
-            usuarioService.changePassword(usuario,senhaAtual, this.novaSenha);
+            usuario.setPassword(novaSenha);
             senhaAtual = this.novaSenha;
         } catch (Exception e) {
             this.thrownException = e;

@@ -25,7 +25,8 @@ public class CartaoTest {
 
     public CartaoTest() {
         this.cartaoRepositorio = new Repositorio();
-        this.cartaoService = new CartaoService(cartaoRepositorio);
+        FaturaRepositorio faturaRepositorio = new Repositorio();
+        this.cartaoService = new CartaoService(cartaoRepositorio, faturaRepositorio);
     }
 
     // Scenario: Cadastro de cartão com todos os campos obrigatórios preenchidos

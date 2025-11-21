@@ -31,7 +31,7 @@ public class GestaoDePerfisTest {
     private ContaRepositorio contaRepositorio = new Repositorio();
     private PerfilService perfilService = new PerfilService(perfilRepository);
     private CartaoRepositorio cartaoRepositorio = new Repositorio();
-    private TransacaoService transacaoService = new TransacaoService(transacaoRepositorio, contaRepositorio, cartaoRepositorio);
+    private TransacaoService transacaoService = new TransacaoService(transacaoRepositorio, contaRepositorio, cartaoRepositorio, new Repositorio());
     //Regra de negócio: Ao criar uma nova despesa, deve ser obrigatório selecionar qual perfil realizou o gasto. A transação no banco deve conter referência ao perfil que a realizou.
 
     //Cenário: Registrar gasto associado a um perfil com sucesso

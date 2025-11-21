@@ -32,7 +32,7 @@ public class AgendamentoTest {
     private final ContaRepositorio contaRepo =  new Repositorio();
     private final CartaoRepositorio cartaoRepo =  new Repositorio();
 
-    private final TransacaoService txService = new TransacaoService(txRepo, contaRepo, cartaoRepo);
+    private final TransacaoService txService = new TransacaoService(txRepo, contaRepo, cartaoRepo, new Repositorio());
 
     private final AgendamentoRepositorio agRepo = new Repositorio();
     private final AgendamentoService agService = new AgendamentoService(agRepo, txService);

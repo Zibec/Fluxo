@@ -23,8 +23,9 @@ public class Transacao {
     private String transacaoOriginalId;
     private FormaPagamentoId pagamentoId;
     private boolean avulsa;
-
     private String perfilId;
+
+    private String usuarioId;
 
     public Transacao() {
         this.id = UUID.randomUUID().toString();
@@ -77,7 +78,12 @@ public class Transacao {
     public FormaPagamentoId getPagamentoId() { return pagamentoId; }
     public void setCategoriaId(String categoriaId) { this.categoriaId = categoriaId; }
     public void setPagamentoId(FormaPagamentoId id) { this.pagamentoId = id; }
-
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 
     /** Só pode atualizar enquanto PENDENTE */
     public void atualizarValor(BigDecimal novoValor) {

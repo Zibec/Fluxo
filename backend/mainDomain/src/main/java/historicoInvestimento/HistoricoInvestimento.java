@@ -21,6 +21,13 @@ public class HistoricoInvestimento {
         this.data = data;
     }
 
+    public HistoricoInvestimento(String id, String investimentoId, BigDecimal valorAtualizado, LocalDate data) {
+        this.historicoInvestimentoId = id;
+        this.investimentoId = investimentoId;
+        this.valorAtualizado = valorAtualizado;
+        this.data = data;
+    }
+
     public String getInvestimentoId() {
         return investimentoId;
     }

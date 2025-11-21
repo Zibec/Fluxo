@@ -28,7 +28,7 @@ public class OrcamentoTest {
         private final Map<OrcamentoChave, BigDecimal> acumulado = new HashMap<>();
 
         public FakeTransacaoService(TransacaoRepositorio repositorio, ContaRepositorio contaRepo, CartaoRepositorio cartaoRepo) {
-            super(repositorio, contaRepo, cartaoRepo);
+            super(repositorio, contaRepo, cartaoRepo, new Repositorio());
         }
 
         public void set(OrcamentoChave k, BigDecimal v) {

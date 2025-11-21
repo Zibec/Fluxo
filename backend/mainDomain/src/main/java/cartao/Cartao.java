@@ -17,7 +17,6 @@ public class Cartao extends FormaPagamento {
     private Cvv cvv;
 
     private BigDecimal limite;
-    private BigDecimal saldo;
     private Fatura fatura = null;
     private LocalDate dataFechamentoFatura;
     private LocalDate dataVencimentoFatura;
@@ -40,7 +39,7 @@ public class Cartao extends FormaPagamento {
         this.cvv = cvv;
         notNull(limite);
         this.limite = limite;
-        this.saldo = BigDecimal.ZERO;
+        super.setSaldo(BigDecimal.ZERO);
         this.dataFechamentoFatura = dataFechamentoFatura;
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
@@ -57,7 +56,7 @@ public class Cartao extends FormaPagamento {
         this.cvv = cvv;
         notNull(limite);
         this.limite = limite;
-        this.saldo = saldo;
+        super.setSaldo(saldo);
         this.dataFechamentoFatura = dataFechamentoFatura;
         this.dataVencimentoFatura = dataVencimentoFatura;
     }
@@ -74,7 +73,7 @@ public class Cartao extends FormaPagamento {
         this.cvv = cvv;
         notNull(limite);
         this.limite = limite;
-        this.saldo = saldo;
+        super.setSaldo(saldo);;
         this.dataFechamentoFatura = dataFechamentoFatura;
         this.dataVencimentoFatura = dataVencimentoFatura;
         this.usuarioId = usuarioId;
@@ -92,7 +91,7 @@ public class Cartao extends FormaPagamento {
         this.cvv = cvv;
         notNull(limite);
         this.limite = limite;
-        this.saldo = saldo;
+        super.setSaldo(saldo);
         this.dataFechamentoFatura = dataFechamentoFatura;
         this.dataVencimentoFatura = dataVencimentoFatura;
         this.usuarioId = usuarioId;
@@ -119,9 +118,6 @@ public class Cartao extends FormaPagamento {
     public BigDecimal getLimite() {
         return limite;
     }
-    public BigDecimal getSaldo() {
-        return saldo;
-    }
     public LocalDate getDataFechamentoFatura() {
         return dataFechamentoFatura;
     }
@@ -139,9 +135,6 @@ public class Cartao extends FormaPagamento {
     }
     public void setLimite(BigDecimal limite) {
         this.limite = limite;
-    }
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
     }
     public void setDataFechamentoFatura(LocalDate dataFechamentoFatura) {
         if (dataFechamentoFatura.isAfter(this.dataVencimentoFatura) && this.dataVencimentoFatura != null) {
@@ -181,21 +174,25 @@ public class Cartao extends FormaPagamento {
             throw new IllegalArgumentException("Limite indisponível para esta transação.");
         }
 
+        if(fatura.getStatus().equals("FECHADA")) {
+            throw new IllegalArgumentException("Fatura fechada, pague a fatura para continuar realizando transações.");
+        }
+
         fatura.adicionarValor(valor);
     }
 
     public void fecharFatura() {
         notNull(fatura, "Não há fatura aberta para fechar.");
+        dataFechamentoFatura = dataFechamentoFatura.plusMonths(1);
         fatura.fecharFatura();
-        super.realizarTransacao(fatura.getValorTotal());
-
     }
 
     public void pagarFatura() {
         notNull(fatura, "Não há fatura aberta para pagar.");
         super.realizarTransacao(fatura.getValorTotal());
         fatura.pagarFatura();
-        fatura = null;
+        dataVencimentoFatura = dataVencimentoFatura.plusMonths(1);
+        fatura = new Fatura(this, dataVencimentoFatura);
     }
 
 

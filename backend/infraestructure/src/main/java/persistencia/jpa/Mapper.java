@@ -50,6 +50,9 @@ import usuario.Moeda;
 import usuario.Usuario;
 
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Component
 public class Mapper extends ModelMapper {
@@ -93,8 +96,16 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<FaturaJpa, Fatura>() {
             @Override
             protected Fatura convert(FaturaJpa source) {
-                var cartao = new CartaoRepositoryImpl().obterCartaoPorId(new CartaoId(source.cartaoId));
-                return new Fatura(cartao, source.dataVencimento);
+                var cartao = new Cartao();
+                cartao.setId(new CartaoId(source.cartaoId));
+                var fatura = new Fatura(cartao, source.dataVencimento);
+                fatura.adicionarValor(source.valorTotal);
+                if(source.transacoes == null) {
+                    fatura.setTransacoes(new ArrayList<>());
+                } else {
+                    fatura.setTransacoes(new ArrayList<>(source.transacoes));
+                }
+                return fatura;
             }
         });
 
@@ -117,7 +128,7 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<HistoricoInvestimentoJpa, HistoricoInvestimento>() {
             @Override
             protected HistoricoInvestimento convert(HistoricoInvestimentoJpa source) {
-                return new HistoricoInvestimento(source.investimentoId, source.valorAtualizado, source.data);
+               return new HistoricoInvestimento(source.historicoInvestimentoId, source.investimentoId, source.valorAtualizado, source.data);
             }
         });
 
@@ -188,9 +199,16 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<TransacaoJpa, Transacao>() {
             @Override
             protected Transacao convert(TransacaoJpa source) {
-                FormaPagamentoId pagamentoId = new ContaId(source.pagamentoId);
+                FormaPagamentoId pagamentoId;
+                if(Objects.equals(source.tipoPagamento, "CONTA")) {
+                    pagamentoId = new ContaId(source.pagamentoId);
+                } else {
+                    pagamentoId = new CartaoId(source.pagamentoId);
+                }
                 var t = new Transacao(source.id, source.origemAgendamentoId, source.descricao, source.valor,
                         source.data, source.status, source.categoriaId, pagamentoId, source.avulsa, source.tipo, source.perfilId);
+                t.setUsuarioId(source.transacaoOriginalId);
+                t.setUsuarioId(source.usuarioId);
                 return t;
             }
         });
@@ -294,6 +312,28 @@ public class Mapper extends ModelMapper {
                 investimento.setUsuarioId(source.usuarioId);
                 return investimento;
 
+            }
+        });
+
+        addConverter(new AbstractConverter<Transacao, TransacaoJpa>() {
+            @Override
+            protected TransacaoJpa convert(Transacao source) {
+                var jpa = new TransacaoJpa();
+                jpa.id = source.getId();
+                jpa.origemAgendamentoId = source.getOrigemAgendamentoId();
+                jpa.descricao = source.getDescricao();
+                jpa.valor =  source.getValor();
+                jpa.data =  source.getData();
+                jpa.status = source.getStatus();
+                jpa.categoriaId = source.getCategoriaId();
+                jpa.pagamentoId = source.getPagamentoId().getId();
+                jpa.avulsa = source.isAvulsa();
+                jpa.transacaoOriginalId = source.getTransacaoOriginalId();
+                jpa.tipo = source.getTipo();
+                jpa.tipoPagamento = source.getPagamentoId().getType();
+                jpa.perfilId = source.getPerfilId();
+                jpa.usuarioId = source.getUsuarioId();
+                return jpa;
             }
         });
 

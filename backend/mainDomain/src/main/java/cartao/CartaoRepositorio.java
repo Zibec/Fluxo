@@ -10,11 +10,11 @@ public interface CartaoRepositorio {
 
     Cartao obterCartao(CartaoNumero numero);
 
-    Cartao obterCartaoPorId(CartaoId cartaoId);
+    Cartao obterCartaoPorId(String cartaoId);
 
     List<Cartao> obterTodos();
 
     List<Cartao> obterCartaoPorUsarioId(String id);
 
-    void deletarCartao(CartaoId id);
+    void deletarCartao(String id);
 }

@@ -40,8 +40,16 @@ public class ContaController {
 
 
     @GetMapping("/")
-    public ResponseEntity<List<Conta>> getAllContas(){
-        return ResponseEntity.ok(service.listarTodasContas());
+    public ResponseEntity<?> getAllContas(){
+        return ResponseEntity.ok(service.listarTodasContas().stream().map(c -> {
+            var contaDTO = new ContaDTO();
+            contaDTO.id = c.getId().getId();
+            contaDTO.nome = c.getNome();
+            contaDTO.banco = c.getBanco();
+            contaDTO.tipo = c.getTipo();
+            contaDTO.saldo = c.getSaldo();
+            return contaDTO;
+        }));
     }
 
     @GetMapping("/{id}")
@@ -61,7 +69,15 @@ public class ContaController {
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
-        List<Conta> contas =  service.obterPorUsuarioId(usuario.getId());
+        List<?> contas = service.obterPorUsuarioId(usuario.getId()).stream().map(c -> {
+            var contaDTO = new ContaDTO();
+            contaDTO.id = c.getId().getId();
+            contaDTO.nome = c.getNome();
+            contaDTO.banco = c.getBanco();
+            contaDTO.tipo = c.getTipo();
+            contaDTO.saldo = c.getSaldo();
+            return contaDTO;
+        }).toList();
 
         return ResponseEntity.ok(contas);
     }

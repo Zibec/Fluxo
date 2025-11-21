@@ -10,8 +10,6 @@ import static org.apache.commons.lang3.Validate.notNull;
 public class Conta extends FormaPagamento {
 
     private ContaId id;
-    private BigDecimal saldo;
-
     private String nome;
     private String tipo;
     private String banco;
@@ -20,12 +18,12 @@ public class Conta extends FormaPagamento {
 
     public Conta() {
         this.id = new ContaId(UUID.randomUUID().toString());
-        this.saldo = BigDecimal.ZERO;
+        super.setSaldo(BigDecimal.ZERO);
     }
 
     public Conta(String nome, String tipo, String banco) {
         this.id = new ContaId(UUID.randomUUID().toString());
-        this.saldo = BigDecimal.ZERO;
+        super.setSaldo(BigDecimal.ZERO);
         notNull(nome);
         this.nome = nome;
         notNull(tipo);
@@ -41,7 +39,7 @@ public class Conta extends FormaPagamento {
         if (saldoInicial.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("O saldo inicial não pode ser negativo.");
         }
-        this.saldo = saldoInicial;
+        super.setSaldo(saldoInicial);
     }
 
     public Conta(ContaId id, String nome, String tipo, String banco, BigDecimal saldoInicial, String usuarioId) {
@@ -52,7 +50,7 @@ public class Conta extends FormaPagamento {
         if (saldoInicial.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("O saldo inicial não pode ser negativo.");
         }
-        this.saldo = saldoInicial;
+        super.setSaldo(saldoInicial);
         this.usuarioId = usuarioId;
     }
 
@@ -66,7 +64,7 @@ public class Conta extends FormaPagamento {
     }
 
     public boolean temSaldoSuficiente(BigDecimal valor) {
-        return this.saldo.compareTo(valor) >= 0;
+        return super.getSaldo().compareTo(valor) >= 0;
     }
 
     public ContaId getId() {
@@ -75,14 +73,6 @@ public class Conta extends FormaPagamento {
 
     public void setId(String id) {
         this.id = new ContaId(id);
-    }
-
-    public BigDecimal getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
     }
 
     public String getNome() {

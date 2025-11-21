@@ -5,7 +5,7 @@ import transacao.FormaPagamentoId;
 public class CartaoId extends FormaPagamentoId {
     public CartaoId(String id) {
         super(id);
-        super.setType("cartao");
+        super.setType("CARTAO");
     }
 
     @Override

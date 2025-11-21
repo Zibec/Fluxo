@@ -2,10 +2,7 @@ package infraestrutura.persistencia.memoria;
 
 import agendamento.Agendamento;
 import agendamento.AgendamentoRepositorio;
-import cartao.Cartao;
-import cartao.CartaoId;
-import cartao.CartaoNumero;
-import cartao.CartaoRepositorio;
+import cartao.*;
 import categoria.Categoria;
 import categoria.CategoriaRepositorio;
 import conta.Conta;
@@ -56,7 +53,8 @@ public class Repositorio implements
         PerfilRepository,
         TaxaSelicRepository,
         TransacaoRepositorio,
-        UsuarioRepositorio
+        UsuarioRepositorio,
+        FaturaRepositorio
 {
 
     /*-----------------------------------------------------------------------*/
@@ -77,7 +75,7 @@ public class Repositorio implements
         return null;
     }
 
-    public List<Investimento> obterTodosInvestimentos(){
+    public ArrayList<Investimento> obterTodosInvestimentos(){
         return investimentos;
     }
 
@@ -174,6 +172,11 @@ public class Repositorio implements
         return cartao;
     }
 
+    @Override
+    public Cartao obterCartaoPorId(String cartaoId) {
+        return null;
+    }
+
     public Cartao obterCartaoPorId(CartaoId cartaoId) {
         notNull(cartaoId, "O ID do cartão não pode ser nulo");
 
@@ -196,7 +199,7 @@ public class Repositorio implements
     }
 
     @Override
-    public void deletarCartao(CartaoId id) {
+    public void deletarCartao(String id) {
 
     }
 
@@ -311,7 +314,7 @@ public class Repositorio implements
     // HistoricoInvestimento
     /*-----------------------------------------------------------------------*/
 
-    private List<HistoricoInvestimento> historico = new ArrayList<>();
+    private ArrayList<HistoricoInvestimento> historico = new ArrayList<>();
     private boolean status;
 
     public void setStatus(boolean status) {
@@ -328,14 +331,14 @@ public class Repositorio implements
 
     }
 
-    public List<HistoricoInvestimento> obterTodosHistoricos(){
+    public ArrayList<HistoricoInvestimento> obterTodosHistoricos(){
         return historico;
     }
 
     @Override
-    public List<HistoricoInvestimento> obterTodosHistoricosPorInvestimento(String investimentoId) {
+    public ArrayList<HistoricoInvestimento> obterTodosHistoricosPorInvestimento(String investimentoId) {
 
-        List<HistoricoInvestimento> lista = new ArrayList<>();
+        ArrayList<HistoricoInvestimento> lista = new ArrayList<>();
         for(HistoricoInvestimento histInv : historico){
             if(investimentoId.equals(histInv.getInvestimentoId())){
                 lista.add(histInv);
@@ -694,4 +697,18 @@ public class Repositorio implements
 
     }
 
+    @Override
+    public void salvarFatura(Fatura fatura) {
+
+    }
+
+    @Override
+    public Fatura obterFatura(String id) {
+        return null;
+    }
+
+    @Override
+    public void deletarFatura(String id) {
+
+    }
 }

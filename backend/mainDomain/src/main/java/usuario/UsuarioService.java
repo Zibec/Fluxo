@@ -61,6 +61,21 @@ public class UsuarioService {
         usuarioRepositorio.atualizarUsuario(usuario);
     }
 
+    public void changeUsername(String usuarioId, String newUsername, String password) {
+        Usuario usuario = obter(usuarioId);
+
+        if (!usuario.getPassword().equals(password)) {
+            throw new IllegalArgumentException("Senha incorreta");
+        }
+
+        if (usernameExistente(newUsername)) {
+            throw new IllegalArgumentException("Nome de usuário já está em uso");
+        }
+        usuario.setUsername(newUsername);
+        usuarioRepositorio.deletarUsuario(usuarioId);
+        salvar(usuario);
+    }
+
     public void changeEmail(Usuario usuario, Email oldEmail, String newEmail, String password) {
         if (!usuario.getPassword().equals(password)) {
             throw new SecurityException("Senha incorreta");
@@ -81,7 +96,7 @@ public class UsuarioService {
     }
 
     public void changePassword(Usuario usuario, String oldPassword, String newPassword) {
-        BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder ();
+        BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder();
 
         if (!passwordEncoder.matches(oldPassword, usuario.getPassword())) {
             throw new SecurityException("Senha incorreta");

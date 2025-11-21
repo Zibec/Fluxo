@@ -1,9 +1,9 @@
 package com.fluxo.controllers.transacao;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +57,6 @@ public class TransacaoController {
         this.transacaoService = transacaoService;
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable String id) {
         try {
@@ -77,7 +76,7 @@ public class TransacaoController {
         return ResponseEntity.ok(transacoes);
     }
 
-    @GetMapping("/agendamento-data/{agendamento}/{data}")
+    @GetMapping("/agendamento-data/{agendamentoId}/{data}")
     public ResponseEntity<Transacao> buscarPorNome(@PathVariable String agendamentoId, @PathVariable LocalDate data) {
         Optional<Transacao> transacao = transacaoService.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
         return transacao.map(ResponseEntity::ok)
@@ -92,7 +91,7 @@ public class TransacaoController {
     }
 
     
-    @GetMapping("/by-conta")
+    @GetMapping("/by-user")
     public ResponseEntity<List<Transacao>> buscarPorUser(HttpServletRequest request) {
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
@@ -110,6 +109,7 @@ public class TransacaoController {
     public ResponseEntity<Void> criar(@RequestBody TransacaoDTO dto, HttpServletRequest request) {
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
 
         //receber formaPagamentoId como String
         String formaPagamentoId = dto.pagamentoId();
@@ -117,11 +117,13 @@ public class TransacaoController {
         //resolver a classe concreta
         FormaPagamentoId pagamentoId;
 
-        if (cartaoService.obterPorId(new CartaoId(formaPagamentoId)) != null) {
+        if (cartaoService.obterPorId(formaPagamentoId) != null) {
             pagamentoId = new CartaoId(formaPagamentoId);
+            pagamentoId.setType("CARTAO");
         } 
-        else if (contaService.obter(formaPagamentoId) != null) {
+        else if (contaService.obter(formaPagamentoId).isPresent()) {
             pagamentoId = new ContaId(formaPagamentoId);
+            pagamentoId.setType("CONTA");
         }
         else {
             throw new IllegalArgumentException("Forma de pagamento não encontrada.");
@@ -133,7 +135,7 @@ public class TransacaoController {
         if (dto.categoriaId() != null) {
             //Construtor com categoria
             transacao = new Transacao(
-                dto.id(),
+                    UUID.randomUUID().toString(),
                 dto.origemAgendamentoId(),
                 dto.descricao(),
                 dto.valor(),
@@ -148,7 +150,7 @@ public class TransacaoController {
         } else {
             //Construtor sem categoria
             transacao = new Transacao(
-                dto.id(),
+                    UUID.randomUUID().toString(),
                 dto.origemAgendamentoId(),
                 dto.descricao(),
                 dto.valor(),
@@ -161,9 +163,21 @@ public class TransacaoController {
             );
         }
 
+        transacao.setUsuarioId(usuario.getId());
         //Salvar
         transacaoService.salvarTransacao(transacao);
 
+        if(transacao.isAvulsa()) {
+            transacaoService.efetivarTransacao(transacao.getId());
+        }
+
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/efetivar")
+    public ResponseEntity<Void> efetivar(@PathVariable String id) {
+        transacaoService.efetivarTransacao(id);
         return ResponseEntity.ok().build();
     }
     
@@ -184,7 +198,8 @@ public class TransacaoController {
         //Determinar se pagamentoId é de cartão ou conta
         FormaPagamentoId pagamentoId;
 
-        if (cartaoService.obterPorId(new CartaoId(dto.pagamentoId())) != null) {
+
+        if (cartaoService.obterPorId(dto.pagamentoId()) != null) {
             pagamentoId = new CartaoId(dto.pagamentoId());
 
         } else if (contaService.obter(dto.pagamentoId()) != null) {
@@ -209,6 +224,7 @@ public class TransacaoController {
                 dto.perfilId()
         );
 
+        transacaoAtualizada.setUsuarioId(usuario.getId());
         //Salvar
         transacaoService.atualizarTransacao(transacaoAtualizada);
 

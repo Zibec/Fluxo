@@ -37,7 +37,7 @@ public class ContasAPagarTest {
     private ContaRepositorio contaRepositorio = new Repositorio();
     private CartaoRepositorio cartaoRepositorio = new Repositorio();
 
-    private TransacaoService txService = new TransacaoService(txRepositorio, contaRepositorio, cartaoRepositorio);
+    private TransacaoService txService = new TransacaoService(txRepositorio, contaRepositorio, cartaoRepositorio, new Repositorio());
     private ContaService contaService = new ContaService(contaRepositorio);
     private PerfilService perfilService = new PerfilService(perfilRepository);
 

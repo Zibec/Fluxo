@@ -12,4 +12,6 @@ public interface TransacaoJpaRepository extends JpaRepository<TransacaoJpa, Stri
     List<TransacaoJpa> findAllByPagamentoId(String usuarioId);
 
     List<TransacaoJpa> findAllByOrigemAgendamentoId(String origemAgendamentoId);
+
+    List<TransacaoJpa> findAllByUsuarioId(String usuarioId);
 }

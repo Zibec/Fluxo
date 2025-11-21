@@ -46,7 +46,7 @@ public class ReembolsoTest {
         contaRepo = new Repositorio();
         cartaoRepositorio = new Repositorio();
 
-        transacaoService = new TransacaoService(transacaoRepo, contaRepo, cartaoRepositorio);
+        transacaoService = new TransacaoService(transacaoRepo, contaRepo, cartaoRepositorio, new Repositorio());
         orcamentoService = new OrcamentoService(orcamentoRepo, transacaoService);
         excecaoCapturada = null;
         reembolsoResultado = null;

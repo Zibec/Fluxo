@@ -30,8 +30,11 @@ public class TransacaoJpa {
 
     @Enumerated(EnumType.STRING)
     public Tipo tipo;
+    public String tipoPagamento;
 
     public String transacaoOriginalId;
+
+    public String usuarioId;
 
     public String pagamentoId;
     public boolean avulsa;

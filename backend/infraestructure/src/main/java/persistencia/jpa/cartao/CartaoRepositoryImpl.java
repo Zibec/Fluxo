@@ -28,32 +28,29 @@ public class CartaoRepositoryImpl implements CartaoRepositorio {
 
     @Override
     public Cartao obterCartao(CartaoNumero numero) {
-        var cartaoJpa = repository.findByNumero(numero.getCodigo());
+        var cartaoJpa = (CartaoJpa) repository.findByNumero(numero.getCodigo());
 
         if(cartaoJpa == null){
             return null;
         }
 
-        var fatura = faturaRepository.obterFatura((CartaoJpa) cartaoJpa);
-
-
+        var fatura = faturaRepository.obterFatura(cartaoJpa.id);
 
         var cartao = mapper.map(cartaoJpa,Cartao.class);
         cartao.setFatura(fatura);
+        fatura.setCartao(cartao);
         return cartao;
     }
 
     @Override
-    public Cartao obterCartaoPorId(CartaoId cartaoId) {
-        var cartaoJpa = repository.findById(cartaoId.getId()).orElse(null);
+    public Cartao obterCartaoPorId(String cartaoId) {
+        var cartaoJpa = (CartaoJpa) repository.findById(cartaoId).orElse(null);
 
         if(cartaoJpa == null){
             return null;
         }
 
-        var fatura = faturaRepository.obterFatura(cartaoJpa);
-
-
+        var fatura = faturaRepository.obterFatura(cartaoJpa.id);
 
         var cartao = mapper.map(cartaoJpa,Cartao.class);
         cartao.setFatura(fatura);
@@ -83,7 +80,7 @@ public class CartaoRepositoryImpl implements CartaoRepositorio {
     }
 
     @Override
-    public void deletarCartao(CartaoId id) {
-        repository.deleteById(id.getId());
+    public void deletarCartao(String id) {
+        repository.deleteById(id);
     }
 }

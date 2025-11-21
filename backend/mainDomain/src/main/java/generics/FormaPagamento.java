@@ -5,12 +5,24 @@ import java.math.BigDecimal;
 public abstract class FormaPagamento {
     private BigDecimal saldo;
 
+    public FormaPagamento() {
+        this.saldo = BigDecimal.ZERO;
+    }
+
     public void realizarTransacao(BigDecimal valor) {
         if((saldo.subtract(valor)).compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Saldo insuficiente para realizar a transação.");
         }
 
         this.saldo = this.saldo.subtract(valor);
+    }
+
+    public BigDecimal getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(BigDecimal saldo) {
+        this.saldo = saldo;
     }
 
     public void creditar(BigDecimal valor) {

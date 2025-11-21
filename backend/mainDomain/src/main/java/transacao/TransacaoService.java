@@ -12,6 +12,7 @@ import static org.apache.commons.lang3.Validate.notNull;
 import cartao.Cartao;
 import cartao.CartaoId;
 import cartao.CartaoRepositorio;
+import cartao.FaturaRepositorio;
 import conta.Conta;
 import conta.ContaId;
 import conta.ContaRepositorio;
@@ -20,14 +21,15 @@ public class TransacaoService {
     private final TransacaoRepositorio repo;
     private final ContaRepositorio contaRepo;
     private final CartaoRepositorio cartaoRepositorio;
+    private final FaturaRepositorio faturaRepositorio;
     private final Map<String, String> idxAgendamentoData = new ConcurrentHashMap<>();
     private final Map<String, Transacao> transacao = new ConcurrentHashMap<>();
 
-
-    public TransacaoService(TransacaoRepositorio repo, ContaRepositorio contaRepo, CartaoRepositorio cartaoRepositorio) {
+    public TransacaoService(TransacaoRepositorio repo, ContaRepositorio contaRepo, CartaoRepositorio cartaoRepositorio, FaturaRepositorio faturaRepositorio) {
         this.repo = Objects.requireNonNull(repo);
         this.contaRepo = Objects.requireNonNull(contaRepo);
         this.cartaoRepositorio = Objects.requireNonNull(cartaoRepositorio);
+        this.faturaRepositorio = Objects.requireNonNull(faturaRepositorio);
     }
 
     /**
@@ -63,11 +65,13 @@ public class TransacaoService {
 
         List<Transacao> todasTransacoes = repo.listarTodasTransacoes();
 
+        System.out.println(mes);
+
         // 1) Soma todas as DESPESAS da categoria no mês
         BigDecimal totalDespesas = todasTransacoes.stream()
                 .filter(t -> t.getTipo() == Tipo.DESPESA)
                 .filter(t -> categoriaId.equals(t.getCategoriaId()))
-                .filter(t -> YearMonth.from(t.getData()).equals(mes))
+                .filter(t -> t.getData().getMonth().equals(mes.getMonth()))
                 .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -139,15 +143,26 @@ public class TransacaoService {
                 .orElseThrow(() -> new IllegalArgumentException("Transação não encontrada"));
 
         t.efetivar();
-        if (t.getPagamentoId() instanceof ContaId) {
+        if (t.getPagamentoId().getType().equals("CONTA")) {
             Conta conta = contaRepo.obterConta(t.getPagamentoId().getId())
                     .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
-            conta.realizarTransacao(t.getValor());
+            if(t.getTipo().equals(Tipo.RECEITA)) {
+                conta.creditar(t.getValor());
+            } else {
+                conta.realizarTransacao(t.getValor());
+            }
             contaRepo.salvar(conta);
         } else {
-            Cartao cartao = cartaoRepositorio.obterCartaoPorId((CartaoId) t.getPagamentoId());
+            Cartao cartao = cartaoRepositorio.obterCartaoPorId(t.getPagamentoId().getId());
 
-            cartao.realizarTransacao(t.getValor());
+            if(t.getTipo().equals(Tipo.RECEITA)) {
+                cartao.creditar(t.getValor());
+            } else {
+                cartao.realizarTransacao(t.getValor());
+            }
+
+            cartao.getFatura().addTransacoes(t.getId());
+            faturaRepositorio.salvarFatura(cartao.getFatura());
             cartaoRepositorio.salvar(cartao);
         }
 
@@ -162,6 +177,7 @@ public class TransacaoService {
         if (t.getOrigemAgendamentoId() != null) {
             idxAgendamentoData.put(chave(t.getOrigemAgendamentoId(), t.getData()), t.getId());
         }
+
         repo.salvarTransacao(t);
     }
 

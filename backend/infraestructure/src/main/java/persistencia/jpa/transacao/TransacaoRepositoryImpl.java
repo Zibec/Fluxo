@@ -78,6 +78,10 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
 
     @Override
     public Optional<Transacao> obterTransacaoPorId(String id) {
+        if(repositorio.findById(id).isEmpty()){
+            return Optional.empty();
+        }
+
         return Optional.of(mapper.map(repositorio.findById(id), Transacao.class));
     }
 
@@ -88,7 +92,12 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
 
     @Override
     public List<Transacao> obterTransacaoPorConta(String usuarioId) {
-        var jpa = repositorio.findAllByPagamentoId(usuarioId);
+        List<TransacaoJpa> jpa = repositorio.findAllByUsuarioId(usuarioId);
+
+        if(jpa.isEmpty()) {
+            return List.of();
+        }
+
         return mapper.map(jpa, List.class);
     }
 }

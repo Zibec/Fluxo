@@ -92,6 +92,8 @@ public class InvestimentoService implements Observer {
 
         investimento.resgatarValor(valor);
 
+        investimentoRepositorio.salvar(investimento);
+
         historicoInvestimentoRepositorio.salvar(new HistoricoInvestimento(investimentoId, investimento.getValorAtual(), LocalDate.now()));
     }
 
