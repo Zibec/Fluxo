@@ -4,6 +4,7 @@ import agendamento.AgendamentoRepositorio;
 import agendamento.AgendamentoService;
 import cartao.CartaoRepositorio;
 import cartao.CartaoService;
+import cartao.FaturaRepositorio;
 import categoria.CategoriaRepositorio;
 import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
@@ -18,6 +19,7 @@ import metaInversa.MetaInversaRepositorio;
 import metaInversa.MetaInversaService;
 import orcamento.OrcamentoRepositorio;
 import orcamento.OrcamentoService;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import patrimonio.PatrimonioRepositorio;
 import patrimonio.PatrimonioService;
 import perfil.PerfilRepository;
@@ -51,6 +53,7 @@ import usuario.UsuarioService;
         "persistencia",
         "com.fluxo" // seu pacote principal
 })
+@EnableScheduling
 public class FluxoApplication {
 
     @Autowired
@@ -67,8 +70,8 @@ public class FluxoApplication {
     }
 
     @Bean
-    public CartaoService cartaoService(CartaoRepositorio repositorio) {
-        return new CartaoService(repositorio);
+    public CartaoService cartaoService(CartaoRepositorio repositorio, FaturaRepositorio faturaRepositorio) {
+        return new CartaoService(repositorio, faturaRepositorio);
     }
 
     @Bean
@@ -99,8 +102,8 @@ public class FluxoApplication {
     }
 
     @Bean
-    public TransacaoService transacaoService(TransacaoRepositorio transacaoRepositorio, ContaRepositorio contaRepositorio, CartaoRepositorio cartaoRepositorio){
-        return new TransacaoService(transacaoRepositorio, contaRepositorio, cartaoRepositorio);
+    public TransacaoService transacaoService(TransacaoRepositorio transacaoRepositorio, ContaRepositorio contaRepositorio, CartaoRepositorio cartaoRepositorio, FaturaRepositorio faturaRepositorio){
+        return new TransacaoService(transacaoRepositorio, contaRepositorio, cartaoRepositorio, faturaRepositorio);
     }
 
     @Bean

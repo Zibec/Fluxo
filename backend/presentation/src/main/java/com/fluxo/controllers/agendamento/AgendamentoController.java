@@ -6,6 +6,7 @@ import agendamento.AgendamentoRepositorio;
 import agendamento.AgendamentoService;
 import agendamento.Frequencia;
 import categoria.CategoriaService;
+import com.fluxo.agendador.AgendadorTarefas;
 import com.fluxo.config.security.SecurityFilter;
 import com.fluxo.config.security.TokenService;
 import conta.Conta;
@@ -55,7 +56,7 @@ public class AgendamentoController {
     private ContaRepositorio contaRepo;
 
     @Autowired
-    private AgendamentoRepositorio agRepo;
+    private AgendadorTarefas agendador;
 
     @GetMapping("/todos")
     public Iterable<Agendamento> buscarTodos(@RequestParam(name = "pageSize", required = false) Integer pageSize, HttpServletRequest request){
@@ -142,7 +143,8 @@ public class AgendamentoController {
             }
 
             System.out.println("Opa olha eu aqui");
-            service.salvarComTransacao(novo, conta );
+            service.salvarComTransacao(novo, conta);
+            agendador.agendarTransacao(novo);
             return ResponseEntity.status(201).build();
 
         } catch (IllegalStateException e) {
