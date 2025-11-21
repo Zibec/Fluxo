@@ -42,12 +42,10 @@ public class PatrimonioService {
     }
 
     public BigDecimal calcularPatrimonioLiquido(String usuarioId) {
-        // CORRIGIDO: Usa obterContaPorUsuarioId em vez de listarTodasContas
         BigDecimal totalContas = contaRepositorio.obterContaPorUsuarioId(usuarioId).stream()
                 .map(conta -> conta.getSaldo())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // CORRIGIDO: Usa obterTodosInvestimentosPorUsuarioId
         BigDecimal totalInvestimentos = investimentoRepositorio.obterTodosInvestimentosPorUsuarioId(usuarioId).stream()
                 .map(investimento -> investimento.getValorAtual())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -55,12 +53,10 @@ public class PatrimonioService {
         BigDecimal totalDividas;
 
         if(dividaRepositorio != null) {
-            // CORRIGIDO: Usa obterDividaPorUsuarioId
             totalDividas = dividaRepositorio.obterDividaPorUsuarioId(usuarioId).stream()
                     .map(divida -> divida.getValorDevedor())
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         } else {
-            // Já estava correto
             totalDividas = metaInversaRepositorio.obterMetaInversaPorUsuario(usuarioId).stream()
                     .map(metaInversa -> (metaInversa.getValorDivida().subtract(metaInversa.getValorAmortizado())))
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -74,7 +70,6 @@ public class PatrimonioService {
         boolean isUltimoDiaDoMes = data.equals(yearMonth.atEndOfMonth());
 
         if (isUltimoDiaDoMes) {
-            // Passa o ID para calcular apenas o do usuário
             BigDecimal valorAtual = calcularPatrimonioLiquido(usuarioId);
             Patrimonio snapshot = new Patrimonio(data, valorAtual);
             snapshotRepositorio.salvarPatrimonio(snapshot);

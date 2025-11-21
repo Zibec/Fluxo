@@ -2,6 +2,8 @@ package com.fluxo.controllers.transacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +55,7 @@ public class TransacaoController {
     @Autowired
     private SecurityFilter securityFilter;
 
+
     public TransacaoController(TransacaoService transacaoService) {
         this.transacaoService = transacaoService;
     }
@@ -70,11 +73,20 @@ public class TransacaoController {
 
     @GetMapping
     public ResponseEntity<List<Transacao>> listarTodas() {
-        var transacoes = transacaoService.listarTodasTransacoes();
-        if (transacoes.isEmpty()) {
+        var transacoesOriginal = transacaoService.listarTodasTransacoes();
+
+        if (transacoesOriginal.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(transacoes);
+        List<Transacao> listaResposta = new ArrayList<>();
+        Iterator<Transacao> it = transacoesOriginal.iterator();
+
+        while(it.hasNext()) {
+            Transacao t = it.next();
+            listaResposta.add(t);
+        }
+
+        return ResponseEntity.ok(listaResposta);
     }
 
     @GetMapping("/agendamento-data/{agendamento}/{data}")
@@ -213,6 +225,26 @@ public class TransacaoController {
         transacaoService.atualizarTransacao(transacaoAtualizada);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/reembolso")
+    public ResponseEntity<Object> criarReembolso(@RequestBody TransacaoDTO dto, HttpServletRequest request) {
+        String token = securityFilter.recoverToken(request);
+        if (token == null) return ResponseEntity.status(401).build();
+
+        if (dto.valor() == null || dto.transacaoOriginalId() == null) {
+            return ResponseEntity.badRequest().body("Valor e ID da transação original são obrigatórios.");
+        }
+
+        try {
+            Transacao reembolso = transacaoService.registrarReembolso(
+                    dto.valor(),
+                    dto.transacaoOriginalId()
+            );
+            return ResponseEntity.ok(reembolso);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao processar reembolso: " + e.getMessage());
+        }
     }
 
 }
