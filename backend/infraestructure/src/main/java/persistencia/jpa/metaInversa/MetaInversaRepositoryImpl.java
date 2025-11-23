@@ -50,7 +50,9 @@ public class MetaInversaRepositoryImpl implements MetaInversaRepositorio {
     @Override
     public List<MetaInversa> obterMetaInversaPorUsuario(String usuarioId) {
         var jpa = repository.findAllByUsuarioId(usuarioId);
-        return mapper.map(jpa, List.class);
+        return jpa.stream()
+          .map(meta -> mapper.map(meta, MetaInversa.class))
+          .toList();
     }
 
 }
