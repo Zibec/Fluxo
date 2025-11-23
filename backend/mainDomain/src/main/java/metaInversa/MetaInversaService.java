@@ -3,6 +3,7 @@ package metaInversa;
 import static org.apache.commons.lang3.Validate.notNull;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +70,34 @@ public class MetaInversaService {
     }
 
     public List<MetaInversa> obterPorUsuario(String usuarioId) {
-        return metaRepositorio.obterMetaInversaPorUsuario(usuarioId);
-    } 
+        List<MetaInversa> metasJpa = metaRepositorio.obterMetaInversaPorUsuario(usuarioId);
+
+        List<MetaInversa> metas = metasJpa.stream()
+        .map(jpa -> new MetaInversa(
+            jpa.getId(),
+            jpa.getNome(),
+            jpa.getValorDivida(),
+            jpa.getContaAssociadaId(),
+            jpa.getDataLimite(),
+            jpa.getValorAmortizado(),
+            jpa.getStatus()
+        ))
+        .toList();
+
+        ColecaoMetaInversa colecao = new ColecaoMetaInversa(metas);
+
+        List<MetaInversa> resultado = new ArrayList<>();
+
+        for (MetaInversa m : colecao) {
+            resultado.add(m);
+        }
+
+        return resultado;
+    }
+
+    public ColecaoMetaInversa listarColecaoPorUsuario(String usuarioId) {
+        var metas = metaRepositorio.obterMetaInversaPorUsuario(usuarioId);
+        return new ColecaoMetaInversa(metas);
+    }
+
 }
