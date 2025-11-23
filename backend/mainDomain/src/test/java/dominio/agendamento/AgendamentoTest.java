@@ -88,7 +88,7 @@ public class AgendamentoTest {
 
         //4) se não existir nenhuma, cria agora e retorna
         txService.criarPendenteDeAgendamento(
-                agendamentoId, ag.getDescricao(), ag.getValor(), base, conta, false, ag.getPerfilId()
+                agendamentoId, ag.getDescricao(), ag.getValor(), base, ag.getCategoriaId() ,conta, false, ag.getPerfilId()
         );
         return txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, base)
                 .orElseThrow(() -> new AssertionError("Falha ao preparar transação para atualização"));
@@ -112,7 +112,7 @@ public class AgendamentoTest {
     public void whenRegistrarParaDia(String data) {
         Agendamento ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         LocalDate d = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta, false, ag.getPerfilId());
     }
 
     @And("o dia atual é {string}")
@@ -145,7 +145,7 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         LocalDate d = LocalDate.parse(data, BR);
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta, false, ag.getPerfilId());
         qtdAntes = (int) txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId())).count();
         assertEquals(1, qtdAntes, "Deveria existir exatamente 1 transação já criada");
@@ -180,7 +180,7 @@ public class AgendamentoTest {
 
         agService.salvar(ag);
         dataTransacaoCriada = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada, conta, false, ag.getPerfilId());
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada,ag.getCategoriaId() , conta, false, ag.getPerfilId());
         assertTrue(txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataTransacaoCriada).isPresent());
     }
 
@@ -207,7 +207,7 @@ public class AgendamentoTest {
                 parseValor(valor), Frequencia.MENSAL, LocalDate.parse(data, BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
         dataOriginal = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal, conta, false, ag.getPerfilId());
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal,ag.getCategoriaId() , conta, false, ag.getPerfilId());
         assertTrue(txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal).isPresent());
     }
 
@@ -225,7 +225,7 @@ public class AgendamentoTest {
         txAntiga.cancelar();
         LocalDate dNova = LocalDate.parse(novaData, BR);
         var vNovo = parseValor(novoValor);
-        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova, conta, false, "0");
+        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova,txAntiga.getCategoriaId() , conta, false, "0");
         dataOriginal = dNova;
     }
 
@@ -427,7 +427,7 @@ public class AgendamentoTest {
 
         //cria a pendente vinculada à conta usada nos testes
         LocalDate d = LocalDate.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d, conta, false, ag.getPerfilId());
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta, false, ag.getPerfilId());
 
 
         // aqui credito um valor maior que o débito da transação:
