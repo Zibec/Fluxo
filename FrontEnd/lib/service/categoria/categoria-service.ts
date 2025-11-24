@@ -3,7 +3,7 @@ import { createCategoriaFormData } from "./categoria-schemas";
 
 class CategoriaService {
     async getAllCategorias() {
-        const response = await api.get<HttpResponse<createCategoriaFormData>>('/categoria');
+        const response = await api.get('/categoria');
         return response.data;
     }
 
