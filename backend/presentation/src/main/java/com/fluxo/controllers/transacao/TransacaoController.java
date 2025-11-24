@@ -1,5 +1,6 @@
 package com.fluxo.controllers.transacao;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +8,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import orcamento.Orcamento;
+import orcamento.OrcamentoChave;
+import orcamento.OrcamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +53,9 @@ public class TransacaoController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private OrcamentoService orcamentoService;
 
     @Autowired
     private TokenService tokenService;
@@ -114,7 +122,7 @@ public class TransacaoController {
     }
     
     @PostMapping
-    public ResponseEntity<Void> criar(@RequestBody TransacaoDTO dto, HttpServletRequest request) {
+    public ResponseEntity<?> criar(@RequestBody TransacaoDTO dto, HttpServletRequest request) {
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
@@ -169,6 +177,14 @@ public class TransacaoController {
                 Tipo.valueOf(dto.tipo()),
                 dto.perfilId()
             );
+        }
+
+        Orcamento orcamento = orcamentoService.obterOrcamentoPorCategoria(transacao.getCategoriaId()).get();
+
+        BigDecimal saldoTotal = orcamentoService.saldoMensalTotal(usuario.getId(), transacao.getCategoriaId(), orcamento.getOrcamentoChave().getAnoMes());
+
+        if(saldoTotal.add(transacao.getValor()).compareTo(orcamento.getLimite()) == 1) {
+            return ResponseEntity.status(HttpStatus.OK).body("Orçamento excedido.");
         }
 
         transacao.setUsuarioId(usuario.getId());

@@ -476,6 +476,11 @@ public class Repositorio implements
         return Optional.ofNullable((orcamentos.get(chave)));
     }
 
+    @Override
+    public Optional<Orcamento> obterOrcamentoPorCategoria(String categoria) {
+        return Optional.empty();
+    }
+
     public void limparOrcamento() {
         orcamentos.clear();
     }

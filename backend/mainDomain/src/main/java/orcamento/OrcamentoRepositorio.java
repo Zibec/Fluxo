@@ -17,6 +17,8 @@ public interface OrcamentoRepositorio {
 
     Optional<Orcamento> obterOrcamento(OrcamentoChave chave);
 
+    Optional<Orcamento> obterOrcamentoPorCategoria(String categoria);
+
     void limparOrcamento();
 
     List<Orcamento> listarTodos();

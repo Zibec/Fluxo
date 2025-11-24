@@ -13,7 +13,6 @@ public class OrcamentoService {
     private final OrcamentoRepositorio orcamentoRepositorio;
     private final TransacaoService transacaoService;
 
-    // quem quiser persiste/manda push/email etc.
     private BiConsumer<OrcamentoChave, String> notificador = (chave, msg) -> {};
 
     public OrcamentoService(OrcamentoRepositorio orcamentoRepositorio, TransacaoService transacaoService) {
@@ -42,6 +41,10 @@ public class OrcamentoService {
 
     public Optional<Orcamento> obterOrcamento(OrcamentoChave chave){
         return orcamentoRepositorio.obterOrcamento(chave);
+    }
+
+    public Optional<Orcamento> obterOrcamentoPorCategoria(String chave){
+        return orcamentoRepositorio.obterOrcamentoPorCategoria(chave);
     }
 
     public void limparOrcamento(){
