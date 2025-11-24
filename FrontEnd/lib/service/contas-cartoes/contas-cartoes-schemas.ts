@@ -22,12 +22,12 @@ const CartaoFormSchema = z.object({
         .nonempty("Nome do titular é obrigatório")
         .max(50, "Nome do titular deve ter no máximo 50 caracteres"),
     validade: z.string()
-        .regex(/^(\d{2})\/(0[1-9]|1[0-2])$/, "Validade deve estar no formato AA-YY"),
+        .regex(/^(?:\d{4})-(0[1-9]|1[0-2])$/, "Validade deve estar no formato AA-YY"),
     cvv: z.string()
         .min(3, "CVV deve ter 3 dígitos")
         .max(4, "CVV deve ter 4 dígitos"),
     saldo: z.number()
-        .min(0, "Saldo inicial não pode ser negativo"),
+        .optional(),
     limite: z.number()
         .min(0, "Limite do cartão não pode ser negativo"),
     dataFechamentoFatura: z.date()

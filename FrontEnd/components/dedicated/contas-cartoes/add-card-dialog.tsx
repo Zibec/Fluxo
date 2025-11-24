@@ -37,21 +37,29 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
   const { toast } = useToast()
 
   const onSubmit = async () => {
-    try {
-      await cartoesService.createCartao(getValues())
+      await cartoesService.createCartao(getValues()).then(() => {
+           toast({
+              title: "Cartão criado com sucesso!"
+            })
 
-      toast({
-          title: "Cartão criado com sucesso!"
+            console.log("Cartão criado com sucesso")
+            onOpenChange(false)
+
+      }).catch((error) => {
+        var message
+
+        if(error.status == 409) {
+          message = "Já existe um cartão com esse número."
+        }
+
+        toast({
+          title: "Erro " + error.status,
+          description: message,
+          variant: "destructive",
+        });
       })
 
-      console.log("Cartão criado com sucesso")
-      onOpenChange(false)
-
       setCards(await cartoesService.getAllCartoes())
-      
-    } catch (error) {
-      console.error("Erro ao criar cartão:", error)
-    }
   }
 
   return (
@@ -138,7 +146,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
           <div className="space-y-2">
             <Label htmlFor="validade">Validade</Label>
             <Input
-              placeholder="Ex: 30-05"
+              placeholder="Ex: 2030-05"
               {...register("validade")}
             />
             <p className="text-sm text-red-600">{errors.validade?.message}</p>
@@ -190,7 +198,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
                   />
                 </PopoverContent>
               </Popover>
-              <p className="text-sm text-red-600">{errors.dataFechamentoFatura?.message}</p>
+              <p className="text-sm text-red-600">{errors.dataVencimentoFatura?.message}</p>
             </div>
           </div>
         </div>
