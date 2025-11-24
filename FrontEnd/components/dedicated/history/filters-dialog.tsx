@@ -12,7 +12,7 @@ import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
-interface FiltersForm {
+export interface FiltersForm {
   name: string
   dateFrom: Date | undefined
   dateTo: Date | undefined
@@ -23,9 +23,10 @@ interface FiltersForm {
 interface FiltersDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onApplyFilters: (filters: FiltersForm) => void 
 }
 
-export function FiltersDialog({ open, onOpenChange }: FiltersDialogProps) {
+export function FiltersDialog({ open, onOpenChange, onApplyFilters }: FiltersDialogProps) {
   const [filtersForm, setFiltersForm] = useState<FiltersForm>({
     name: "",
     dateFrom: undefined,
@@ -42,7 +43,7 @@ export function FiltersDialog({ open, onOpenChange }: FiltersDialogProps) {
   }
 
   const handleApply = () => {
-    console.log("[v0] Applying filters:", filtersForm)
+    onApplyFilters(filtersForm)
     onOpenChange(false)
   }
 

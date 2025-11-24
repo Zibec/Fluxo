@@ -1,5 +1,8 @@
 package investimento;
 
+import generics.FormaPagamento;
+import transacao.FormaPagamentoId;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -12,6 +15,7 @@ public class Investimento {
     private BigDecimal valorAtual;
 
     private String usuarioId;
+    private String contaId;
 
     public Investimento() {
         this.id = UUID.randomUUID().toString();
@@ -72,5 +76,11 @@ public class Investimento {
         this.usuarioId = usuarioId;
     }
 
+    public String getContaId() {
+        return contaId;
+    }
 
+    public void setContaId(String contaId) {
+        this.contaId = contaId;
+    }
 }

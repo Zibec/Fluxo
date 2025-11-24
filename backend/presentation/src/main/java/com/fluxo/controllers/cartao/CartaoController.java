@@ -57,7 +57,7 @@ public class CartaoController {
 
         List<Cartao> cartoes =  service.obterPorUsuarioId(usuario.getId());
 
-        cartoes.stream()
+        List<CartaoDTO> cartoesDTO = cartoes.stream()
                 .map(c -> {
                     var cartaoDTO = new CartaoDTO();
                     cartaoDTO.usuarioId = c.getUsuarioId();
@@ -74,7 +74,7 @@ public class CartaoController {
                 })
                 .toList();
 
-        return ResponseEntity.ok(cartoes);
+        return ResponseEntity.ok(cartoesDTO);
     }
 
     @GetMapping("/")
@@ -83,24 +83,29 @@ public class CartaoController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<CartaoDTO> createCartao(@RequestBody CartaoDTO cartao, HttpServletRequest request){
-        Cartao newCartao = mapper.map(cartao, Cartao.class);
+    public ResponseEntity<?> createCartao(@RequestBody CartaoDTO cartao, HttpServletRequest request){
+        try {
+            Cartao newCartao = mapper.map(cartao, Cartao.class);
 
-        if(service.obter(newCartao.getNumero()) != null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            if (service.obter(newCartao.getNumero()) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+
+            String token = securityFilter.recoverToken(request);
+            String name = tokenService.extractUsername(token);
+            Usuario usuario = usuarioService.obterPorNome(name);
+
+            newCartao.setUsuarioId(usuario.getId());
+            service.salvar(newCartao);
+            CartaoDTO cartaoDTO = mapper.map(newCartao, CartaoDTO.class);
+
+            agendador.agendarFechamentoFatura(newCartao);
+            agendador.agendarVencimentoFatura(newCartao);
+            return ResponseEntity.ok(cartaoDTO);
+        } catch(Exception e){
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-        String token = securityFilter.recoverToken(request);
-        String name = tokenService.extractUsername(token);
-        Usuario usuario = usuarioService.obterPorNome(name);
-
-        newCartao.setUsuarioId(usuario.getId());
-        service.salvar(newCartao);
-        CartaoDTO cartaoDTO = mapper.map(newCartao, CartaoDTO.class);
-
-        agendador.agendarFechamentoFatura(newCartao);
-        agendador.agendarVencimentoFatura(newCartao);
-        return ResponseEntity.ok(cartaoDTO);
     }
 
     @PutMapping("/{id}")

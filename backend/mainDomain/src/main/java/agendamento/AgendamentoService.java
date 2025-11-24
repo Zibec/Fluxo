@@ -24,10 +24,8 @@ public class AgendamentoService {
     }
 
     public void salvarComTransacao(Agendamento agendamento, Conta conta) {
-        System.out.println("Passou por aqui");
         salvar(agendamento);
         if (agendamento.getProximaData() != null) {
-            System.out.println("Passou por aqui kkkk ");
              transacaoService.criarPendenteDeAgendamento(
                     agendamento.getId(),
                     agendamento.getDescricao(),
@@ -58,16 +56,13 @@ public class AgendamentoService {
 
 
     public void deletarAgendamento(String id){
-        System.out.println("Passou por aqui");
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id do agendamento obrigatorio");
         }
-        System.out.println("Passou por aqui kkkk ");
         var opt = agRepo.obterAgendamento(id);
         if (opt.isEmpty()) {
             throw new NoSuchElementException("Agendamento não encontrado: " + id);
         }
-        System.out.println("Passou por aqui kkkk olaaa ");
         transacaoService.excluirPorOrigemAgendamento(id);
 
         agRepo.deletarAgendamento(id);

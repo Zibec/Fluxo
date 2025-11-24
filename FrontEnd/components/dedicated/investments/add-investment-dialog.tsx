@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,6 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { investimentoService } from "@/lib/service/investimentos/investimento-service"
 import { useToast } from "@/hooks/use-toast"
+import { createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
+import { contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select"
+import { SelectValue } from "@radix-ui/react-select"
 
 interface AddInvestmentDialogProps {
   open: boolean
@@ -19,12 +23,15 @@ interface AddInvestmentDialogProps {
 
 export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogProps) {
   const [investmentForm, setInvestmentForm] = useState<createInvestimentoFormData>()
+  const [contas, setContas] = useState<createContaFormData[]>()
+  
 
     const  {
           register,
           handleSubmit,
           watch,
           getValues,
+          setValue,
           reset,
           formState: { errors }
       } = useForm<createInvestimentoFormData>({
@@ -57,6 +64,15 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
     reset()
     onOpenChange(false)
   }
+
+  useEffect(() => {
+      const fetchContas = async () => {
+        const contasData = await contasService.getAllContas()
+        setContas(contasData)
+      }
+  
+      fetchContas()
+    }, [])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -102,6 +118,25 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
             </div>
             {errors.valorAtual && <p className="text-sm text-red-600">{errors.valorAtual.message}</p>}
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="contaId">Conta Associada</Label>
+            <Select onValueChange={(value) => setValue("contaId", value)}>
+              <SelectTrigger id="contaId">
+                <SelectValue placeholder="Selecione uma conta associada" />
+              </SelectTrigger>
+              <SelectContent>
+                {contas && contas.map((method) => (
+                  <SelectItem key={method.id} value={method.id}>
+                    {method.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p>{errors.contaId?.message}</p>
+          </div>
+
+
         </div>
 
         <DialogFooter className="gap-2">

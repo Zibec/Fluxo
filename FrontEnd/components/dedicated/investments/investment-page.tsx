@@ -4,9 +4,14 @@ import { useEffect, useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
 import { InvestmentChart } from './investment-chart'
 import { ResgateDialog } from './resgate-dialog'
-import { createHistoricoInvestimentoData, createInvestimentoFormData } from '@/lib/service/investimentos/investimento-schema'
+import { createInvestimentoFormData } from '@/lib/service/investimentos/investimento-schema'
 import { investimentoService } from '@/lib/service/investimentos/investimento-service'
 import { redirect, useParams } from 'next/navigation'
+
+export interface Historico {
+  data: Date,
+  valorAtualizado: number,
+}
 
 export function InvestmentPage() {
   const { toast } = useToast()
@@ -14,13 +19,14 @@ export function InvestmentPage() {
 
   const [selicRate, setSelicRate] = useState(0.0)
   const [investment, setInvestment] = useState<createInvestimentoFormData>()
-  const [historicos, setHistoricos] = useState<createHistoricoInvestimentoData[]>([])
+  const [historicos, setHistoricos] = useState<Historico[]>([])
+
   
   useEffect(() => {
     async function fetchInvestment() {
       await investimentoService.getInvestimento(id as string).then((response) => {
-        console.log("Investment data:", response.data)
-        setInvestment(response.data)
+        console.log("Investment data:", response)
+        setInvestment(response)
       }).catch((error) => {
         console.error("Error fetching investment:", error)
       }
@@ -32,7 +38,7 @@ export function InvestmentPage() {
   useEffect(() => {
     async function fetchHistoricos() {
       await investimentoService.getHistoricoInvestimento(id as string).then((response) => {
-        setHistoricos(response.data)
+        setHistoricos(response)
       }).catch((error) => {
         console.error("Error fetching historicos:", error)
       })
@@ -42,12 +48,12 @@ export function InvestmentPage() {
 
   useEffect(() => {
     async function fetchSelicRate() {
-          await investimentoService.getTaxaSelic().then((response) => {
-            setSelicRate(response.data.valor)
-          }).catch((error) => {
-            console.error("Error fetching Selic rate:", error)
-          })
-        }
+      await investimentoService.getTaxaSelic().then((response) => {
+        setSelicRate(response.valor)
+      }).catch((error) => {
+        console.error("Error fetching Selic rate:", error)
+      })
+    }
     fetchSelicRate()
   }, [])
 
@@ -72,8 +78,7 @@ export function InvestmentPage() {
       })
     } else if(type === 'total') {
       investimentoService.resgateTotal(investment?.id as string).then(() => {
-        // Atualizar o estado do investimento após o resgate total
-        redirect('/dedicated/investments')
+        redirect('/dashboard/investments')
       }).catch((error) => {
         console.error("Error during total resgate:", error)
         toast({
@@ -128,7 +133,7 @@ export function InvestmentPage() {
                   <label className="block text-sm font-medium text-foreground mb-4">
                     Dashboard de crescimento do investimento:
                   </label>
-                  <div className="bg-background rounded-lg p-4">
+                  <div className="bg-background rounded-lg p-4 w-100 h-60">
                     <InvestmentChart data={historicos} />
                   </div>
                 </div>

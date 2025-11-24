@@ -65,6 +65,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
           <div className="space-y-2">
             <Label htmlFor="titular">Titular do Cartão</Label>
             <Input
+              placeholder="Seu nome"
               {...register("titular")}
             />
             <p className="text-sm text-red-600">{errors.titular?.message}</p>
@@ -93,6 +94,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
           <div className="space-y-2">
             <Label htmlFor="numero">Número do Cartão</Label>
             <Input
+              placeholder="1234567890123456"
               {...register("numero")}
             />
             <p className="text-sm text-red-600">{errors.numero?.message}</p>
@@ -101,9 +103,23 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
           <div className="space-y-2">
             <Label htmlFor="cvv">CVV</Label>
             <Input
+              placeholder="123"
               {...register("cvv")}
             />
             <p className="text-sm text-red-600">{errors.cvv?.message}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="saldo">Saldo</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600">R$</span>
+              <Input
+                type="number"
+                className="pl-10"
+                {...register("saldo", { valueAsNumber: true })}
+              />
+            </div>
+            <p className="text-sm text-red-600">{errors.saldo?.message}</p>
           </div>
 
           <div className="space-y-2">
@@ -112,6 +128,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600">R$</span>
               <Input
                 type="number"
+                className="pl-10"
                 {...register("limite", { valueAsNumber: true })}
               />
             </div>
@@ -121,6 +138,7 @@ export function AddCardDialog({ open, onOpenChange, setCards }: AddCardDialogPro
           <div className="space-y-2">
             <Label htmlFor="validade">Validade</Label>
             <Input
+              placeholder="Ex: 30-05"
               {...register("validade")}
             />
             <p className="text-sm text-red-600">{errors.validade?.message}</p>

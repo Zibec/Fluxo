@@ -1,9 +1,9 @@
-import { api } from "@/lib/axios";
+import { api, HttpResponse } from "@/lib/axios";
 import { createCategoriaFormData } from "./categoria-schemas";
 
 class CategoriaService {
     async getAllCategorias() {
-        const response = await api.get('/categoria');
+        const response = await api.get<HttpResponse<createCategoriaFormData>>('/categoria');
         return response.data;
     }
 

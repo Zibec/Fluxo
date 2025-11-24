@@ -88,7 +88,7 @@ public class AgendamentoController {
             String valorStr = body.get("valor");
             String freqStr  = body.get("frequencia");
             String dataStr  = body.get("proximaData");
-            String categoriaId = body.get("categoriaId");
+            String categoriaId = body.get("categ oriaId");
             String contaId    = body.get("contaId");   // <- NOVO
 
 
@@ -142,7 +142,6 @@ public class AgendamentoController {
                 novo.setCategoriaId(categoriaId);
             }
 
-            System.out.println("Opa olha eu aqui");
             service.salvarComTransacao(novo, conta);
             agendador.agendarTransacao(novo);
             return ResponseEntity.status(201).build();

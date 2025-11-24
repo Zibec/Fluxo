@@ -57,7 +57,7 @@ public class PatrimonioLiquidoTest {
         historicoInvestimentoRepositorio = new Repositorio();
 
         contaService = new ContaService(contaRepositorio);
-        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio);
+        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio, new Repositorio());
         dividaService = new DividaService(dividaRepositorio);
 
         patrimonioService = new PatrimonioService(

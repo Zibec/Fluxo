@@ -30,14 +30,13 @@ export default function CategoriasPage() {
         resolver: zodResolver(CategoriaFormSchema)
       })
 
-  useEffect(() => {
-    async function fetchCategories() {
-      const categorias = await categoriasService.getAllCategorias();
-      setCategories(categorias);
-    }
-    fetchCategories();
-    console.log("Categorias atualizadas", categories);
-  }, [])
+  
+  async function fetchCategories() {
+    const categorias = await categoriasService.getAllCategorias();
+    setCategories(categorias);
+  }
+  
+  fetchCategories();
 
   const handleAddCategory = async () => {
     if (getValues("nome").trim() === "") return;

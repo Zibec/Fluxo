@@ -23,6 +23,7 @@ export function AddAccountDialog({ open, onOpenChange, setAccounts }: AddAccount
           handleSubmit,
           watch,
           getValues,
+          setValue,
           formState: { errors }
       } = useForm<createContaFormData>({
           resolver: zodResolver(ContaFormSchema)
@@ -61,6 +62,7 @@ export function AddAccountDialog({ open, onOpenChange, setAccounts }: AddAccount
           <div className="space-y-2">
             <Label htmlFor="nome">Nome/Descrição</Label>
             <Input
+                placeholder="Poupança"
               {...register("nome")}
             />
             <p>{errors.nome?.message}</p>
@@ -68,16 +70,30 @@ export function AddAccountDialog({ open, onOpenChange, setAccounts }: AddAccount
 
           <div className="space-y-2">
             <Label htmlFor="tipo">Tipo</Label>
-            <Input
-              {...register("tipo")}
-            />
+            <Select onValueChange={(value) => setValue("tipo", value)}>
+              <SelectTrigger id="tipo">
+                <SelectValue placeholder="Selecione um tipo de conta" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem key={"Corrente"} value={"Corrente"}>
+                  Corrente
+                </SelectItem>
+                <SelectItem key={"Poupança"} value={"Poupança"}>
+                  Poupança
+                </SelectItem>
+                <SelectItem key={"Carteira"} value={"Carteira"}>
+                  Carteira
+                </SelectItem>
+              </SelectContent>
+            </Select>
             <p>{errors.tipo?.message}</p>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="saldo">Saldo Inicial</Label>
             <div className="relative">
-              <Input type="number" step="0.01"
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-600">R$</span>
+              <Input type="number" step="0.01" className="pl-10"
                 {...register("saldo", { valueAsNumber: true })}
               />
             </div>
@@ -87,7 +103,7 @@ export function AddAccountDialog({ open, onOpenChange, setAccounts }: AddAccount
           <div className="space-y-2">
             <Label htmlFor="banco">Banco</Label>
             <div className="relative">
-              <Input
+              <Input placeholder="Seu banco"
                 {...register("banco")}
               />
             </div>

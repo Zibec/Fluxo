@@ -19,15 +19,14 @@ export default function AgendamentosPage() {
 
   const {toast} = useToast()
 
-  useEffect(() => {
-    const fetchSchedules = async () => {
-      agendamentoService.getAllAgendamentos().then((data) => {
-        setSchedules(data)
-      })
-    }
-    fetchSchedules()
-  }, []) 
-
+  const fetchSchedules = async () => {
+    agendamentoService.getAllAgendamentos().then((data) => {
+      setSchedules(data)
+    })
+  }
+  
+  fetchSchedules()
+  
   const handleEdit = (schedule: createAgendamentoFormData) => {
     setSelectedSchedule(schedule)
     setIsEditDialogOpen(true)

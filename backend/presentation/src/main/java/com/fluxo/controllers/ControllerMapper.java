@@ -44,7 +44,7 @@ public class ControllerMapper extends ModelMapper {
         addConverter(new AbstractConverter<CartaoDTO, Cartao>() {
             @Override
             protected Cartao convert(CartaoDTO cartao) {
-                return new Cartao(new CartaoNumero(cartao.numero), cartao.titular, cartao.validade, new Cvv(cartao.cvv), cartao.limite, LocalDate.parse(cartao.dataFechamentoFatura), LocalDate.parse(cartao.dataVencimentoFatura), cartao.saldo, cartao.usuarioId);
+                return new Cartao(new CartaoNumero(cartao.numero), cartao.titular, cartao.validade, new Cvv(cartao.cvv), cartao.limite, LocalDate.parse(cartao.dataFechamentoFatura.split("T")[0]), LocalDate.parse(cartao.dataVencimentoFatura.split("T")[0]), cartao.saldo, cartao.usuarioId);
             }
         });
 

@@ -22,7 +22,7 @@ export default function InvestimentosPage() {
   useEffect(() => {
     async function fetchInvestments() {
       await investimentoService.getInvestimentosByUserId().then((response) => {
-        setInvestments(response.data)
+        setInvestments(response)
       }).catch((error) => {
         console.error("Error fetching investments:", error)
       })
@@ -30,7 +30,7 @@ export default function InvestimentosPage() {
 
     async function fetchSelicRate() {
       await investimentoService.getTaxaSelic().then((response) => {
-        setSelicRate(response.data.valor)
+        setSelicRate(response.valor)
       }).catch((error) => {
         console.error("Error fetching Selic rate:", error)
       })

@@ -92,6 +92,7 @@ export function CardCard({id, card, setCards }: CardCardProps) {
           <div>
             <h3 className="font-semibold text-[var(--color-foreground)]">{card.titular}</h3>
             <p className="text-sm text-[var(--color-muted-foreground)] font-mono">{formatCardNumber(card.numero)}</p>
+            <p className="text-sm text-[var(--color-muted-foreground)] font-mono">Saldo: {getCurrencySymbol()} {card.saldo}</p>
           </div>
         </Link>
         <div>

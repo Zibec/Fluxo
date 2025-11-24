@@ -1,10 +1,10 @@
 'use client'
 
-import { createHistoricoInvestimentoData } from '@/lib/service/investimentos/investimento-schema'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Historico } from './investment-page'
 
 interface InvestmentChartProps {
-  data: createHistoricoInvestimentoData[]
+  data: Historico[]
 }
 
 export function InvestmentChart({ data }: InvestmentChartProps) {

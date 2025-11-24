@@ -23,6 +23,8 @@ import { agendamentoService } from "@/lib/service/agendamentos/agendamento-servi
 import { useToast } from "@/hooks/use-toast"
 import { createContaFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas"
 import { contasService } from "@/lib/service/contas-cartoes/contas-cartoes-service"
+import { createCategoriaFormData } from "@/lib/service/categoria/categoria-schemas"
+import { categoriasService } from "@/lib/service/categoria/categoria-service"
 
 interface AddScheduleDialogProps {
   open: boolean
@@ -45,10 +47,21 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
 
 
   const frequencia = z.enum(['DIARIA', 'SEMANAL', 'MENSAL', 'ANUAL']).options
+  const [categories, setCategories] = useState<createCategoriaFormData[]>()
   const [contas, setContas] = useState<createContaFormData[]>([])
         
   const [profiles, setProfiles] = useState<createPerfilFormData[]>()
   const { toast } = useToast()
+  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      categoriasService.getAllCategorias().then((data) => {
+        setCategories(data)
+      })
+    }
+
+    fetchCategories()
+  }, [])
 
   useEffect(() => {
     const fetchContas = async () => {
@@ -164,7 +177,7 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
               onValueChange={(value) => setValue("contaId", value)}
             >
               <SelectTrigger id="edit-budget-category" className="w-full">
-                <SelectValue placeholder="Selecione uma categoria" />
+                <SelectValue placeholder="Selecione uma conta" />
               </SelectTrigger>
               <SelectContent>
                 {contas && contas.map((conta) => (
@@ -175,6 +188,27 @@ export function AddScheduleDialog({ open, onOpenChange, setSchedules }: AddSched
               </SelectContent>
             </Select>
             <p className="text-sm text-red-600">{errors.contaId?.message}</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-budget-category">Categoria:</Label>
+            <input type="hidden" {...register("categoriaId")} />
+
+            <Select
+              onValueChange={(value) => setValue("categoriaId", value)}
+            >
+              <SelectTrigger id="edit-budget-category" className="w-full">
+                <SelectValue placeholder="Selecione uma categoria" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories && categories.map((categoria) => (
+                  <SelectItem key={categoria.id} value={categoria.id}>
+                    {categoria.nome}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-sm text-red-600">{errors.categoriaId?.message}</p>
           </div>
 
           <div className="space-y-2">

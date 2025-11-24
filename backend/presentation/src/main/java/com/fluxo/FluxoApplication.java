@@ -125,8 +125,8 @@ public class FluxoApplication {
     }
 
     @Bean
-    public InvestimentoService investimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio){
-        return new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio);
+    public InvestimentoService investimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio, ContaRepositorio contaRepositorio){
+        return new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio, contaRepositorio);
     }
 
     @Bean

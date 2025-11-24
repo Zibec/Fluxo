@@ -147,7 +147,10 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<InvestimentoJpa, Investimento>() {
             @Override
             protected Investimento convert(InvestimentoJpa source) {
-                return new Investimento(source.id, source.nome, source.descricao, source.valorAtual);
+                var investimento = new Investimento(source.id, source.nome, source.descricao, source.valorAtual);
+                investimento.setUsuarioId(source.usuarioId);
+                investimento.setContaId(source.contaId);
+                return investimento;
             }
         });
 
@@ -301,17 +304,8 @@ public class Mapper extends ModelMapper {
                 jpa.descricao = source.getDescricao();
                 jpa.valorAtual = source.getValorAtual();
                 jpa.usuarioId = source.getUsuarioId();
+                jpa.contaId = source.getContaId();
                 return jpa;
-            }
-        });
-
-        addConverter(new AbstractConverter<InvestimentoJpa, Investimento>() {
-            @Override
-            protected Investimento convert(InvestimentoJpa source) {
-                var investimento = new Investimento(source.id, source.nome, source.descricao, source.valorAtual);
-                investimento.setUsuarioId(source.usuarioId);
-                return investimento;
-
             }
         });
 

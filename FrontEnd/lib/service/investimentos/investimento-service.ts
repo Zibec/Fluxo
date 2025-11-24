@@ -3,39 +3,38 @@ import { createInvestimentoFormData } from "./investimento-schema";
 
 class InvestimentoService {
     async getInvestimentosByUserId() {
-        const data = api.get(`/investimentos/`)
-        return data;
+        const response = await api.get(`/investimentos/`)
+        return response.data
     }
 
     async getTaxaSelic() {
-        const data = api.get(`/investimentos/taxa-selic`)
-        return data;
+        const response = await api.get(`/investimentos/taxa-selic`)
+        return response.data
     }
 
     async getInvestimento(id: string) {
-        const data = api.get(`/investimentos/${id}`)
-        return data;
+        const response = await api.get(`/investimentos/${id}`)
+        return response.data
     }
 
     async getHistoricoInvestimento(id: string) {
-        const data = api.get(`/investimentos/historicos/${id}`)
-        console.log(data)
-        return data;
+        const response = await api.get(`/investimentos/historicos/${id}`)
+        return response.data
     }
 
     async createInvestimento(investimento: createInvestimentoFormData) {
-        const data = api.post(`/investimentos/`, investimento)
-        return data;
+        const response = await api.post(`/investimentos/`, investimento)
+        return response.data
     }
 
     async resgateTotal(id: string) {
-        const data = api.post(`/investimentos/resgate-total/${id}`)
-        return data;
+        const response = await api.post(`/investimentos/resgate-total/${id}`)
+        return response.data
     }
 
     async resgateParcial(id: string, valor: number) {
-        const data = api.put(`/investimentos/resgate-parcial/${id}`, { valor: valor })
-        return data;
+        const response = await api.put(`/investimentos/resgate-parcial/${id}`, { valor: valor })
+        return response.data
     }
 
 }

@@ -40,7 +40,9 @@ public class HistoricoInvestimentoRepositoryImpl implements HistoricoInvestiment
 
     @Override
     public void deletarTodosHistoricosPorId(String investimentoId) {
-        repositorio.deleteAllByInvestimentoId(investimentoId);
+        var lista = repositorio.findAllByInvestimentoId(investimentoId);
+
+        repositorio.deleteAll(lista);
     }
 
     @Override

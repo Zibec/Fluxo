@@ -1,5 +1,7 @@
 package investimento;
 
+import conta.Conta;
+import conta.ContaRepositorio;
 import generics.Observer;
 import historicoInvestimento.HistoricoInvestimento;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
@@ -18,11 +20,13 @@ public class InvestimentoService implements Observer {
     private final InvestimentoRepositorio investimentoRepositorio;
     private final HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio;
     private final TaxaSelicRepository taxaSelicRepository;
+    private final ContaRepositorio  contaRepositorio;
 
-    public InvestimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio) {
+    public InvestimentoService(InvestimentoRepositorio investimentoRepositorio, TaxaSelicRepository taxaSelicRepository, HistoricoInvestimentoRepositorio historicoInvestimentoRepositorio, ContaRepositorio contaRepositorio) {
         this.investimentoRepositorio = investimentoRepositorio;
         this.historicoInvestimentoRepositorio = historicoInvestimentoRepositorio;
         this.taxaSelicRepository = taxaSelicRepository;
+        this.contaRepositorio = contaRepositorio;
     }
 
     public void salvar (Investimento investimento){
@@ -76,22 +80,30 @@ public class InvestimentoService implements Observer {
     }
 
     public void resgateTotal(String investimentoId){
+        Investimento investimento = investimentoRepositorio.obterInvestimento(investimentoId);
+        Conta conta = contaRepositorio.obterConta(investimento.getContaId()).get();
 
         historicoInvestimentoRepositorio.deletarTodosHistoricosPorId(investimentoId);
 
+        conta.creditar(investimento.getValorAtual());
+
+        contaRepositorio.salvar(conta);
         investimentoRepositorio.deletarInvestimento(investimentoId);
 
     }
 
     public void resgateParcial(String investimentoId, BigDecimal valor){
         Investimento investimento = investimentoRepositorio.obterInvestimento(investimentoId);
+        Conta conta = contaRepositorio.obterConta(investimento.getContaId()).get();
 
         if(investimento.getValorAtual().compareTo(valor) <= 0 || valor.doubleValue() <= 0){
             throw new RuntimeException("Tentativa de resgate total em resgate parcial ou valor inválido.");
         }
 
         investimento.resgatarValor(valor);
+        conta.creditar(valor);
 
+        contaRepositorio.salvar(conta);
         investimentoRepositorio.salvar(investimento);
 
         historicoInvestimentoRepositorio.salvar(new HistoricoInvestimento(investimentoId, investimento.getValorAtual(), LocalDate.now()));

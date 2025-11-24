@@ -25,7 +25,7 @@ export function InvestmentCard({ id, name, currentValue }: InvestmentCardProps) 
         border 
         border-[var(--color-border)]
         shadow-sm 
-        hover:shadow-md 
+        hover:shadow-md hover:bg-accent/40 transition-all
         transition-all 
         duration-200
       "

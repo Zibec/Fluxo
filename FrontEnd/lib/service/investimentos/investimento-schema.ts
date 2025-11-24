@@ -10,19 +10,11 @@ const InvestimentoFormSchema = z.object({
     descricao: z.string()
         .nonempty("Descrição é obrigatória"),
     valorAtual: z.number(),
+    contaId: z.string()
+        .nonempty("Uma conta deve ser selecionada.")
 })
 
-const HistoricoInvestimentoSchema = z.object({
-    id: z.string()
-        .optional(),
-    investimentoId: z.string()
-        .optional(),
-    valorAtualizado: z.number()
-        .min(0, "Valor atualizado não pode ser negativo"),
-    data: z.date()
-})
 
 export type createInvestimentoFormData = z.infer<typeof InvestimentoFormSchema>
-export type createHistoricoInvestimentoData = z.infer<typeof HistoricoInvestimentoSchema>
 
-export { InvestimentoFormSchema, HistoricoInvestimentoSchema }
+export { InvestimentoFormSchema }

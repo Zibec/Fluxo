@@ -21,20 +21,19 @@ export default function Page() {
   const [fatura, setFatura] = useState<Fatura>()
   const [transacoes, setTransacoes] = useState<createTransacaoFormData[]>()
 
-  useEffect(() => {
-    const fetchCartao = async () => {
-      const cartao = await cartoesService.getCartaoById(id)
-      setCartao(cartao)
+  const fetchInfo = async () => {
+    const cartao = await cartoesService.getCartaoById(id)
+    setCartao(cartao)
 
-      const fatura: Fatura = await cartoesService.getFaturaByCartaoId(id)
-      setFatura(fatura)
+    const fatura: Fatura = await cartoesService.getFaturaByCartaoId(id)
+    setFatura(fatura)
 
-      const transacoes: createTransacaoFormData[] = await transacaoService.getTransacoesByUser()
-      console.log(transacoes, fatura.transacoes)
-      setTransacoes(transacoes.filter(t => fatura.transacoes.find((f) => f == t.id)))
-    }
-    fetchCartao()
-  }, [])
+    const transacoes: createTransacaoFormData[] = await transacaoService.getTransacoesByUser()
+    console.log(transacoes, fatura.transacoes)
+    setTransacoes(transacoes.filter(t => fatura.transacoes.find((f) => f == t.id)))
+  }
+  fetchInfo()
+ 
 
   return (
     <div

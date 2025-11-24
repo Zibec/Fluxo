@@ -93,7 +93,7 @@ public class RastreamentoDeInvestimentosTest {
 
         //taxaSelicRepository = new TaxaSelicRepository(null);
 
-        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio);
+        investimentoService = new InvestimentoService(investimentoRepositorio, taxaSelicRepository, historicoInvestimentoRepositorio, new Repositorio());
         investimentoService.salvar(investimento);
         jobScheduler = new JobScheduler(investimentoService, investimentoRepositorio);
         excecaoCapturada = null;

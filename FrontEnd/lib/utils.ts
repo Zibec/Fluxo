@@ -40,6 +40,12 @@ export function formatDateByUserPreference(date: Date | string): string {
 }
 
 export function formatCardNumber(num) {
+
+  if(typeof num !== "string") {
+    return null
+  }
+
+  
   return num
     .replace(/\D/g, "")        // remove tudo que não é número
     .replace(/(.{4})/g, "$1 ") // adiciona espaço a cada 4 dígitos
