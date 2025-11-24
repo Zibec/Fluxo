@@ -109,16 +109,6 @@ export function EditBudgetDialog({ open, onOpenChange, budget, setBudgets }: Edi
             />
             <p className="text-sm text-red-600">{errors.limite?.message}</p>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="edit-budget-deadline">Data Limite:</Label>
-            <Input
-              id="edit-budget-value"
-              placeholder="YYYY-MM"
-              {...register("anoMes")}
-            />
-            <p className="text-sm text-red-600">{errors.anoMes?.message}</p>
-          </div>
         </div>
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={handleCancel}>

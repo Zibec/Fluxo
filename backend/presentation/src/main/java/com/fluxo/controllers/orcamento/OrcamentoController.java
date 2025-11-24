@@ -45,9 +45,6 @@ public class OrcamentoController {
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
-
-        System.out.println(service.listarTodosByUser(usuario.getId()));
-
         return ResponseEntity.ok(service.listarTodosByUser(usuario.getId()));
     }
 
@@ -114,11 +111,14 @@ public class OrcamentoController {
 
         try {
             System.out.println(body);
+            var chave = body.get("chave").split("\\|");
             var ym = YearMonth.parse(anoMes);
             var limite = new java.math.BigDecimal(body.get("limite").replace(",", "."));
             service.atualizarOrcamento(usuario.getId(), categoriaId, ym, limite);
             return ResponseEntity.noContent().build();
         } catch (IllegalStateException e) { return ResponseEntity.status(404).build(); }
-        catch (Exception e) { return ResponseEntity.badRequest().build(); }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().build(); }
     }
 }
