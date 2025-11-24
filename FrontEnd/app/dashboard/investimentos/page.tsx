@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { Plus } from "lucide-react"
-import { InvestmentCard } from "@/components/dedicated/investments/investment-card"
-import { AddInvestmentDialog } from "@/components/dedicated/investments/add-investment-dialog"
+import { InvestmentCard } from "@/components/dedicated/investimentos/investment-card"
+import { AddInvestmentDialog } from "@/components/dedicated/investimentos/add-investment-dialog"
 import { Button } from "@/components/ui/button"
 import { createInvestimentoFormData } from "@/lib/service/investimentos/investimento-schema"
 import { investimentoService } from "@/lib/service/investimentos/investimento-service"

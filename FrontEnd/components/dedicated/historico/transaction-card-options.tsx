@@ -15,7 +15,7 @@ interface TransactionCardProps {
   onClick?: () => void
 }
 
-export function TransactionCardWithReembolso({ transaction, profiles }: TransactionCardProps) {
+export function TransactionCardWithOptions({ transaction, profiles }: TransactionCardProps) {
   // Cores adaptadas ao tema global, sem fixar tons neutros
   const getTypeStyles = () => {
     switch (transaction.tipo) {
@@ -32,11 +32,22 @@ export function TransactionCardWithReembolso({ transaction, profiles }: Transact
 
   const {toast} = useToast()
 
-  const handleClick = () => {
+  const handleReembolso = () => {
     transacaoService.useReembolso(transaction).then(() => {
       toast({
         title: "Transação Reembolsada",
         description: "A Transação foi reembolsada com sucesso."
+      })
+
+      window.location.reload()
+    })
+  }
+
+  const handleEfetivar = () => {
+    transacaoService.useEfetivar(transaction.id).then(() => {
+      toast({
+        title: "Transação Efetivada",
+        description: "A Transação foi efetivada com sucesso."
       })
 
       window.location.reload()
@@ -75,10 +86,13 @@ export function TransactionCardWithReembolso({ transaction, profiles }: Transact
             <span>{transaction.status}</span>
           </div>
         </div>
-        <div>
-          <Button className="hover:cursor-pointer" onClick={() => handleClick()}>
+        <div className="flex gap-2">
+          {transaction.status != "EFETIVADA" && <Button variant="outline" onClick={() => handleEfetivar()}>
+            Efetivar
+          </Button>}
+          {transaction.tipo != "REEMBOLSO" && transaction.status == "EFETIVADA" && <Button onClick={() => handleReembolso()}>
             Reembolsar
-          </Button>
+          </Button>}
         </div>
       </div>
     </div>

@@ -11,32 +11,38 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { createPerfilFormData } from "@/lib/service/perfil/perfil-schema"
 
 export interface FiltersForm {
   name: string
   dateFrom: Date | undefined
   dateTo: Date | undefined
   profile: string
-  paymentMethod: string
+  tipo: string
+  status: string
 }
 
 interface FiltersDialogProps {
   open: boolean
+  profiles: createPerfilFormData[]
   onOpenChange: (open: boolean) => void
   onApplyFilters: (filters: FiltersForm) => void 
+  onClearFilters: () => void
 }
 
-export function FiltersDialog({ open, onOpenChange, onApplyFilters }: FiltersDialogProps) {
+export function FiltersDialog({ open, profiles, onOpenChange, onApplyFilters, onClearFilters }: FiltersDialogProps) {
   const [filtersForm, setFiltersForm] = useState<FiltersForm>({
     name: "",
     dateFrom: undefined,
     dateTo: undefined,
     profile: "",
-    paymentMethod: "",
+    tipo: "",
+    status: ""
   })
 
-  const profiles = ["Pessoa 1", "Pessoa 2", "Pessoa 3"]
-  const paymentMethods = ["Dinheiro", "Cartão de Crédito", "Cartão de Débito", "PIX", "Transferência Bancária"]
+  const tipo = ["Reembolso", "Receita", "Despesa"]
+  const status = ["Pendente", "Efetivada"]
+
 
   const handleFormChange = (field: string, value: string | Date | undefined) => {
     setFiltersForm((prev) => ({ ...prev, [field]: value }))
@@ -53,9 +59,23 @@ export function FiltersDialog({ open, onOpenChange, onApplyFilters }: FiltersDia
       dateFrom: undefined,
       dateTo: undefined,
       profile: "",
-      paymentMethod: "",
+      tipo: "",
+      status: ""
     })
+    onClearFilters()
     onOpenChange(false)
+  }
+
+  const handleClearFilters = () => {
+    setFiltersForm({
+      name: "",
+      dateFrom: undefined,
+      dateTo: undefined,
+      profile: "",
+      tipo: "",
+      status: ""
+    })
+    onClearFilters()
   }
 
   return (
@@ -133,8 +153,8 @@ export function FiltersDialog({ open, onOpenChange, onApplyFilters }: FiltersDia
               </SelectTrigger>
               <SelectContent>
                 {profiles.map((profile) => (
-                  <SelectItem key={profile} value={profile}>
-                    {profile}
+                  <SelectItem key={profile.id} value={profile.id}>
+                    {profile.nome}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -142,17 +162,36 @@ export function FiltersDialog({ open, onOpenChange, onApplyFilters }: FiltersDia
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="paymentMethod">Forma de Pagamento</Label>
+            <Label htmlFor="tipo">Tipo de Transação</Label>
             <Select
-              value={filtersForm.paymentMethod}
-              onValueChange={(value) => handleFormChange("paymentMethod", value)}
+              value={filtersForm.tipo}
+              onValueChange={(value) => handleFormChange("tipo", value)}
             >
-              <SelectTrigger id="paymentMethod">
-                <SelectValue placeholder="Selecione uma forma de pagamento" />
+              <SelectTrigger id="tipo">
+                <SelectValue placeholder="Selecione um tipo de transação" />
               </SelectTrigger>
               <SelectContent>
-                {paymentMethods.map((method) => (
-                  <SelectItem key={method} value={method}>
+                {tipo.map((method) => (
+                  <SelectItem key={method} value={method.toUpperCase()}>
+                    {method}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="status">Status de Transação</Label>
+            <Select
+              value={filtersForm.status}
+              onValueChange={(value) => handleFormChange("status", value)}
+            >
+              <SelectTrigger id="status">
+                <SelectValue placeholder="Selecione um status de transação" />
+              </SelectTrigger>
+              <SelectContent>
+                {status.map((method) => (
+                  <SelectItem key={method} value={method.toUpperCase()}>
                     {method}
                   </SelectItem>
                 ))}
@@ -162,6 +201,9 @@ export function FiltersDialog({ open, onOpenChange, onApplyFilters }: FiltersDia
         </div>
 
         <DialogFooter className="gap-2">
+          <Button variant="destructive" onClick={handleClearFilters}>
+            Limpar Filtros
+          </Button>
           <Button variant="outline" onClick={handleCancel}>
             Cancelar
           </Button>

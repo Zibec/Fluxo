@@ -1,21 +1,22 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { TransactionCard } from "@/components/dedicated/history/transaction-card"
-import { FiltersDialog, FiltersForm } from "@/components/dedicated/history/filters-dialog"
+import { TransactionCard } from "@/components/dedicated/historico/transaction-card"
+import { FiltersDialog, FiltersForm } from "@/components/dedicated/historico/filters-dialog"
 import { Button } from "@/components/ui/button"
 import { Filter } from "lucide-react"
 import { createTransacaoFormData } from "@/lib/service/transacao/transacao-schema"
 import { transacaoService } from "@/lib/service/transacao/transacao-service"
 import { createPerfilFormData } from "@/lib/service/perfil/perfil-schema"
 import { perfilService } from "@/lib/service/perfil/perfil-service"
-import { TransactionCardWithReembolso } from "@/components/dedicated/history/transaction-card-reembolso"
+import { TransactionCardWithOptions, TransactionCardWithReembolso } from "@/components/dedicated/historico/transaction-card-options"
 
 export default function HistoricoPage() {
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   const [transactions, setTransactions] = useState<createTransacaoFormData[]>()
   const [filteredTransactions, setFilteredTransactions] = useState<createTransacaoFormData[]>()
+  const [profiles, setProfiles] = useState<createPerfilFormData[]>([])
 
 
   useEffect(() => {
@@ -24,12 +25,11 @@ export default function HistoricoPage() {
     fetched.reverse()
 
     setTransactions(fetched)
-    setFilteredTransactions(fetched)   // 👈 inicia igual
+    setFilteredTransactions(fetched)
   }
   fetchTransacoes()
 }, [])
 
-  const [profiles, setProfiles] = useState<createPerfilFormData[]>()
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -64,11 +64,19 @@ export default function HistoricoPage() {
       result = result.filter(t => t.perfilId === filters.profile)
     }
 
-    if (filters.paymentMethod) {
-      result = result.filter(t => t.pagamentoId === filters.paymentMethod)
+    if (filters.tipo) {
+      result = result.filter(t => t.tipo === filters.tipo)
+    }
+
+    if (filters.status) {
+      result = result.filter(t => t.status === filters.status)
     }
 
     setFilteredTransactions(result)
+  }
+
+  function clearFilters() {
+     setFilteredTransactions(transactions)
   }
   
 
@@ -90,8 +98,8 @@ export default function HistoricoPage() {
 
         {/* Lista de transações */}
         <div className="space-y-3">
-          {transactions && transactions.map((transaction) => (
-            <TransactionCardWithReembolso
+          {filteredTransactions && filteredTransactions.map((transaction) => (
+            <TransactionCardWithOptions
               key={transaction.id}
               transaction={transaction}
               profiles={profiles}
@@ -100,7 +108,13 @@ export default function HistoricoPage() {
         </div>
       </main>
 
-      <FiltersDialog open={filtersOpen} onOpenChange={setFiltersOpen} onApplyFilters={applyFilters} />
+      <FiltersDialog 
+        open={filtersOpen} 
+        profiles={profiles}
+        onOpenChange={setFiltersOpen} 
+        onApplyFilters={applyFilters} 
+        onClearFilters={clearFilters} 
+      />
     </div>
   )
 }

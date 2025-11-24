@@ -6,6 +6,11 @@ class RelatorioService {
         return response.data
     }
 
+    async getPatrimonioHistorico() {
+        const response = await api.get("/patrimonio/historico")
+        return response.data
+    }
+
     async getDinheiroTotal() {
         const response = await api.get("/relatorios/dinheiro-total")
         return response.data

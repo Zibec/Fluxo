@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { PageHeader } from "@/components/dedicated/accounts/page-header"
-import { CategoryItem } from "@/components/dedicated/categories/category-item"
-import { EditCategoryDialog } from "@/components/dedicated/categories/edit-category-dialog"
+import { PageHeader } from "@/components/dedicated/contas-cartoes/page-header"
+import { CategoryItem } from "@/components/dedicated/categorias/category-item"
+import { EditCategoryDialog } from "@/components/dedicated/categorias/edit-category-dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

@@ -54,13 +54,7 @@ public class PatrimonioController {
     public ResponseEntity<List<Patrimonio>> getHistoricoEvolucao() {
         List<Patrimonio> listaOriginal = service.obterHistoricoDePatrimonio();
 
-        List<Patrimonio> listaResposta = new ArrayList<>();
-        Iterator<Patrimonio> it = listaOriginal.iterator();
-
-        while(it.hasNext()) {
-            Patrimonio p = it.next();
-            listaResposta.add(p);
-        }
+        List<Patrimonio> listaResposta = new ArrayList<>(listaOriginal);
 
         return ResponseEntity.ok(listaResposta);
     }

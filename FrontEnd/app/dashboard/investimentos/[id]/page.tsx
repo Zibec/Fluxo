@@ -1,4 +1,4 @@
-import { InvestmentPage } from '@/components/dedicated/investments/investment-page'
+import { InvestmentPage } from '@/components/dedicated/investimentos/investment-page'
 
 export default function Home() {
   return <InvestmentPage />

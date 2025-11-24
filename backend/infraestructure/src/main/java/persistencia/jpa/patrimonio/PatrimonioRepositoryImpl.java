@@ -26,7 +26,9 @@ public class PatrimonioRepositoryImpl implements PatrimonioRepositorio {
     @Override
     public List<Patrimonio> obterTodosPatrimonios() {
         var patrimonioJpa = repository.findAll();
-        return mapper.map(patrimonioJpa, List.class);
+        return patrimonioJpa.stream()
+                .map(jpa -> mapper.map(jpa, Patrimonio.class))
+                .toList();
     }
 
     @Override

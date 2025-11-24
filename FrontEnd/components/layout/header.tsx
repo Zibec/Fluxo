@@ -29,12 +29,12 @@ export function Header() {
   const [patrimony, setPatrimony] = useState(0);
 
   const menuItems = [
-    { label: "Contas e Cartões", route: "dashboard/contas-cartoes" },
-    { label: "Meus Investimentos", route: "dashboard/investimentos" },
-    { label: "Agendamentos", route: "dashboard/agendamentos" },
-    { label: "Perfis", route: "dashboard/perfis" },
-    { label: "Categorias", route: "dashboard/categorias" },
-    { label: "Histórico", route: "dashboard/historico" },
+    { label: "Contas e Cartões", route: "/dashboard/contas-cartoes" },
+    { label: "Meus Investimentos", route: "/dashboard/investimentos" },
+    { label: "Agendamentos", route: "/dashboard/agendamentos" },
+    { label: "Perfis", route: "/dashboard/perfis" },
+    { label: "Categorias", route: "/dashboard/categorias" },
+    { label: "Histórico", route: "/dashboard/historico" },
   ];
 
   // Função para formatar moeda
@@ -96,10 +96,13 @@ export function Header() {
 
           {/* Patrimônio total */}
           <div className="mt-2">
-            <p className="text-xs opacity-70">Patrimônio Total</p>
-            <p className="text-lg font-semibold">
-              {getCurrencySymbol()} {formatCurrency(patrimony)}
-            </p>
+            <Link href="/dashboard/patrimonio">
+              <p className="text-xs opacity-70">Patrimônio Total</p>
+
+              <p className="text-lg font-semibold">
+                {getCurrencySymbol()} {formatCurrency(patrimony)}
+              </p>
+            </Link>
           </div>
         </div>
 
@@ -135,26 +138,17 @@ export function Header() {
                 <ul className="space-y-1">
                   {menuItems.map((item) => (
                     <li key={item.label}>
-                      <button
-                        onClick={() => {
-                          const closeButton = document.querySelector(
-                            '[data-slot="sheet-close"]'
-                          ) as HTMLElement | null
-                          closeButton?.click()
-
-                          if (path.includes("dashboard/")) {
-                            redirect(item.route.replace("dashboard/", ""))
-                          } else {
-                            router.push(item.route)
-                          }
-                        }}
-                        style={{
-                          color: "var(--sidebar-foreground)",
-                        }}
-                        className="w-full text-left px-4 py-3 rounded-lg transition-colors hover:opacity-80"
-                      >
-                        {item.label}
-                      </button>
+                      <Link href={item.route}>
+                          
+                          <button
+                            style={{
+                              color: "var(--sidebar-foreground)",
+                            }}
+                            className="w-full text-left px-4 py-3 rounded-lg transition-colors hover:opacity-80"
+                          >
+                          {item.label}
+                          </button>
+                      </Link>
                     </li>
                   ))}
                   <li>

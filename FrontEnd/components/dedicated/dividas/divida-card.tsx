@@ -43,7 +43,7 @@ export function DividaCard({ divida, onEdit, onDelete, onAddValue }: DividaCardP
           </h4>
 
           <p className="text-sm text-foreground leading-relaxed">
-             {getCurrencySymbol()} {divida.valorAcumulado?.toFixed(2)} / {divida.valorDivida.toFixed(2)}
+             {getCurrencySymbol()} {divida.valorAmortizado?.toFixed(2)} / {divida.valorDivida.toFixed(2)}
           </p>
         </div>
 

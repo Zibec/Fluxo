@@ -1,14 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { GoalCard } from "@/components/dedicated/goals/goal-card"
-import { EditGoalDialog } from "@/components/dedicated/goals/edit-goal-dialog"
+import { GoalCard } from "@/components/dedicated/metas/goal-card"
+import { EditGoalDialog } from "@/components/dedicated/metas/edit-goal-dialog"
 import { metaService } from "@/lib/service/meta/meta-service"
 import { Button } from "@/components/ui/button"
-import { AddGoalDialog } from "@/components/dedicated/goals/add-goal-dialog"
+import { AddGoalDialog } from "@/components/dedicated/metas/add-goal-dialog"
 import { createMetaFormData, MetaFormSchema } from "@/lib/service/meta/meta-schema"
 import { useToast } from "@/hooks/use-toast"
-import { AddValueGoalDialog } from "@/components/dedicated/goals/add-value-goal-dialog"
+import { AddValueGoalDialog } from "@/components/dedicated/metas/add-value-goal-dialog"
 
 export default function MetasPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)

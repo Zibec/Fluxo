@@ -1,12 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { BudgetDetailCard } from "@/components/dedicated/budgets/budget-detail-card"
-import { AddBudgetDialog } from "@/components/dedicated/budgets/add-budget-dialog"
+import { BudgetDetailCard } from "@/components/dedicated/orcamento/budget-detail-card"
+import { AddBudgetDialog } from "@/components/dedicated/orcamento/add-budget-dialog"
 import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema"
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
 import { Button } from "@/components/ui/button"
-import { EditBudgetDialog } from "@/components/dedicated/budgets/edit-budget-dialog"
+import { EditBudgetDialog } from "@/components/dedicated/orcamento/edit-budget-dialog"
 
 export default function OrcamentosPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)

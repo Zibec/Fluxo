@@ -77,11 +77,10 @@ public class PatrimonioService {
         YearMonth yearMonth = YearMonth.from(data);
         boolean isUltimoDiaDoMes = data.equals(yearMonth.atEndOfMonth());
 
-        if (isUltimoDiaDoMes) {
             BigDecimal valorAtual = calcularPatrimonioLiquido(usuarioId);
             Patrimonio snapshot = new Patrimonio(data, valorAtual);
             snapshotRepositorio.salvarPatrimonio(snapshot);
-        }
+        
     }
 
     public List<Patrimonio> obterHistoricoDePatrimonio() {

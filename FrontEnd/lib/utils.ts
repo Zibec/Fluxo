@@ -1,20 +1,32 @@
+"use client"
+
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { useEffect, useState } from 'react'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
 export function getCurrencySymbol(): string {
-  const fluxoUser = localStorage.getItem("fluxo_user")
-  var currencyCode = "BRL"
+  const [fluxoUser, setFluxoUser] = useState<any>({})
+  const [currencyCode, setCurrencyCode] = useState("")
+
+  useEffect(() => {
+  if (typeof localStorage !== 'undefined') {
+    setFluxoUser(localStorage.getItem("fluxo_user"))
+    setCurrencyCode("BRL")
+  }
 
   if (fluxoUser) {
-    const user = JSON.parse(fluxoUser)
-    currencyCode = user.moedaPreferida || "BRL"
+    setCurrencyCode(fluxoUser.moedaPreferida || "BRL") 
   }
+
+  }, [])
+
+  
 
   const symbols: Record<string, string> = {
     USD: '$',

@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ScheduleCard } from "@/components/dedicated/schedules/schedule-card"
-import { AddScheduleDialog } from "@/components/dedicated/schedules/add-schedule-dialog"
-import { EditScheduleDialog } from "@/components/dedicated/schedules/edit-schedule-dialog"
+import { ScheduleCard } from "@/components/dedicated/agendamentos/schedule-card"
+import { AddScheduleDialog } from "@/components/dedicated/agendamentos/add-schedule-dialog"
+import { EditScheduleDialog } from "@/components/dedicated/agendamentos/edit-schedule-dialog"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { createAgendamentoFormData } from "@/lib/service/agendamentos/agendamento-schema"

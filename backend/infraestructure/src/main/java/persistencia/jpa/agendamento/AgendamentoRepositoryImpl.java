@@ -29,7 +29,7 @@ public class AgendamentoRepositoryImpl implements AgendamentoRepositorio {
 
     @Override
     public Iterable<Agendamento> buscarTodosPorPerfilId(String perfilId, int pageSize) {
-        return new AgendamentosIterable(repository, pageSize);
+        return new AgendamentosIterable(repository, perfilId, pageSize);
     }
 
     @Override

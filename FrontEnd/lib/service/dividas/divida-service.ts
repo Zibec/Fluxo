@@ -4,11 +4,7 @@ import { createDividaFormData } from "./divida-schema"
 class DividaService {
     async getAllDividas() {
         const response = await api.get("/metas-quitacao/by-user")
-
-        if(response.status == 404) {
-            return []
-        }
-
+        console.log(response.data)
         return response.data
     }
 

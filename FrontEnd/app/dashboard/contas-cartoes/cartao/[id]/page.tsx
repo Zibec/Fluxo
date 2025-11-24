@@ -10,7 +10,7 @@ import { cartoesService, Fatura } from '@/lib/service/contas-cartoes/contas-cart
 import { formatCardNumber, formatDateByUserPreference, getCurrencySymbol } from '@/lib/utils'
 import { createTransacaoFormData } from '@/lib/service/transacao/transacao-schema'
 import { transacaoService } from '@/lib/service/transacao/transacao-service'
-import { TransactionCard } from '@/components/dedicated/history/transaction-card'
+import { TransactionCard } from '@/components/dedicated/historico/transaction-card'
 import { Button } from '@/components/ui/button'
 
 export default function Page() {

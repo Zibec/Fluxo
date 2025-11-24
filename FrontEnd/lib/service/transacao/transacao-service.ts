@@ -40,6 +40,11 @@ class TransacaoService {
         return response.data
     }
 
+    async useEfetivar(id: string) {
+        const response = await api.post(`/transacao/${id}/efetivar`)
+        return response.data
+    }
+
     async deleteTransacao(id: string) {
         const response = await api.delete(`/transacao/${id}`)
         return response.data

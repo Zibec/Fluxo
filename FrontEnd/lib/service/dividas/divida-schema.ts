@@ -7,7 +7,7 @@ const DividaFormSchema = z.object({
         .nonempty("Nome da Dívida é obrigatório"),
     valorDivida: z.number()
         .min(0, "Valor devedor não pode ser negativo"),
-    valorAcumulado: z.number()
+    valorAmortizado: z.number()
         .optional(),
     status: z.string()
         .optional(),

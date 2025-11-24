@@ -10,8 +10,8 @@ import { AddIncomeDialog } from "@/components/dedicated/dashboard/add-income-dia
 import { metaService } from "@/lib/service/meta/meta-service"
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
 import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema"
-import { AddGoalDialog } from "../dedicated/goals/add-goal-dialog";
-import { AddBudgetDialog } from "../dedicated/budgets/add-budget-dialog";
+import { AddGoalDialog } from "../dedicated/metas/add-goal-dialog";
+import { AddBudgetDialog } from "../dedicated/orcamento/add-budget-dialog";
 import { createMetaFormData } from "@/lib/service/meta/meta-schema";
 import { createDividaFormData } from "@/lib/service/dividas/divida-schema";
 import { dividaService } from "@/lib/service/dividas/divida-service";

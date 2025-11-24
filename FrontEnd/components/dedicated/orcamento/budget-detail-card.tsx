@@ -11,7 +11,7 @@ import { categoriasService } from "@/lib/service/categoria/categoria-service"
 import { getCurrencySymbol } from "@/lib/utils"
 import { createTransacaoFormData } from "@/lib/service/transacao/transacao-schema"
 import { transacaoService } from "@/lib/service/transacao/transacao-service"
-import { TransactionCard } from "../history/transaction-card"
+import { TransactionCard } from "../historico/transaction-card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 interface BudgetDetailCardProps {

@@ -59,10 +59,6 @@ public class MetaController {
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
-        if(metaService.obterPorUsuario(usuario.getId()).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
         List<Meta> meta = metaService.obterPorUsuario(usuario.getId());
         return ResponseEntity.ok(meta);
     }

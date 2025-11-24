@@ -59,10 +59,6 @@ public class MetaInversaController {
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
-        if(metaInversaService.obterPorUsuario(usuario.getId()).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
         List<MetaInversa> meta = metaInversaService.obterPorUsuario(usuario.getId());
         return ResponseEntity.ok(meta);
     }

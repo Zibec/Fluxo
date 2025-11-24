@@ -104,14 +104,10 @@ public class TransacaoController {
 
     
     @GetMapping("/by-user")
-    public ResponseEntity<List<Transacao>> buscarPorUser(HttpServletRequest request) {
+    public ResponseEntity<List<Transacao>> buscarPorUser(HttpServletRequest request)    {
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
-
-        if(transacaoService.obterPorConta(usuario.getId()).isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
 
         List<Transacao> transacao = transacaoService.obterPorConta(usuario.getId());
         return ResponseEntity.ok(transacao);
