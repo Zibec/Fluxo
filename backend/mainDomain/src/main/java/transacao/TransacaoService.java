@@ -79,19 +79,9 @@ public class TransacaoService {
         //    mesmo que o reembolso tenha sido em outro mês
         BigDecimal totalReembolsos = todasTransacoes.stream()
                 .filter(t -> t.getTipo() == Tipo.REEMBOLSO)
-                .map(t -> {
-                    // se não tiver transação original ligada, ignora
-                    if (t.getTransacaoOriginalId() == null) {
-                        return BigDecimal.ZERO;
-                    }
-                    return repo.buscarTransacaoPorId(t.getTransacaoOriginalId())
-                            .filter(orig -> orig.getTipo() == Tipo.DESPESA)
-                            .filter(orig -> categoriaId.equals(orig.getCategoriaId()))
-                            .filter(orig -> YearMonth.from(orig.getData()).equals(mes))
-                            // se a despesa original bate categoria + mês, esse reembolso entra
-                            .map(orig -> t.getValor())
-                            .orElse(BigDecimal.ZERO);
-                })
+                .filter(t -> categoriaId.equals(t.getCategoriaId()))
+                .filter(t -> t.getData().getMonth().equals(mes.getMonth()))
+                .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 3) Gasto líquido = despesas - reembolsos

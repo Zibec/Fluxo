@@ -183,7 +183,8 @@ public class TransacaoController {
 
         BigDecimal saldoTotal = orcamentoService.saldoMensalTotal(usuario.getId(), transacao.getCategoriaId(), orcamento.getOrcamentoChave().getAnoMes());
 
-        if(saldoTotal.add(transacao.getValor()).compareTo(orcamento.getLimite()) == 1) {
+        if(saldoTotal.add(transacao.getValor()).compareTo(orcamento.getLimite()) < 0) {
+            System.out.println("Orçamento excedido");
             return ResponseEntity.status(HttpStatus.OK).body("Orçamento excedido.");
         }
 
@@ -194,7 +195,6 @@ public class TransacaoController {
         if(transacao.isAvulsa()) {
             transacaoService.efetivarTransacao(transacao.getId());
         }
-
 
         return ResponseEntity.ok().build();
     }
