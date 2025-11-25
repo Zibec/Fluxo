@@ -81,7 +81,7 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
 
     @Override
     public Optional<Orcamento> obterOrcamentoPorCategoria(String categoria) {
-        return Optional.of(repositorio.findById(categoria).map(this::toDomain)).orElse(null);
+        return repositorio.findByCategoriaId(categoria).map(this::toDomain);
     }
 
 

@@ -18,25 +18,25 @@ export default function CategoriasPage() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [editingCategory, setEditingCategory] = useState<{ id: string; name: string }>({ id: "", name: "" })
 
-  const {toast} = useToast();
+  const { toast } = useToast();
 
   const  {
-        register,
-        handleSubmit,
-        watch,
-        getValues,
-        formState: { errors }
-    } = useForm<createCategoriaFormData>({
-        resolver: zodResolver(CategoriaFormSchema)
-      })
+      register,
+      handleSubmit,
+      watch,
+      getValues,
+      formState: { errors }
+  } = useForm<createCategoriaFormData>({ resolver: zodResolver(CategoriaFormSchema)})
 
+  useEffect(() => {
+    async function fetchCategories() {
+      const categorias = await categoriasService.getAllCategorias()
+      setCategories(categorias)
+    }
+    fetchCategories()
+  }, [])
   
-  async function fetchCategories() {
-    const categorias = await categoriasService.getAllCategorias();
-    setCategories(categorias);
-  }
   
-  fetchCategories();
 
   const handleAddCategory = async () => {
     if (getValues("nome").trim() === "") return;
