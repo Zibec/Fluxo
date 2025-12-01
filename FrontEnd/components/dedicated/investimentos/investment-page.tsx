@@ -77,16 +77,22 @@ export function InvestmentPage() {
         })
       })
     } else if(type === 'total') {
-      investimentoService.resgateTotal(investment?.id as string).then(() => {
-        redirect('/dashboard/investments')
-      }).catch((error) => {
+      investimentoService.resgateTotal(investment?.id as string).catch((error) => {
         console.error("Error during total resgate:", error)
         toast({
           title: 'Erro no Resgate',
           description: `Ocorreu um erro ao processar o resgate total.`,
           variant: 'destructive',
         })
-      })
+      }
+    )
+
+    toast({
+      title: 'Resgate Realizado',
+      description: `O Resgate foi realizado com sucesso`
+    })
+
+    redirect('/dashboard/investimentos')
     }
 
     

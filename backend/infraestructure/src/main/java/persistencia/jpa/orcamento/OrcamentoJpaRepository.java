@@ -13,5 +13,5 @@ public interface OrcamentoJpaRepository extends JpaRepository<OrcamentoJpa, Stri
 
     List<OrcamentoJpa> findAllByUsuarioId(String usuarioId);
 
-    Optional<OrcamentoJpa> findByCategoriaId(String categoriaId);
+    List<OrcamentoJpa> findByCategoriaId(String categoriaId);
 }
