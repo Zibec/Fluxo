@@ -1,78 +1,96 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface EditCategoryDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  category: {id: string; name: string}
-  onSave: (id: string, newName: string) => Promise<void>
+	open: boolean;
+	onOpenChange: (open: boolean) => void;
+	category: { id: string; name: string };
+	onSave: (id: string, newName: string) => Promise<void>;
 }
 
-export function EditCategoryDialog({ open, onOpenChange, category, onSave }: EditCategoryDialogProps) {
-  const [name, setName] = useState(category.name)
+export function EditCategoryDialog({
+	open,
+	onOpenChange,
+	category,
+	onSave,
+}: EditCategoryDialogProps) {
+	const [name, setName] = useState(category.name);
 
-  useEffect(() => {
-    setName(category.name)
-  }, [category.name])
+	useEffect(() => {
+		setName(category.name);
+	}, [category.name]);
 
-  const handleSave = () => {
-    if (name.trim()) {
-      onSave(category.id, name.trim())
-      onOpenChange(false)
-    }
-  }
+	const handleSave = () => {
+		if (name.trim()) {
+			onSave(category.id, name.trim());
+			onOpenChange(false);
+		}
+	};
 
-  const handleCancel = () => {
-    setName(category.name) // Reset to original name
-    onOpenChange(false)
-  }
+	const handleCancel = () => {
+		setName(category.name); // Reset to original name
+		onOpenChange(false);
+	};
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-neutral-900">Editar Categoria</DialogTitle>
-        </DialogHeader>
+	return (
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className="sm:max-w-md">
+				<DialogHeader>
+					<DialogTitle className="text-xl font-semibold text-neutral-900">
+						Editar Categoria
+					</DialogTitle>
+				</DialogHeader>
 
-        <div className="space-y-4 py-4">
-          <div className="space-y-2">
-            <Label htmlFor="category-name" className="text-sm font-medium text-neutral-700">
-              Nome:
-            </Label>
-            <Input
-              id="category-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSave()
-                }
-              }}
-              placeholder="Digite o nome da categoria"
-              className="w-full"
-            />
-          </div>
-        </div>
+				<div className="space-y-4 py-4">
+					<div className="space-y-2">
+						<Label
+							htmlFor="category-name"
+							className="text-sm font-medium text-neutral-700"
+						>
+							Nome:
+						</Label>
+						<Input
+							id="category-name"
+							type="text"
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									handleSave();
+								}
+							}}
+							placeholder="Digite o nome da categoria"
+							className="w-full"
+						/>
+					</div>
+				</div>
 
-        <div className="flex justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={handleCancel}
-            className="border-neutral-300 text-neutral-700 hover:bg-neutral-50 bg-transparent"
-          >
-            Cancelar
-          </Button>
-          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white">
-            Salvar
-          </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
+				<div className="flex justify-end gap-3">
+					<Button
+						variant="outline"
+						onClick={handleCancel}
+						className="border-neutral-300 text-neutral-700 hover:bg-neutral-50 bg-transparent"
+					>
+						Cancelar
+					</Button>
+					<Button
+						onClick={handleSave}
+						className="bg-blue-600 hover:bg-blue-700 text-white"
+					>
+						Salvar
+					</Button>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
 }
