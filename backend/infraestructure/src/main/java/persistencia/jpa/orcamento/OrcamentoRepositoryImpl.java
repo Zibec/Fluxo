@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import persistencia.jpa.Mapper;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +82,7 @@ public class OrcamentoRepositoryImpl implements OrcamentoRepositorio {
 
     @Override
     public Optional<Orcamento> obterOrcamentoPorCategoria(String categoria) {
-        return repositorio.findByCategoriaId(categoria).map(this::toDomain);
+        return repositorio.findByCategoriaId(categoria).stream().filter(o -> o.mes == LocalDate.now().getMonth().getValue()).findFirst().map(this::toDomain);
     }
 
 
