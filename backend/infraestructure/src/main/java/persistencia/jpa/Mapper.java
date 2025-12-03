@@ -72,7 +72,10 @@ public class Mapper extends ModelMapper {
         addConverter(new AbstractConverter<AgendamentoJpa, Agendamento>() {
             @Override
             protected Agendamento convert(AgendamentoJpa source) {
-                return new Agendamento(source.id, source.descricao, source.valor, source.frequencia, source.proximaData, source.perfilId);
+                var a = new Agendamento(source.id, source.descricao, source.valor, source.frequencia, source.proximaData, source.perfilId);
+                a.setUsuarioId(source.usuarioId);
+                a.setCategoriaId(source.getCategoriaId());
+                return a;
             }
         });
 
@@ -237,6 +240,7 @@ public class Mapper extends ModelMapper {
                 jpa.frequencia = source.getFrequencia();
                 jpa.proximaData = source.getProximaData();
                 jpa.perfilId = source.getPerfilId();
+                jpa.usuarioId = source.getUsuarioId();
                 return jpa;
             }
         });

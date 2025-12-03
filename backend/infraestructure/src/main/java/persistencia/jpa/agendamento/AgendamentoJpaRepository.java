@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface AgendamentoJpaRepository extends JpaRepository<AgendamentoJpa, String> {
 
-    List<AgendamentoJpa> findByPerfilId(String perfilId);
+    List<AgendamentoJpa> findAllByUsuarioId(String usuarioId);
 
     List<AgendamentoJpa> findByAtivoTrueAndProximaDataLessThanEqual(LocalDate data);
 
-    Page<AgendamentoJpa> findAllByPerfilId(String perfilId, Pageable pageable);
+    Page<AgendamentoJpa> findAllByUsuarioId(String usuarioId, Pageable pageable);
 }

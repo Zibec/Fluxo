@@ -17,7 +17,7 @@ import transacao.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class GestaoDePerfisTest {
 
@@ -54,7 +54,7 @@ public class GestaoDePerfisTest {
                 null,
                 descricao,
                 new BigDecimal(valor),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.EFETIVADA,
                 contaRepositorio.obterConta(contaDeTeste.getId().getId()).get().getId(),
                 true,
@@ -111,7 +111,7 @@ public class GestaoDePerfisTest {
                 null,
                 descricao,
                 new BigDecimal(valor),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.EFETIVADA,
                 contaRepositorio.obterConta(contaDeTeste.getId().getId()).get().getId(),
                 true,

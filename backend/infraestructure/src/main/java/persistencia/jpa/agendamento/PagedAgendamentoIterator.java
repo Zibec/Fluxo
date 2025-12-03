@@ -26,7 +26,7 @@ final class PagedAgendamentoIterator implements Iterator<Agendamento> {
         this.agRepo = agRepo;
         this.pageSize = pageSize;
         var pageable = PageRequest.of(0, pageSize, Sort.by("proximaData"));
-        this.page = agRepo.findAllByPerfilId(perfilId, pageable);
+        this.page = agRepo.findAllByUsuarioId(perfilId, pageable);
         this.perfilId = perfilId;
     }
 

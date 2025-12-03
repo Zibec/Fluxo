@@ -22,6 +22,10 @@ import metaInversa.MetaInversaRepositorio;
 import metaInversa.MetaInversaService;
 import orcamento.OrcamentoRepositorio;
 import orcamento.OrcamentoService;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import patrimonio.PatrimonioRepositorio;
 import patrimonio.PatrimonioService;
@@ -158,10 +162,13 @@ public class FluxoApplication {
         SpringApplication.run(FluxoApplication.class, args);
     }
 
-
+    @Autowired
+    private Scheduler scheduler;
 
     @PostConstruct
-    public void setUp() {
+    public void setUp() throws SchedulerException {
+        scheduler = StdSchedulerFactory.getDefaultScheduler();
+        scheduler.start();
         objectMapper.findAndRegisterModules();
     }
 

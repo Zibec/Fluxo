@@ -16,6 +16,7 @@ import perfil.PerfilRepository;
 import transacao.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -61,11 +62,11 @@ public class ReembolsoTest {
     @Given("que registrei uma despesa original com ID {string} de R$ {double} na categoria {string}")
     public void que_registrei_uma_despesa_original_com_id_de_na_categoria(String id, Double valor, String categoria) {
 
-        LocalDate dataDespesa;
+        LocalDateTime dataDespesa;
         if (ultimoMesOrcamento != null) {
-            dataDespesa = ultimoMesOrcamento.atDay(1);
+            dataDespesa = ultimoMesOrcamento.atDay(1).atStartOfDay();
         } else {
-            dataDespesa = LocalDate.now();
+            dataDespesa = LocalDateTime.now();
         }
 
         Transacao despesa = new Transacao(
@@ -90,7 +91,7 @@ public class ReembolsoTest {
 
     @Given("que uma despesa original com ID {string} tem o valor de R$ {double} na categoria {string} em {string}")
     public void que_uma_despesa_original_com_id_tem_o_valor_de_r_na_categoria_em(String id, Double valor, String categoria, String mesAno) {
-        LocalDate data = YearMonth.parse(mesAno, DateTimeFormatter.ofPattern("MM/yyyy")).atDay(1);
+        LocalDateTime data = YearMonth.parse(mesAno, DateTimeFormatter.ofPattern("MM/yyyy")).atDay(1).atStartOfDay();
         Transacao despesa = new Transacao(id, null, "Despesa Original Teste", BigDecimal.valueOf(valor), data, StatusTransacao.EFETIVADA, categoria, contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
         transacaoService.salvarTransacao(despesa);
     }
@@ -109,7 +110,7 @@ public class ReembolsoTest {
 
     @Given("que eu tenho uma despesa original com ID {string} de R$ {double}")
     public void que_eu_tenho_uma_despesa_original_com_id_de_r(String id, Double valor) {
-        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDate.now(), StatusTransacao.EFETIVADA, "Categoria Teste", contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
+        Transacao despesa = new Transacao(id, null, "Despesa Teste", BigDecimal.valueOf(valor), LocalDateTime.now(), StatusTransacao.EFETIVADA, "Categoria Teste", contaDeTeste.getId(), true, Tipo.DESPESA, perfilRepository.obterPerfil("0").getId());
         transacaoService.salvarTransacao(despesa);
     }
 
@@ -121,7 +122,7 @@ public class ReembolsoTest {
     @Given("o total de receitas do usuário é de R$ {double}")
     public void o_total_de_receitas_do_usuario_e_de_r(Double totalReceitas) {
         this.totalReceitasAntes = BigDecimal.valueOf(totalReceitas);
-        Transacao receita = new Transacao(UUID.randomUUID().toString(), null, "Salário", this.totalReceitasAntes, LocalDate.now(), StatusTransacao.EFETIVADA, "Salário", contaDeTeste.getId(), true, Tipo.RECEITA, perfilRepository.obterPerfil("0").getId());
+        Transacao receita = new Transacao(UUID.randomUUID().toString(), null, "Salário", this.totalReceitasAntes, LocalDateTime.now(), StatusTransacao.EFETIVADA, "Salário", contaDeTeste.getId(), true, Tipo.RECEITA, perfilRepository.obterPerfil("0").getId());
         transacaoService.salvarTransacao(receita);
     }
 

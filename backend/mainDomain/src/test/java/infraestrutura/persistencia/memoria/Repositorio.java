@@ -33,6 +33,7 @@ import usuario.UsuarioRepositorio;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -591,7 +592,7 @@ public class Repositorio implements
         }
     }
 
-    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data) {
+    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDateTime data) {
         String id = idxAgendamentoData.get(chave(agendamentoId, data));
         return Optional.ofNullable(id).map(transacao::get);
     }
@@ -607,7 +608,7 @@ public class Repositorio implements
         return List.copyOf(transacao.values());
     }
 
-    private static String chave(String agendamentoId, LocalDate data) {
+    private static String chave(String agendamentoId, LocalDateTime data) {
         return agendamentoId + "#" + data;
     }
 

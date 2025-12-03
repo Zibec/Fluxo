@@ -2,6 +2,7 @@ package transacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.apache.commons.lang3.Validate.notBlank;
 import static org.apache.commons.lang3.Validate.notNull;
 
+import agendamento.Agendamento;
 import cartao.Cartao;
 import cartao.CartaoId;
 import cartao.CartaoRepositorio;
@@ -36,10 +38,11 @@ public class TransacaoService {
      * Cria uma transação PENDENTE oriunda de agendamento.
      * Idempotente por (agendamentoId, data): se já existe, retorna a existente.
      */
-    public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDate data,String categoriaId, Conta conta, boolean avulsa, String perfilId) {
+    public Transacao criarPendenteDeAgendamento(String agendamentoId, String descricao, BigDecimal valor, LocalDateTime data, String categoriaId, String conta, boolean avulsa, String perfilId, String usuarioId) {
         Optional<Transacao> existente = repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
+
         if (existente.isPresent()) {
-            return existente.get(); // idempotência: não duplica
+            return existente.get();
         }
 
         Transacao t = new Transacao(
@@ -50,11 +53,12 @@ public class TransacaoService {
                 data,
                 StatusTransacao.PENDENTE,
                 categoriaId,
-                conta.getId(),
+                new ContaId(conta),
                 avulsa,
                 Tipo.DESPESA,
                 perfilId
         );
+        t.setUsuarioId(usuarioId);
         repo.salvarTransacao(t);
         return t;
     }
@@ -122,7 +126,7 @@ public class TransacaoService {
                 null,
                 descricaoReembolso,
                 valorReembolso,
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.EFETIVADA,
                 despesaOriginal.getCategoriaId(),
                 pagamentoId,
@@ -134,6 +138,17 @@ public class TransacaoService {
         reembolso.setUsuarioId(despesaOriginal.getUsuarioId());
 
         reembolso.setTransacaoOriginalId(idDespesaOriginal);
+
+        if(reembolso.getPagamentoId().getType().equals("CONTA")) {
+            Conta conta = contaRepo.obterConta(reembolso.getPagamentoId().getId()).get();
+            conta.creditar(reembolso.getValor());
+            contaRepo.salvar(conta);
+        } else {
+            Cartao cartao = cartaoRepositorio.obterCartaoPorId(reembolso.getId());
+            cartao.creditar(reembolso.getValor());
+            cartaoRepositorio.salvar(cartao);
+        }
+
         repo.salvarTransacao(reembolso);
         return reembolso;
     }
@@ -181,7 +196,7 @@ public class TransacaoService {
         repo.salvarTransacao(t);
     }
 
-    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data){
+    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDateTime data){
         return repo.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
     }
 
@@ -194,7 +209,7 @@ public class TransacaoService {
         return repo.listarTodasTransacoes();
     }
 
-    private static String chave(String agendamentoId, LocalDate data) {
+    private static String chave(String agendamentoId, LocalDateTime data) {
         return agendamentoId + "#" + data;
     }
 

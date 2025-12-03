@@ -2,6 +2,7 @@ package transacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class Transacao {
     private final String origemAgendamentoId; // pra rastrear de qual agendamento veio (idempotência/ auditoria)
     private String descricao;
     private BigDecimal valor;
-    private LocalDate data;
+    private LocalDateTime data;
     private StatusTransacao status;
     private String categoriaId;
     private Tipo tipo;
@@ -32,7 +33,7 @@ public class Transacao {
         this.origemAgendamentoId = null;
     }
 
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, String categoriaId, FormaPagamentoId pagamentoId, boolean avulsa, Tipo tipo, String perfilId) {
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDateTime data, StatusTransacao status, String categoriaId, FormaPagamentoId pagamentoId, boolean avulsa, Tipo tipo, String perfilId) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
@@ -48,7 +49,7 @@ public class Transacao {
     }
 
     //Construtor sem categoria
-    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDate data, StatusTransacao status, FormaPagamentoId pagamentoId, boolean avulsa,Tipo tipo, String perfilId) {
+    public Transacao(String id, String origemAgendamentoId, String descricao, BigDecimal valor, LocalDateTime data, StatusTransacao status, FormaPagamentoId pagamentoId, boolean avulsa,Tipo tipo, String perfilId) {
         this.id = Objects.requireNonNull(id);
         this.origemAgendamentoId = origemAgendamentoId; // pode ser null se manual
         this.descricao = notBlank(descricao, "Descrição obrigatória");
@@ -68,7 +69,7 @@ public class Transacao {
     public String getOrigemAgendamentoId() { return origemAgendamentoId; }
     public String getDescricao() { return descricao; }
     public BigDecimal getValor() { return valor; }
-    public LocalDate getData() { return data; }
+    public LocalDateTime getData() { return data; }
     public StatusTransacao getStatus() { return status; }
     public String getCategoriaId() { return categoriaId; }
     public Tipo getTipo() {return tipo;}
@@ -112,7 +113,7 @@ public class Transacao {
         this.status = StatusTransacao.CANCELADA;
     }
 
-    public void reagendarPara(LocalDate novaData, LocalDate hoje) {
+    public void reagendarPara(LocalDateTime novaData, LocalDateTime hoje) {
         Objects.requireNonNull(novaData, "Data não pode ser nula");
         Objects.requireNonNull(hoje, "Data de hoje não pode ser nula");
 

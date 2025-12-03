@@ -16,7 +16,7 @@ import transacao.TransacaoRepositorio;
 import transacao.TransacaoService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import conta.Conta;
@@ -68,7 +68,7 @@ public class ContasAPagarTest {
                 null, // origemAgendamentoId é null para avulsa
                 descricao,
                 new BigDecimal(valor),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta.getId(),
@@ -103,7 +103,7 @@ public class ContasAPagarTest {
                 null,
                 descricao,
                 new BigDecimal(valor),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta.getId(),
@@ -144,7 +144,7 @@ public class ContasAPagarTest {
                 null,
                 "Transação Única",
                 new BigDecimal(valor),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.PENDENTE,
                 "categoria1",
                 conta.getId(),
@@ -208,7 +208,7 @@ public class ContasAPagarTest {
                 "agendamento123",
                 "Assinatura",
                 new BigDecimal(valor),
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.PENDENTE,
                 "categoria2",
                 conta.getId(),
@@ -236,7 +236,7 @@ public class ContasAPagarTest {
                 null,
                 "Conta de Luz",
                 new BigDecimal("100.00"),
-                LocalDate.now().plusDays(1),
+                LocalDateTime.now().plusDays(1),
                 StatusTransacao.PENDENTE,
                 "categoria3",
                 conta.getId(),

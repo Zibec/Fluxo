@@ -11,6 +11,7 @@ import transacao.Transacao;
 import transacao.TransacaoService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class AgendarTransacaoJob implements Job {
@@ -25,8 +26,10 @@ public class AgendarTransacaoJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         String id = jobExecutionContext.getJobDetail().getJobDataMap().getString("id");
+        String contaId = jobExecutionContext.getJobDetail().getJobDataMap().getString("contaId");
 
         Agendamento agendamento = agendamentoService.obterAgendamento(id).get();
-        agendamentoService.executarSeHoje(agendamento, LocalDate.now());
+        String transacaoId = agendamentoService.executarQuandoHoje(agendamento, LocalDateTime.now(), contaId);
+        transacaoService.efetivarTransacao(transacaoId);
     }
 }
