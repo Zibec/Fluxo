@@ -18,6 +18,7 @@ import transacao.TransacaoRepositorio;
 import conta.Conta;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -116,7 +117,7 @@ public class CategoriaTest {
                 null,
                 "Teste",
                 BigDecimal.TEN,
-                LocalDate.now(),
+                LocalDateTime.now(),
                 StatusTransacao.EFETIVADA,
                 this.categoria.getId(),
                 contaDeTeste.getId(),

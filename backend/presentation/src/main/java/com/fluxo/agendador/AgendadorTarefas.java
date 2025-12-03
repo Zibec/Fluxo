@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import transacao.Transacao;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Component
 public class AgendadorTarefas {
@@ -51,18 +52,21 @@ public class AgendadorTarefas {
         }
     }
 
-    public void agendarTransacao(Agendamento a) {
+    public void agendarTransacao(Agendamento a, String contaId) {
         try {
             JobDetail  job = JobBuilder.newJob(AgendarTransacaoJob.class)
                     .withIdentity("job-" + a.getId())
                     .usingJobData("id", a.getId())
+                    .usingJobData("contaId", contaId)
                     .build();
 
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity("trigger-" + a.getId())
-                    .startAt(Timestamp.valueOf(a.getProximaData().atStartOfDay()))
+                    .startAt(Timestamp.valueOf(a.getProximaData()))
                     .build();
 
+            System.out.println("agendado para: " + a.getProximaData());
+            System.out.println("agora: " + LocalDateTime.now());
             scheduler.scheduleJob(job, trigger);
         } catch (SchedulerException e) {
             e.printStackTrace();

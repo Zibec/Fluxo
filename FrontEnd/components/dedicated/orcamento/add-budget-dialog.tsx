@@ -94,8 +94,7 @@ export function AddBudgetDialog({
 									<SelectValue placeholder="Selecione uma categoria" />
 								</SelectTrigger>
 								<SelectContent>
-									{categorias &&
-										categorias.map((category) => (
+									{categorias?.map((category) => (
 											<SelectItem key={category.id} value={category.id}>
 												{category.nome}
 											</SelectItem>

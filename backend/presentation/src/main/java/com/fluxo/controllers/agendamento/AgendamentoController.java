@@ -89,7 +89,8 @@ public class AgendamentoController {
             String freqStr  = body.get("frequencia");
             String dataStr  = body.get("proximaData");
             String categoriaId = body.get("categ oriaId");
-            String contaId    = body.get("contaId");   // <- NOVO
+            String contaId    = body.get("contaId");
+            String perfilId    = body.get("perfilId");
 
 
             if (descricao == null || descricao.isBlank() || valorStr == null || valorStr.isBlank() || freqStr == null || freqStr.isBlank() || dataStr == null || dataStr.isBlank()  || contaId   == null || contaId.isBlank()) {
@@ -107,16 +108,16 @@ public class AgendamentoController {
                 return ResponseEntity.badRequest().build();
             }
 
-            LocalDate proximaData;
+            LocalDateTime proximaData;
             try {
-                proximaData = LocalDate.parse(dataStr.split("T")[0]);
+                proximaData = LocalDateTime.parse(dataStr.replace("Z", ""));
+                proximaData = proximaData.minusHours(3);
                 System.out.println(proximaData);
             } catch (DateTimeParseException e1) {
                 try {
-                    var fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                    proximaData = LocalDate.parse(dataStr, fmt);
+                    proximaData = LocalDateTime.parse(dataStr);
                 } catch (DateTimeParseException e2) {
-                    System.out.println(e2.getMessage());
+                    System.out.println("e2: " + e2.getMessage());
                     return ResponseEntity.badRequest().build();
                 }
             }
@@ -131,8 +132,10 @@ public class AgendamentoController {
                     valor,
                     frequencia,
                     proximaData,
-                    usuario.getId()
+                    perfilId
             );
+
+            novo.setUsuarioId(usuario.getId());
 
             if (categoriaId != null && !categoriaId.isBlank()) {
                 var catOpt = categoriaService.obterCategoria(categoriaId);
@@ -143,7 +146,7 @@ public class AgendamentoController {
             }
 
             service.salvarComTransacao(novo, conta);
-            agendador.agendarTransacao(novo);
+            agendador.agendarTransacao(novo, conta.getId().getId());
             return ResponseEntity.status(201).build();
 
         } catch (IllegalStateException e) {
@@ -159,8 +162,6 @@ public class AgendamentoController {
 
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<Void> atualizarValor(@PathVariable String id, @RequestBody Map<String,String> body) {
-
-
             var existenteOpt = service.obterAgendamento(id);
             if (existenteOpt.isEmpty()) {
                 return ResponseEntity.status(404).build();
@@ -185,15 +186,13 @@ public class AgendamentoController {
                     existente.getPerfilId()
             );
 
-            service.atualizarComTransacao(atualizado, LocalDate.now());
+            service.atualizarComTransacao(atualizado, LocalDateTime.now());
             return ResponseEntity.noContent().build();
 
     }
 
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Void> deletarAgendamento(@PathVariable String id) {
-
-        System.out.println("ID recebido no controller: '" + id + "'");
 
         try {
             service.deletarAgendamento(id);

@@ -9,6 +9,7 @@ import transacao.TransacaoRepositorio;
 
 import java.sql.Array;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ public class TransacaoRepositoryImpl implements TransacaoRepositorio {
     }
 
     @Override
-    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDate data) {
+    public Optional<Transacao> encontrarTransacaoPorAgendamentoEData(String agendamentoId, LocalDateTime data) {
         return repositorio.findByOrigemAgendamentoIdAndData(agendamentoId, data)
                 .map(jpa -> mapper.map(jpa, Transacao.class));
     }

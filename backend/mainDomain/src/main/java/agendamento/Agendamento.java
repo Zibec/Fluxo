@@ -2,6 +2,7 @@ package agendamento;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.Validate.isTrue;
@@ -12,12 +13,14 @@ public class Agendamento {
     private final String id;
     private BigDecimal valor;
     private final Frequencia frequencia;
-    private LocalDate proximaData;
+    private LocalDateTime proximaData;
     private boolean ativo = true;
     private String categoriaId;
 
+    private String usuarioId;
+
     private String perfilId;
-    public Agendamento(String id, String descricao, BigDecimal valor, Frequencia frequencia, LocalDate proximaData, String perfilId) {
+    public Agendamento(String id, String descricao, BigDecimal valor, Frequencia frequencia, LocalDateTime proximaData, String perfilId) {
         this.id = Objects.requireNonNull(id);
         this.descricao = notBlank(descricao, "Descrição obrigatória");
         isTrue(valor != null && valor.signum() >= 0, "Valor deve ser positivo");
@@ -33,6 +36,14 @@ public class Agendamento {
 
     public void setPerfilId(String perfilId) {
         this.perfilId = perfilId;
+    }
+
+    public String getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     public String getCategoriaId() {
@@ -52,7 +63,7 @@ public class Agendamento {
         this.valor = valor;
     }
     public Frequencia getFrequencia() { return frequencia; }
-    public LocalDate getProximaData() { return proximaData; }
+    public LocalDateTime getProximaData() { return proximaData; }
     public boolean isAtivo() { return ativo; }
     public void cancelar() { this.ativo = false; this.proximaData = null; }
 
@@ -66,10 +77,10 @@ public class Agendamento {
                 int diaDesejado = this.proximaData.getDayOfMonth();
 
                 //soma 1 mês
-                LocalDate candidata = this.proximaData.plusMonths(1);
+                LocalDateTime candidata = this.proximaData.plusMonths(1);
 
                 //limita ao último dia do mês destino
-                int ultimoDiaMes = candidata.lengthOfMonth();
+                int ultimoDiaMes = candidata.getMonth().maxLength();
                 this.proximaData = candidata.withDayOfMonth(Math.min(diaDesejado, ultimoDiaMes));
             }
             case SEMANAL -> this.proximaData = this.proximaData.plusWeeks(1);
@@ -78,8 +89,8 @@ public class Agendamento {
                 //ano bissexto: 29/02 pode cair para 28/02 em ano não bissexto
                 int dia = this.proximaData.getDayOfMonth();
                 int mes = this.proximaData.getMonthValue();
-                LocalDate candidata = this.proximaData.plusYears(1);
-                int ultimoDiaMes = candidata.withMonth(mes).lengthOfMonth();
+                LocalDateTime candidata = this.proximaData.plusYears(1);
+                int ultimoDiaMes = candidata.withMonth(mes).getMonth().maxLength();
                 this.proximaData = candidata.withMonth(mes).withDayOfMonth(Math.min(dia, ultimoDiaMes));
             }
             default -> throw new IllegalStateException("Frequência não suportada: " + this.frequencia);

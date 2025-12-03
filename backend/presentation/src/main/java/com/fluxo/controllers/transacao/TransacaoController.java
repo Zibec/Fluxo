@@ -2,6 +2,7 @@ package com.fluxo.controllers.transacao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -97,7 +98,7 @@ public class TransacaoController {
     }
 
     @GetMapping("/agendamento-data/{agendamentoId}/{data}")
-    public ResponseEntity<Transacao> buscarPorNome(@PathVariable String agendamentoId, @PathVariable LocalDate data) {
+    public ResponseEntity<Transacao> buscarPorNome(@PathVariable String agendamentoId, @PathVariable LocalDateTime data) {
         Optional<Transacao> transacao = transacaoService.encontrarTransacaoPorAgendamentoEData(agendamentoId, data);
         return transacao.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

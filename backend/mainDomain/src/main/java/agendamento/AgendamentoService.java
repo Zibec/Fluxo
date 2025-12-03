@@ -5,7 +5,7 @@ import transacao.Transacao;
 import transacao.TransacaoService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class AgendamentoService {
@@ -32,14 +32,15 @@ public class AgendamentoService {
                     agendamento.getValor(),
                     agendamento.getProximaData(),
                      agendamento.getCategoriaId(),
-                    conta,
+                    conta.getId().getId(),
                     false,
-                    agendamento.getPerfilId()
+                    agendamento.getPerfilId(),
+                     ""
             );
         }
     }
 
-    public void atualizarComTransacao(Agendamento agendamento, LocalDate hoje){
+    public void atualizarComTransacao(Agendamento agendamento, LocalDateTime hoje){
         agRepo.atualizarAgendamento(agendamento.getId(), agendamento.getValor());
 
         Transacao t = transacaoService.listarPorOrigemAgendamentoId(agendamento.getId());
@@ -68,7 +69,7 @@ public class AgendamentoService {
         agRepo.deletarAgendamento(id);
     }
 
-    public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDate hoje, Conta conta) {
+    public void salvarValidandoNaoNoPassado(Agendamento agendamento, LocalDateTime hoje, Conta conta) {
         Objects.requireNonNull(agendamento, "Agendamento obrigatório");
         Objects.requireNonNull(hoje, "Hoje obrigatório");
         if (agendamento.getProximaData() != null && agendamento.getProximaData().isBefore(hoje)) {
@@ -90,18 +91,30 @@ public class AgendamentoService {
     }
 
     /** Executa se hoje == próximaData; cria transação e avança próximaData. */
-    public boolean executarSeHoje(Agendamento agendamento, LocalDate hoje) {
+    public boolean executarSeHoje(Agendamento agendamento, LocalDateTime hoje) {
         if (!agendamento.isAtivo() || !Objects.equals(agendamento.getProximaData(), hoje)) return false;
 
         String chave = agendamento.getId() + "#" + hoje;
         if (!execucoesDoDia.add(chave)) return false;
 
         transacaoService.criarPendenteDeAgendamento(
-                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, agendamento.getCategoriaId(), new Conta(), false, agendamento.getPerfilId()
+                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, agendamento.getCategoriaId(), "", false, agendamento.getPerfilId(), agendamento.getUsuarioId()
         );
 
         agendamento.avancarProximaData();
         agRepo.salvar(agendamento);
         return true;
+    }
+
+    public String executarQuandoHoje(Agendamento agendamento, LocalDateTime hoje, String contaId) {
+        System.out.println("hoje, executou");
+
+        Transacao t = transacaoService.criarPendenteDeAgendamento(
+                agendamento.getId(), agendamento.getDescricao(), agendamento.getValor(), hoje, agendamento.getCategoriaId(), contaId, false, agendamento.getPerfilId(), agendamento.getUsuarioId()
+        );
+
+        agendamento.avancarProximaData();
+        agRepo.salvar(agendamento);
+        return t.getId();
     }
 }

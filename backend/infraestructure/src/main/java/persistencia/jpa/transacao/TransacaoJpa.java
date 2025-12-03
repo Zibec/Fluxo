@@ -7,6 +7,7 @@ import transacao.Tipo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.Validate.isTrue;
@@ -22,7 +23,7 @@ public class TransacaoJpa {
     public String origemAgendamentoId;
     public String descricao;
     public BigDecimal valor;
-    public LocalDate data;
+    public LocalDateTime data;
 
     @Enumerated(EnumType.STRING)
     public StatusTransacao status;

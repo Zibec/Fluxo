@@ -142,38 +142,66 @@ export function AddScheduleDialog({
 							<p className="text-sm text-red-600">{errors.valor?.message}</p>
 						</div>
 
-						<div className="space-y-2">
-							<Label>Data Recorrente</Label>
-							<Popover>
-								<PopoverTrigger asChild>
-									<Button
-										variant="outline"
-										className="w-full justify-start text-left font-normal bg-transparent"
-									>
-										<CalendarIcon className="mr-2 h-4 w-4" />
-										{watch("proximaData") ? (
-											format(watch("proximaData"), "yyyy-MM-dd", {
-												locale: ptBR,
-											})
-										) : (
-											<span className="text-neutral-500">
-												Selecione uma data
-											</span>
-										)}
-									</Button>
-								</PopoverTrigger>
-								<PopoverContent className="w-auto p-0" align="start">
-									<Calendar
-										mode="single"
-										selected={watch("proximaData")}
-										onSelect={(date) => setValue("proximaData", date)}
-									/>
-								</PopoverContent>
-							</Popover>
-							<p className="text-sm text-red-600">
-								{errors.proximaData?.message}
-							</p>
-						</div>
+          <div className="space-y-2">
+            <Label>Data e Hora</Label>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start text-left font-normal bg-transparent"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {watch("proximaData") ? (
+                    format(watch("proximaData"), "yyyy-MM-dd HH:mm", { locale: ptBR })
+                  ) : (
+                    <span className="text-neutral-500">Selecione data e hora</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-auto p-3 space-y-3" align="start">
+                {/* Calendário */}
+                <Calendar
+                  mode="single"
+                  selected={watch("proximaData")}
+                  onSelect={(date) => {
+                    const old = watch("proximaData")
+                    if (!old) return setValue("proximaData", date)
+
+                    // mantém hora anterior
+                    const updated = new Date(date)
+                    updated.setHours(old.getHours())
+                    updated.setMinutes(old.getMinutes())
+                    setValue("proximaData", updated)
+                  }}
+                />
+
+                {/* Hora */}
+                <div className="flex items-center gap-2">
+                  <Label className="whitespace-nowrap">Hora:</Label>
+                  <input
+                    type="time"
+                    className="border rounded px-2 py-1"
+                    onChange={(e) => {
+                      const value = e.target.value // "HH:mm"
+                      const [h, m] = value.split(":")
+                      const current = watch("proximaData") ?? new Date()
+
+                      const updated = new Date(current)
+                      updated.setHours(h)
+                      updated.setMinutes(m)
+
+                      setValue("proximaData", updated)
+                    }}
+                  />
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <p className="text-sm text-red-600">{errors.proximaData?.message}</p>
+          </div>
+
 
 						<div className="space-y-2">
 							<Label htmlFor="edit-budget-category">Conta Associada:</Label>
