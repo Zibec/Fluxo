@@ -110,7 +110,7 @@ export default function InvestimentosPage() {
         </div>
       </main>
 
-      <AddInvestmentDialog open={isAddInvestmentOpen} onOpenChange={setIsAddInvestmentOpen} />
+      <AddInvestmentDialog open={isAddInvestmentOpen} onOpenChange={setIsAddInvestmentOpen} setInvestments={setInvestments}/>
     </div>
   )
 }

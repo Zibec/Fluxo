@@ -19,9 +19,10 @@ import { SelectValue } from "@radix-ui/react-select"
 interface AddInvestmentDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  setInvestments: (investments: createInvestimentoFormData[]) => void
 }
 
-export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogProps) {
+export function AddInvestmentDialog({ open, onOpenChange, setInvestments }: AddInvestmentDialogProps) {
   const [investmentForm, setInvestmentForm] = useState<createInvestimentoFormData>()
   const [contas, setContas] = useState<createContaFormData[]>()
   
@@ -40,24 +41,29 @@ export function AddInvestmentDialog({ open, onOpenChange }: AddInvestmentDialogP
 
   const { toast } = useToast()
 
-  const handleSaveInvestment = () => {
-    console.log("Saving investment:", investmentForm)
+  const handleSaveInvestment = async () => {
+    try {
+      await investimentoService.createInvestimento(getValues())
 
-    investimentoService.createInvestimento(getValues()).then((response) => {
-        console.log("Investment created successfully:", response.data)
+      // Recarrega a lista para refletir o novo investimento
+      const updated = await investimentoService.getInvestimentosByUserId()
+      setInvestments(updated)
 
-        toast({
-          title: "Investimento criado com sucesso!",
-          description: `Investimento foi adicionado.`
-        })
-
-        reset()
+      toast({
+        title: "Investimento criado com sucesso!",
+        description: "Investimento foi adicionado.",
       })
-      .catch((error) => {
-        console.error("Error creating investment:", error)
+
+      reset()
+      onOpenChange(false)
+    } catch (error) {
+      console.error("Error creating investment:", error)
+      toast({
+        variant: "destructive",
+        title: "Erro ao criar investimento",
+        description: "Ocorreu um erro ao criar o investimento. Tente novamente.",
       })
-    
-    onOpenChange(false)
+    }
   }
 
   const handleCancelInvestment = () => {
