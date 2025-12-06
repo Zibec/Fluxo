@@ -51,7 +51,7 @@ export function Header() {
       setPatrimony(data)
     }
     fetchPatrimonio()
-  }, [])
+  }, [path])
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -59,7 +59,7 @@ export function Header() {
       setBalance(data)
     }
     fetchBalance()
-  }, [])
+  }, [path])
 
   return (
     <header
