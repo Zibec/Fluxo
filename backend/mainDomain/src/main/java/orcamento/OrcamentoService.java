@@ -20,8 +20,14 @@ public class OrcamentoService {
         this.transacaoService = notNull(transacaoService);
     }
 
-    public void criarOrcamentoMensal(String usuarioId, String categoriaid, YearMonth anoMes, BigDecimal limite){
-        var chave = new OrcamentoChave(usuarioId, anoMes, categoriaid);
+    public void criarOrcamentoMensal(String usuarioId, String categoriaId, YearMonth anoMes, BigDecimal limite) {
+        var chave = new OrcamentoChave(usuarioId, anoMes, categoriaId);
+
+        var existente = orcamentoRepositorio.obterOrcamento(chave);
+        if (existente.isPresent()) {
+            throw new IllegalStateException("Já existe um orçamento para essa categoria nesse mês.");
+        }
+
         orcamentoRepositorio.salvarOrcamento(chave, new Orcamento(limite));
     }
 

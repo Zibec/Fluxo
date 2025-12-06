@@ -37,16 +37,34 @@ export function AddBudgetDialog({ open, onOpenChange, setBudgets }: AddBudgetDia
   }, [])
 
   const handleSave = async () => {
-    await orcamentoService.createOrcamento(getValues()).then(() => {
+    try {
+      await orcamentoService.createOrcamento(getValues())
+
       toast({
         title: "Orçamento criado",
         description: "O orçamento foi criado com sucesso.",
       })
 
       reset()
-    })
-    setBudgets(await orcamentoService.getOrcamentos())
-    onOpenChange(false)
+      setBudgets(await orcamentoService.getOrcamentos())
+      onOpenChange(false)
+    } catch (error: any) {
+      const status = error?.response?.status
+
+      if (status === 409) {
+        toast({
+          variant: "destructive",
+          title: "Não foi possível criar o orçamento",
+          description: "Já existe um orçamento para essa categoria nesse mês.",
+        })
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao criar orçamento",
+          description: "Ocorreu um erro ao criar o orçamento. Tente novamente.",
+        })
+      }
+    }
   }
 
   const handleCancel = () => {
