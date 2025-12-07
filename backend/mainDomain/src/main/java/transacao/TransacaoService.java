@@ -153,7 +153,7 @@ public class TransacaoService {
             conta.creditar(reembolso.getValor());
             contaRepo.salvar(conta);
         } else {
-            Cartao cartao = cartaoRepositorio.obterCartaoPorId(reembolso.getId());
+            Cartao cartao = cartaoRepositorio.obterCartaoPorId(reembolso.getPagamentoId().getId());
             cartao.creditar(reembolso.getValor());
             cartaoRepositorio.salvar(cartao);
         }
