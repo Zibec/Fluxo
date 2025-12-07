@@ -84,18 +84,24 @@ public class MetaController {
     // Atualizar meta (ex: descrição, valor alvo, prazo)
     @PutMapping("/{id}")
     public ResponseEntity<Void> atualizar(@PathVariable String id, @RequestBody Meta novaMeta,  HttpServletRequest request) {
-        var existente = metaService.obter(id);
-        if (existente.isEmpty()) return ResponseEntity.notFound().build();
+        var existenteOptional = metaService.obter(id);
+        if (existenteOptional.isEmpty()) return ResponseEntity.notFound().build();
+
+        Meta existente = existenteOptional.get(); // Pega a meta atual
 
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
 
+        novaMeta.setId(id);
+        novaMeta.setUsuarioId(usuario.getId());
+
+        if (novaMeta.getSaldoAcumulado() == null){
+            novaMeta.setSaldoAcumulado(existente.getSaldoAcumulado());
+        }
+
         metaService.deletar(id);
 
-        novaMeta.setUsuarioId(usuario.getId());
-        novaMeta.setId(usuario.getId());
-        novaMeta.setSaldoAcumulado(novaMeta.getSaldoAcumulado());
         metaService.salvar(novaMeta);
 
         return ResponseEntity.ok().build();
