@@ -72,10 +72,19 @@ public class TransacaoService {
         System.out.println(mes);
 
         // 1) Soma todas as DESPESAS da categoria no mês
-        BigDecimal totalDespesas = todasTransacoes.stream()
-                .filter(t -> t.getTipo() == Tipo.DESPESA)
-                .filter(t -> categoriaId.equals(t.getCategoriaId()))
-                .filter(t -> t.getData().getMonth().equals(mes.getMonth()))
+        BigDecimal totalGastos = todasTransacoes.stream()
+                .filter(t -> {
+                    boolean mesmaCategoria = categoriaId.equals(t.getCategoriaId());
+                    boolean mesmoMes = java.time.YearMonth.from(t.getData()).equals(mes);
+
+                    boolean Despesa = t.getTipo() == Tipo.DESPESA;
+
+                    boolean ReceitaNoCartao = t.getTipo() == Tipo.RECEITA
+                            && t.getPagamentoId() != null
+                            && "CARTAO".equalsIgnoreCase(t.getPagamentoId().getType());
+
+                    return mesmaCategoria && mesmoMes && (Despesa || ReceitaNoCartao);
+                })
                 .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -89,7 +98,7 @@ public class TransacaoService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 3) Gasto líquido = despesas - reembolsos
-        return totalDespesas.subtract(totalReembolsos);
+        return totalGastos.subtract(totalReembolsos);
     }
 
     public Transacao registrarReembolso(BigDecimal valorReembolso, String idDespesaOriginal) {
