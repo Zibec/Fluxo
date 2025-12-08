@@ -3,11 +3,7 @@ package com.fluxo.controllers.transacao;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import orcamento.Orcamento;
 import orcamento.OrcamentoChave;
@@ -124,6 +120,7 @@ public class TransacaoController {
     
     @PostMapping
     public ResponseEntity<?> criar(@RequestBody TransacaoDTO dto, HttpServletRequest request) {
+        boolean orcamentoExcedido = false;
         String token = securityFilter.recoverToken(request);
         String name = tokenService.extractUsername(token);
         Usuario usuario = usuarioService.obterPorNome(name);
@@ -183,10 +180,14 @@ public class TransacaoController {
         Orcamento orcamento = orcamentoService.obterOrcamentoPorCategoria(transacao.getCategoriaId()).get();
 
         BigDecimal saldoTotal = orcamentoService.saldoMensalTotal(usuario.getId(), transacao.getCategoriaId(), orcamento.getOrcamentoChave().getAnoMes());
+        System.out.println("Orçamento excedido oi");
+        System.out.println("Saldo total: " + saldoTotal);
+        System.out.println("Limite: " + orcamento.getLimite());
+        System.out.println("transação.getValor(): " + transacao.getValor());
 
-        if(saldoTotal.add(transacao.getValor()).compareTo(orcamento.getLimite()) < 0) {
-            System.out.println("Orçamento excedido");
-            return ResponseEntity.status(HttpStatus.OK).body("Orçamento excedido.");
+        if(saldoTotal.subtract(transacao.getValor()).compareTo(BigDecimal.ZERO) < 0) {
+            System.out.println(saldoTotal.subtract(transacao.getValor()).compareTo(orcamento.getLimite()));
+            orcamentoExcedido = true;
         }
 
         transacao.setUsuarioId(usuario.getId());
@@ -196,8 +197,13 @@ public class TransacaoController {
         if(transacao.isAvulsa()) {
             transacaoService.efetivarTransacao(transacao.getId());
         }
+        Map<String, Object> body = new HashMap<>();
+        body.put("mensagem", orcamentoExcedido
+                ? "Transação criada, mas o orçamento foi excedido."
+                : "Transação criada com sucesso.");
+        body.put("orcamentoExcedido", orcamentoExcedido);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(body);
     }
 
     @PostMapping("/{id}/efetivar")

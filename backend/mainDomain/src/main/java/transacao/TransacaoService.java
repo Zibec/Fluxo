@@ -79,11 +79,7 @@ public class TransacaoService {
 
                     boolean Despesa = t.getTipo() == Tipo.DESPESA;
 
-                    boolean ReceitaNoCartao = t.getTipo() == Tipo.RECEITA
-                            && t.getPagamentoId() != null
-                            && "CARTAO".equalsIgnoreCase(t.getPagamentoId().getType());
-
-                    return mesmaCategoria && mesmoMes && (Despesa || ReceitaNoCartao);
+                    return mesmaCategoria && mesmoMes && Despesa;
                 })
                 .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
