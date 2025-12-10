@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { InvestmentChart } from "./investment-chart";
-import { ResgateDialog } from "./resgate-dialog";
-import { createInvestimentoFormData } from "@/lib/service/investimentos/investimento-schema";
-import { investimentoService } from "@/lib/service/investimentos/investimento-service";
-import { redirect, useParams } from "next/navigation";
+import { useEffect, useState } from 'react'
+import { useToast } from '@/hooks/use-toast'
+import { InvestmentChart } from './investment-chart'
+import { ResgateDialog } from './resgate-dialog'
+import { createInvestimentoFormData } from '@/lib/service/investimentos/investimento-schema'
+import { investimentoService } from '@/lib/service/investimentos/investimento-service'
+import { useParams, useRouter } from 'next/navigation'
 
 export interface Historico {
 	data: Date;
@@ -14,8 +14,9 @@ export interface Historico {
 }
 
 export function InvestmentPage() {
-	const { toast } = useToast();
-	const { id } = useParams();
+  const { toast } = useToast()
+  const { id } = useParams()
+  const router = useRouter()
 
 	const [selicRate, setSelicRate] = useState(0.0);
 	const [investment, setInvestment] = useState<createInvestimentoFormData>();
@@ -64,49 +65,58 @@ export function InvestmentPage() {
 		fetchSelicRate();
 	}, []);
 
-	const handleResgate = (type: "total" | "parcial", amount?: number) => {
-		toast({
-			title: "Resgate Solicitado",
-			description: `Resgate ${type === "total" ? "total" : `parcial de R$ ${amount?.toFixed(2)}`} foi solicitado com sucesso`,
-		});
+  const handleResgate = async (type: 'total' | 'parcial', amount?: number) => {
+    try {
+      if (type === 'parcial') {
+        if (!investment || amount === undefined || amount <= 0) {
+          toast({
+            title: 'Valor inválido',
+            description: 'Informe um valor válido para o resgate parcial.',
+            variant: 'destructive',
+          })
+          return
+        }
 
-		if (type === "parcial" && amount !== undefined) {
-			investimentoService
-				.resgateParcial(investment?.id as string, amount)
-				.then(() => {
-					// Atualizar o estado do investimento após o resgate parcial
-					setInvestment((prev) =>
-						prev ? { ...prev, valorAtual: prev.valorAtual - amount } : prev,
-					);
-				})
-				.catch((error) => {
-					console.error("Error during partial resgate:", error);
-					toast({
-						title: "Erro no Resgate",
-						description: `Ocorreu um erro ao processar o resgate parcial.`,
-						variant: "destructive",
-					});
-				});
-		} else if (type === "total") {
-			investimentoService
-				.resgateTotal(investment?.id as string)
-				.then(() => {
-					redirect("/dashboard/investments");
-				})
-				.catch((error) => {
-					console.error("Error during total resgate:", error);
-					toast({
-						title: "Erro no Resgate",
-						description: `Ocorreu um erro ao processar o resgate total.`,
-						variant: "destructive",
-					});
-				});
-		}
-	};
+        // espera o backend terminar o resgate parcial
+        await investimentoService.resgateParcial(investment.id, amount)
 
-	return (
-		<div
-			className="
+        // atualiza o valor atual localmente
+        setInvestment(prev =>
+          prev ? { ...prev, valorAtual: prev.valorAtual - amount } : prev
+        )
+
+        // recarrega o histórico para atualizar o dashboard do investimento
+        const novosHistoricos = await investimentoService.getHistoricoInvestimento(investment.id)
+        setHistoricos(novosHistoricos)
+
+      } else {
+        if (!investment) return
+
+        // espera o backend terminar o resgate total
+        await investimentoService.resgateTotal(investment.id)
+      }
+
+      toast({
+        title: 'Resgate Realizado',
+        description: `O resgate ${type === 'total' ? 'total' : 'parcial'} foi realizado com sucesso.`,
+      })
+
+      // só navega depois que o backend terminou -> evita ter que dar F5
+      router.push('/dashboard/investimentos')
+    } catch (error) {
+      console.error('Error during resgate:', error)
+      toast({
+        title: 'Erro no Resgate',
+        description: 'Ocorreu um erro ao processar o resgate. Tente novamente.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+
+  return (
+    <div
+      className="
         min-h-screen 
         bg-[var(--color-background)] 
         text-[var(--color-foreground)] 
@@ -129,9 +139,9 @@ export function InvestmentPage() {
 
 									{/* descricao */}
 									<div className="space-y-2">
-										<label className="block text-sm font-medium text-foreground">
+										<p className="block text-sm font-medium text-foreground">
 											Descrição
-										</label>
+										</p>
 										<div className="flex items-center justify-between">
 											<div className="flex-1 p-3 bg-background text-foreground rounded-lg min-h-[40px] flex items-center">
 												{investment.descricao}
@@ -142,9 +152,9 @@ export function InvestmentPage() {
 
 								{/* Investment Chart */}
 								<div>
-									<label className="block text-sm font-medium text-foreground mb-4">
+									<p className="block text-sm font-medium text-foreground mb-4">
 										Dashboard de crescimento do investimento:
-									</label>
+									</p>
 									<div className="bg-background rounded-lg p-4 w-100 h-60">
 										<InvestmentChart data={historicos} />
 									</div>
@@ -154,9 +164,9 @@ export function InvestmentPage() {
 							{/* Middle Column - Values */}
 							<div className="space-y-6 flex flex-col justify-start">
 								<div>
-									<label className="block text-sm font-medium text-foreground mb-2">
+									<p className="block text-sm font-medium text-foreground mb-2">
 										Valor Atual:
-									</label>
+									</p>
 									<div className="text-3xl font-bold text-foreground">
 										R$
 										{investment.valorAtual.toLocaleString("pt-BR", {
@@ -167,9 +177,9 @@ export function InvestmentPage() {
 								</div>
 
 								<div>
-									<label className="block text-sm font-medium text-foreground mb-2">
+									<p className="block text-sm font-medium text-foreground mb-2">
 										Rendimento Atual:
-									</label>
+									</p>
 									<div className="text-2xl font-semibold text-green-600">
 										+{selicRate.toFixed(2)}%
 									</div>
@@ -179,9 +189,9 @@ export function InvestmentPage() {
 							{/* Right Column - Resgate */}
 							<div className="flex flex-col justify-between">
 								<div>
-									<label className="block text-sm font-medium text-foreground mb-4">
+									<p className="block text-sm font-medium text-foreground mb-4">
 										Resgatar valor investido:
-									</label>
+									</p>
 									<div className="space-y-2">
 										<ResgateDialog
 											investment={investment}

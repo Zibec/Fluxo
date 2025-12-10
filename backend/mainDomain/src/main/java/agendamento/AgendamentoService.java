@@ -41,9 +41,13 @@ public class AgendamentoService {
     }
 
     public void atualizarComTransacao(Agendamento agendamento, LocalDateTime hoje){
-        agRepo.atualizarAgendamento(agendamento.getId(), agendamento.getValor());
+        agRepo.salvar(agendamento);
 
         Transacao t = transacaoService.listarPorOrigemAgendamentoId(agendamento.getId());
+
+        if(t == null) {
+            return;
+        }
 
         if (agendamento.getProximaData() != null && agendamento.getProximaData().isBefore(hoje)) {
             throw new IllegalArgumentException("Data inválida por estar no passado");

@@ -185,6 +185,11 @@ export function AddScheduleDialog({
                     className="border rounded px-2 py-1"
                     onChange={(e) => {
                       const value = e.target.value // "HH:mm"
+
+											if (!value) {
+												return setValue("proximaData", null)
+											}
+
                       const [h, m] = value.split(":")
                       const current = watch("proximaData") ?? new Date()
 

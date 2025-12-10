@@ -80,6 +80,7 @@ export function TransactionCardWithOptions({
 					{/* Data + Responsável */}
 					<div className="flex items-center gap-4 text-sm text-muted-foreground">
 						<span>{formatDateByUserPreference(transaction.data)}</span>
+						
 						<span>•</span>
 						<span>{transaction.descricao}</span>
 						<span>•</span>

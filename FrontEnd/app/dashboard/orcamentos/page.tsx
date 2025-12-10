@@ -48,7 +48,7 @@ export default function OrcamentosPage() {
 				<div className="space-y-6">
 					{budgets?.map((budget) => (
 							<BudgetDetailCard
-								key={budget.categoriaId + "/" + budget.anoMes}
+								key={budget.categoriaId + "/" + budget.mes}
 								budget={budget}
 								onEdit={() => handleEdit(budget.categoriaId)}
 							/>

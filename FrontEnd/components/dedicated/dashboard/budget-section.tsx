@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { DataContext } from "@/hooks/data-context";
+import { useToast } from "@/hooks/use-toast";
 import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema";
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service";
 import Link from "next/link";
@@ -13,6 +14,7 @@ interface BudgetSectionProps {
 export function BudgetSection({ orcamentos }: BudgetSectionProps) {
 	const { categorias } = useContext(DataContext);
 	const [spents, setSpents] = useState<number[]>([]);
+	const {toast} = useToast()
 
 	useEffect(() => {
 		const fetchSpents = async () => {
@@ -30,10 +32,34 @@ export function BudgetSection({ orcamentos }: BudgetSectionProps) {
 		orcamentos && fetchSpents();
 	}, [orcamentos]);
 
+	useEffect(() => {
+		if (!spents.length) return;
+
+		orcamentos.forEach((budget, index) => {
+			const percentage = (spents[index] / budget.limite) * 100;
+
+			if (percentage > 0 && percentage <= 30) {
+				toast({
+					title: `Orçamento de ${getCategoriaNameById(budget.categoriaId)} 30% restante!`,
+				});
+			}
+
+			if (percentage <= 0) {
+				toast({
+					title: `Orçamento de ${getCategoriaNameById(budget.categoriaId)} estourado!`,
+				});
+			}
+		});
+	}, [spents]);
+
+
 	const getCategoriaNameById = (id: string) => {
-		const categoria = categorias.find((cat) => cat.id === id);
-		return categoria?.nome;
+		if(Array.isArray(categorias)) {
+			const categoria = categorias.find((cat) => cat.id === id);
+			return categoria?.nome;
+		}
 	};
+
 
 	return (
 		<Card
@@ -61,8 +87,9 @@ export function BudgetSection({ orcamentos }: BudgetSectionProps) {
 				{orcamentos &&
 					orcamentos.map((budget, index) => {
 						const percentage = (spents[index] / budget.limite) * 100;
+
 						return (
-							<div key={budget.categoriaId} className="space-y-2">
+							<div key={budget.categoriaId + budget.mes} className="space-y-2">
 								<div className="flex items-center justify-between">
 									<span
 										className="text-sm font-medium"

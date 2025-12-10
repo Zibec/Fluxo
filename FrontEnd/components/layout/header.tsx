@@ -44,21 +44,21 @@ export function Header() {
 		});
 	};
 
-	useEffect(() => {
-		const fetchPatrimonio = async () => {
-			const data = await relatorioService.getPatrimonio();
-			setPatrimony(data);
-		};
-		fetchPatrimonio();
-	}, []);
+  useEffect(() => {
+    const fetchPatrimonio = async () => {
+      const data = await relatorioService.getPatrimonio()
+      setPatrimony(data)
+    }
+    fetchPatrimonio()
+  }, [path])
 
-	useEffect(() => {
-		const fetchBalance = async () => {
-			const data = await relatorioService.getDinheiroTotal();
-			setBalance(data);
-		};
-		fetchBalance();
-	}, []);
+  useEffect(() => {
+    const fetchBalance = async () => {
+      const data = await relatorioService.getDinheiroTotal()
+      setBalance(data)
+    }
+    fetchBalance()
+  }, [path])
 
 	return (
 		<header
@@ -138,25 +138,27 @@ export function Header() {
 									{menuItems.map((item) => (
 										<li key={item.label}>
 											<Link href={item.route}>
-												<button
+												<Button
 													style={{
 														color: "var(--sidebar-foreground)",
 													}}
 													className="w-full text-left px-4 py-3 rounded-lg transition-colors hover:opacity-80"
+													variant={"ghost"}
 												>
 													{item.label}
-												</button>
+												</Button>
 											</Link>
 										</li>
 									))}
 									<li>
-										<button
+										<Button
 											className="w-full text-left px-4 py-3 rounded-lg transition-colors hover:opacity-80"
 											onClick={() => authService.logout()}
 											style={{ color: "var(--sidebar-foreground)" }}
+											variant={"ghost"}
 										>
 											Sair
-										</button>
+										</Button>
 									</li>
 								</ul>
 							</nav>

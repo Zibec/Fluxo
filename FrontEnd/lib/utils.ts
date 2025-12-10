@@ -45,7 +45,7 @@ export function formatDateByUserPreference(date: Date | string): string {
 
 	const data = dateFormat.replaceAll("-", "/");
 
-	return format(date, data, { locale: ptBR });
+	return format(date, `${data} HH:mm`, { locale: ptBR });
 }
 
 export function formatCardNumber(num) {

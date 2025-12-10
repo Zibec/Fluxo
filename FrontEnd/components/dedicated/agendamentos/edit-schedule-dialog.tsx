@@ -73,7 +73,7 @@ export function EditScheduleDialog({
 
 	const frequencia = z.enum(["DIARIA", "SEMANAL", "MENSAL", "ANUAL"]).options;
 
-	const { perfis, contas } = useContext(DataContext);
+	const { categorias, perfis, contas } = useContext(DataContext);
 	const { toast } = useToast();
 
 	useEffect(() => {
@@ -156,43 +156,74 @@ export function EditScheduleDialog({
 						</div>
 
 						<div className="space-y-2">
-							<Label>Data Recorrente</Label>
+							<Label>Data e Hora</Label>
+
 							<Popover>
 								<PopoverTrigger asChild>
-									<Button
-										variant="outline"
+									<Button 
+										variant="outline" 
 										className="w-full justify-start text-left font-normal bg-transparent"
 									>
 										<CalendarIcon className="mr-2 h-4 w-4" />
 										{watch("proximaData") ? (
-											format(watch("proximaData"), "yyyy-MM-dd", {
-												locale: ptBR,
-											})
+											format(watch("proximaData"), "yyyy-MM-dd HH:mm", { locale: ptBR })
 										) : (
-											<span className="text-neutral-500">
-												Selecione uma data
-											</span>
+											<span className="text-neutral-500">Selecione data e hora</span>
 										)}
 									</Button>
 								</PopoverTrigger>
-								<PopoverContent className="w-auto p-0" align="start">
+
+								<PopoverContent className="w-auto p-3 space-y-3" align="start">
+									{/* Calendário */}
 									<Calendar
 										mode="single"
 										selected={watch("proximaData")}
-										onSelect={(date) => setValue("proximaData", date)}
+										onSelect={(date) => {
+											const old = new Date(watch("proximaData"))
+											if (!old) return setValue("proximaData", date)
+
+											// mantém hora anterior
+											const updated = new Date(date)
+											updated.setHours(old.getHours())
+											updated.setMinutes(old.getMinutes())
+											setValue("proximaData", updated)
+										}}
 									/>
+
+									<div className="flex items-center gap-2">
+										<Label className="whitespace-nowrap">Hora:</Label>
+										<input
+											type="time"
+											className="border rounded px-2 py-1"
+											value={watch("proximaData") ? `${new Date(watch("proximaData")).getHours().toString().padStart(2, "0")}:${new Date(watch("proximaData")).getMinutes().toString().padStart(2, "0")}` : ""}
+											onChange={(e) => {
+												const value = e.target.value // "HH:mm"
+
+												if (!value) {
+													return setValue("proximaData", null)
+												}
+
+												const [h, m] = value.split(":")
+												const current = watch("proximaData") ?? new Date()
+
+												const updated = new Date(current)
+												updated.setHours(Number(h))
+												updated.setMinutes(Number(m))
+
+												setValue("proximaData", updated)
+											}}
+										/>
+									</div>
 								</PopoverContent>
 							</Popover>
-							<p className="text-sm text-red-600">
-								{errors.proximaData?.message}
-							</p>
+
+							<p className="text-sm text-red-600">{errors.proximaData?.message}</p>
 						</div>
 
 						<div className="space-y-2">
 							<Label htmlFor="edit-budget-category">Conta Associada:</Label>
-							<input type="hidden" {...register("contaId")} />
 
-							<Select onValueChange={(value) => setValue("contaId", value)}>
+							<Select value={watch("contaId")} onValueChange={(value) => setValue("contaId", value)} >
 								<SelectTrigger id="edit-budget-category" className="w-full">
 									<SelectValue placeholder="Selecione uma categoria" />
 								</SelectTrigger>
@@ -209,10 +240,30 @@ export function EditScheduleDialog({
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="category">Frequencia</Label>
-							<input id="frequencia " hidden {...register("frequencia")} />
+							<Label htmlFor="edit-budget-category">Categoria:</Label>
 
-							<Select onValueChange={(value) => setValue("frequencia", value)}>
+							<Select value={watch("categoriaId")} onValueChange={(value) => setValue("categoriaId", value)}>
+								<SelectTrigger id="edit-budget-category" className="w-full">
+									<SelectValue placeholder="Selecione uma categoria" />
+								</SelectTrigger>
+								<SelectContent>
+									{categorias &&
+										categorias.map((categoria) => (
+											<SelectItem key={categoria.id} value={categoria.id}>
+												{categoria.nome}
+											</SelectItem>
+										))}
+								</SelectContent>
+							</Select>
+							<p className="text-sm text-red-600">
+								{errors.categoriaId?.message}
+							</p>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="category">Frequencia</Label>
+
+							<Select value={watch("frequencia")} onValueChange={(value) => setValue("frequencia", value)}>
 								<SelectTrigger id="category">
 									<SelectValue placeholder="Selecione uma categoria" />
 								</SelectTrigger>
@@ -231,9 +282,8 @@ export function EditScheduleDialog({
 
 						<div className="space-y-2">
 							<Label htmlFor="profile">Perfil</Label>
-							<input id="perfilId" hidden {...register("perfilId")} />
 
-							<Select onValueChange={(value) => setValue("perfilId", value)}>
+							<Select value={watch("perfilId")} onValueChange={(value) => setValue("perfilId", value)}>
 								<SelectTrigger id="profile">
 									<SelectValue placeholder="Selecione um perfil" />
 								</SelectTrigger>

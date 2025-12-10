@@ -10,6 +10,8 @@ import categoria.CategoriaRepositorio;
 import categoria.CategoriaRepositorioProxy;
 import categoria.CategoriaService;
 import com.fluxo.agendador.AgendadorTarefas;
+import persistencia.jpa.jobs.JobsRepository;
+import persistencia.jpa.jobs.job.JobAgendado;
 import divida.DividaRepositorio;
 import divida.DividaService;
 import historicoInvestimento.HistoricoInvestimentoRepositorio;
@@ -25,7 +27,8 @@ import orcamento.OrcamentoService;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
-import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import patrimonio.PatrimonioRepositorio;
 import patrimonio.PatrimonioService;
@@ -53,6 +56,8 @@ import transacao.TransacaoService;
 import usuario.UsuarioRepositorio;
 import usuario.UsuarioService;
 
+import java.util.List;
+
 @SpringBootApplication(scanBasePackages = "persistencia.jpa")
 @EnableJpaRepositories(basePackages = "persistencia.jpa")
 @EntityScan(basePackages = "persistencia.jpa")
@@ -65,6 +70,12 @@ public class FluxoApplication {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private AgendadorTarefas agendadorTarefas;
+
+    @Autowired
+    private JobsRepository jobsRepository;
 
     @Bean
     public SelicApiClient selicApiClient() {
@@ -169,7 +180,25 @@ public class FluxoApplication {
     public void setUp() throws SchedulerException {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
+
         objectMapper.findAndRegisterModules();
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() {
+        try {
+            System.out.println("Reconstruindo jobs Quartz...");
+
+            List<JobAgendado> lista = jobsRepository.findAll();
+
+            for (JobAgendado job : lista) {
+                agendadorTarefas.buildJobs(job);
+            }
+
+            System.out.println("Jobs restaurados!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -32,18 +32,12 @@ import { SelectValue } from "@radix-ui/react-select";
 import { DataContext } from "@/hooks/data-context";
 
 interface AddInvestmentDialogProps {
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  setInvestments: (investments: createInvestimentoFormData[]) => void
 }
 
-export function AddInvestmentDialog({
-	open,
-	onOpenChange,
-}: AddInvestmentDialogProps) {
-	const [investmentForm, setInvestmentForm] =
-		useState<createInvestimentoFormData>();
-
-	const { contas } = useContext(DataContext);
+export function AddInvestmentDialog({ open, onOpenChange, setInvestments }: AddInvestmentDialogProps) {
 
 	const {
 		register,
@@ -57,29 +51,37 @@ export function AddInvestmentDialog({
 		resolver: zodResolver(InvestimentoFormSchema),
 	});
 
-	const { toast } = useToast();
+	const { contas } = useContext(DataContext);
 
-	const handleSaveInvestment = () => {
-		console.log("Saving investment:", investmentForm);
+	const { toast } = useToast()
 
-		investimentoService
-			.createInvestimento(getValues())
-			.then((response) => {
-				console.log("Investment created successfully:", response.data);
+	
 
-				toast({
-					title: "Investimento criado com sucesso!",
-					description: `Investimento foi adicionado.`,
-				});
 
-				reset();
-			})
-			.catch((error) => {
-				console.error("Error creating investment:", error);
-			});
+  const handleSaveInvestment = async () => {
+    try {
+      await investimentoService.createInvestimento(getValues())
 
-		onOpenChange(false);
-	};
+      // Recarrega a lista para refletir o novo investimento
+      const updated = await investimentoService.getInvestimentosByUserId()
+      setInvestments(updated)
+
+      toast({
+        title: "Investimento criado com sucesso!",
+        description: "Investimento foi adicionado.",
+      })
+
+      reset()
+      onOpenChange(false)
+    } catch (error) {
+      console.error("Error creating investment:", error)
+      toast({
+        variant: "destructive",
+        title: "Erro ao criar investimento",
+        description: "Ocorreu um erro ao criar o investimento. Tente novamente.",
+      })
+    }
+  }
 
 	const handleCancelInvestment = () => {
 		reset();

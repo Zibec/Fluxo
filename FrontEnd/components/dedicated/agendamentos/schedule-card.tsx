@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getCurrencySymbol } from "@/lib/utils";
+import { formatDateByUserPreference, getCurrencySymbol } from "@/lib/utils";
 import { Pencil, Trash2 } from "lucide-react";
 
 interface ScheduleCardProps {
@@ -51,7 +51,7 @@ export function ScheduleCard({
 					</p>
 
 					<p className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-						Próxima: {nextDate}
+						Próxima: {formatDateByUserPreference(nextDate)}
 					</p>
 				</div>
 

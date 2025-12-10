@@ -88,7 +88,7 @@ public class AgendamentoController {
             String valorStr = body.get("valor");
             String freqStr  = body.get("frequencia");
             String dataStr  = body.get("proximaData");
-            String categoriaId = body.get("categ oriaId");
+            String categoriaId = body.get("categoriaId");
             String contaId    = body.get("contaId");
             String perfilId    = body.get("perfilId");
 
@@ -161,33 +161,46 @@ public class AgendamentoController {
 
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Void> atualizarValor(@PathVariable String id, @RequestBody Map<String,String> body) {
-            var existenteOpt = service.obterAgendamento(id);
-            if (existenteOpt.isEmpty()) {
-                return ResponseEntity.status(404).build();
-            }
-            var existente = existenteOpt.get();
+    public ResponseEntity<Void> atualizarValor(@PathVariable String id, @RequestBody Map<String,String> body, HttpServletRequest request) {
+        String token   = securityFilter.recoverToken(request);
+        String name    = tokenService.extractUsername(token);
+        Usuario usuario = usuarioService.obterPorNome(name);
 
-            String valorStr = body.get("valor");
-            if (valorStr == null || valorStr.isBlank()) {
-                return ResponseEntity.badRequest().build();
-            }
-            String contaId = body.get("contaId");
-            Conta conta = contaRepo.obterConta(contaId)
-                    .orElseThrow(() -> new NoSuchElementException("Conta não encontrada"));
-            BigDecimal novoValor = new BigDecimal(valorStr.replace(",", "."));
+        var existenteOpt = service.obterAgendamento(id);
+        if (existenteOpt.isEmpty()) {
+            return ResponseEntity.status(404).build();
+        }
+        var existente = existenteOpt.get();
 
-            Agendamento atualizado = new Agendamento(
-                    existente.getId(),
-                    existente.getDescricao(),
-                    novoValor,
-                    existente.getFrequencia(),
-                    existente.getProximaData(),
-                    existente.getPerfilId()
-            );
+        String descricao = body.get("descricao");
+        String valorStr = body.get("valor");
+        String freqStr = body.get("frequencia");
+        String categoriaId = body.get("categoriaId");
+        String perfilId = body.get("perfilId");
+        String contaId = body.get("contaId");
 
-            service.atualizarComTransacao(atualizado, LocalDateTime.now());
-            return ResponseEntity.noContent().build();
+        LocalDateTime data = LocalDateTime.parse(body.get("proximaData").replace("Z", "")).minusHours(3);
+        System.out.println(data);
+        if (valorStr == null || valorStr.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        BigDecimal novoValor = new BigDecimal(valorStr.replace(",", "."));
+
+        Agendamento atualizado = new Agendamento(
+                existente.getId(),
+                descricao,
+                novoValor,
+                Frequencia.valueOf(freqStr.trim().toUpperCase()),
+                data,
+                perfilId
+        );
+
+        atualizado.setCategoriaId(categoriaId);
+        atualizado.setUsuarioId(usuario.getId());
+
+        service.atualizarComTransacao(atualizado, data);
+        agendador.atualizarAgendamento(atualizado, contaId);
+        return ResponseEntity.noContent().build();
 
     }
 
@@ -196,6 +209,7 @@ public class AgendamentoController {
 
         try {
             service.deletarAgendamento(id);
+            agendador.deletarAgendamento(id);
             return ResponseEntity.noContent().build();
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();

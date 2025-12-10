@@ -6,7 +6,6 @@ import { DebtSection } from "@/components/dedicated/dashboard/debt-section";
 import { SavingsSection } from "@/components/dedicated/dashboard/savings-section";
 import { FabButton } from "@/components/dedicated/dashboard/fab-button";
 import { AddExpenseDialog } from "@/components/dedicated/dashboard/add-expense-dialog";
-import { AddIncomeDialog } from "@/components/dedicated/dashboard/add-income-dialog";
 import { metaService } from "@/lib/service/meta/meta-service";
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service";
 import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema";
@@ -65,8 +64,8 @@ const DashboardPage = () => {
 				}}
 			>
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-					<BudgetSection budgets={budgets} />
-					<DebtSection debts={debts} />
+					<BudgetSection orcamentos={budgets} />
+					<DebtSection dividas={debts} />
 					<SavingsSection savings={savings} />
 				</div>
 			</main>

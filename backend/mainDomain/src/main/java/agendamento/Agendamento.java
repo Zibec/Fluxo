@@ -80,7 +80,7 @@ public class Agendamento {
                 LocalDateTime candidata = this.proximaData.plusMonths(1);
 
                 //limita ao último dia do mês destino
-                int ultimoDiaMes = candidata.getMonth().maxLength();
+                int ultimoDiaMes = candidata.toLocalDate().lengthOfMonth();
                 this.proximaData = candidata.withDayOfMonth(Math.min(diaDesejado, ultimoDiaMes));
             }
             case SEMANAL -> this.proximaData = this.proximaData.plusWeeks(1);

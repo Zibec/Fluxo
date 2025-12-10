@@ -72,10 +72,15 @@ public class TransacaoService {
         System.out.println(mes);
 
         // 1) Soma todas as DESPESAS da categoria no mês
-        BigDecimal totalDespesas = todasTransacoes.stream()
-                .filter(t -> t.getTipo() == Tipo.DESPESA)
-                .filter(t -> categoriaId.equals(t.getCategoriaId()))
-                .filter(t -> t.getData().getMonth().equals(mes.getMonth()))
+        BigDecimal totalGastos = todasTransacoes.stream()
+                .filter(t -> {
+                    boolean mesmaCategoria = categoriaId.equals(t.getCategoriaId());
+                    boolean mesmoMes = java.time.YearMonth.from(t.getData()).equals(mes);
+
+                    boolean Despesa = t.getTipo() == Tipo.DESPESA;
+
+                    return mesmaCategoria && mesmoMes && Despesa;
+                })
                 .map(Transacao::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -89,7 +94,7 @@ public class TransacaoService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 3) Gasto líquido = despesas - reembolsos
-        return totalDespesas.subtract(totalReembolsos);
+        return totalGastos.subtract(totalReembolsos);
     }
 
     public Transacao registrarReembolso(BigDecimal valorReembolso, String idDespesaOriginal) {
@@ -144,7 +149,7 @@ public class TransacaoService {
             conta.creditar(reembolso.getValor());
             contaRepo.salvar(conta);
         } else {
-            Cartao cartao = cartaoRepositorio.obterCartaoPorId(reembolso.getId());
+            Cartao cartao = cartaoRepositorio.obterCartaoPorId(reembolso.getPagamentoId().getId());
             cartao.creditar(reembolso.getValor());
             cartaoRepositorio.salvar(cartao);
         }
@@ -158,6 +163,8 @@ public class TransacaoService {
                 .orElseThrow(() -> new IllegalArgumentException("Transação não encontrada"));
 
         t.efetivar();
+        System.out.println(t.getPagamentoId().getId());
+        System.out.println(t.getPagamentoId().getType());
         if (t.getPagamentoId().getType().equals("CONTA")) {
             Conta conta = contaRepo.obterConta(t.getPagamentoId().getId())
                     .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
@@ -261,6 +268,10 @@ public class TransacaoService {
     }
 
     public Transacao listarPorOrigemAgendamentoId(String agendamentoId){
-        return repo.listarPorOrigemAgendamentoId(agendamentoId).getFirst();
+        try {
+            return repo.listarPorOrigemAgendamentoId(agendamentoId).getFirst();
+        } catch(Exception e){
+            return null;
+        }
     }
 }

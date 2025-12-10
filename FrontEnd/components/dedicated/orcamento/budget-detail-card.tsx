@@ -1,39 +1,42 @@
-"use client";
+"use client"
 
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
 import {
 	ChevronsDown,
 	ChevronsUp,
 	ChevronsUpDown,
 	Pencil,
 	Trash2,
-} from "lucide-react";
-import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema";
-import { useEffect, useState } from "react";
-import { orcamentoService } from "@/lib/service/orcamento/orcamento-service";
-import { categoriasService } from "@/lib/service/categoria/categoria-service";
-import { getCurrencySymbol } from "@/lib/utils";
-import { createTransacaoFormData } from "@/lib/service/transacao/transacao-schema";
-import { transacaoService } from "@/lib/service/transacao/transacao-service";
-import { TransactionCard } from "../historico/transaction-card";
+} from "lucide-react"
+import { createOrcamentoFormData } from "@/lib/service/orcamento/orcamento-schema"
+import { useEffect, useState } from "react"
+import { orcamentoService } from "@/lib/service/orcamento/orcamento-service"
+import { categoriasService } from "@/lib/service/categoria/categoria-service"
+import { getCurrencySymbol } from "@/lib/utils"
+import { createTransacaoFormData } from "@/lib/service/transacao/transacao-schema"
+import { transacaoService } from "@/lib/service/transacao/transacao-service"
+import { TransactionCard } from "../historico/transaction-card"
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useToast } from "@/hooks/use-toast";
 
 interface BudgetDetailCardProps {
 	budget: createOrcamentoFormData;
-	onEdit: () => void;
+	onEdit: () => void
 }
 
 export function BudgetDetailCard({ budget, onEdit }: BudgetDetailCardProps) {
-	const [spent, setSpent] = useState<number>(0);
-	const [categoriaNome, setCategoriaNome] = useState<string>("");
-	const [transacoes, setTransacoes] = useState<createTransacaoFormData[]>();
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const [spent, setSpent] = useState<number>(0)
+	const [categoriaNome, setCategoriaNome] = useState<string>("")
+	const [transacoes, setTransacoes] = useState<createTransacaoFormData[]>()
+	const [isOpen, setIsOpen] = useState<boolean>(false)
+	const [percentage, setPercentage] = useState<number>(50)
+
 
 	useEffect(() => {
 		const fetchSpent = async () => {
@@ -71,7 +74,27 @@ export function BudgetDetailCard({ budget, onEdit }: BudgetDetailCardProps) {
 		fetchTransacoes();
 	}, []);
 
-	const percentage = (spent / budget.limite) * 100;
+
+	const { toast } = useToast()
+
+	useEffect(() => {
+		setPercentage((spent / budget.limite) * 100)
+	}, [spent])
+
+	useEffect(() => {
+
+		if(percentage > 0 && percentage <= 30) {
+			toast({
+				title: `Orçamento de ${categoriaNome} 30% restante!`,
+			})
+		}
+
+		if(percentage <= 0) {
+			toast({
+				title: `Orçamento de ${categoriaNome} estourado!`,
+			})
+		}
+	}, [percentage]);
 
 	return (
 		<Card className="bg-card text-card-foreground rounded-lg shadow-sm">

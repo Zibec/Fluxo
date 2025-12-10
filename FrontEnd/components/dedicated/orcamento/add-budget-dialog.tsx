@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useContext } from "react";
+import { useContext } from "react";
 import {
 	Dialog,
 	DialogContent,
@@ -22,13 +22,10 @@ import {
 	createOrcamentoFormData,
 	OrcamentoFormSchema,
 } from "@/lib/service/orcamento/orcamento-schema";
-import { categoriasService } from "@/lib/service/categoria/categoria-service";
-import { createCategoriaFormData } from "@/lib/service/categoria/categoria-schemas";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { orcamentoService } from "@/lib/service/orcamento/orcamento-service";
 import { useToast } from "@/hooks/use-toast";
-import { set } from "date-fns";
 import { DataContext } from "@/hooks/data-context";
 
 interface AddBudgetDialogProps {
@@ -42,7 +39,7 @@ export function AddBudgetDialog({
 	onOpenChange,
 	setBudgets,
 }: AddBudgetDialogProps) {
-	const { toast } = useToast();
+
 	const {
 		register,
 		handleSubmit,
@@ -55,20 +52,40 @@ export function AddBudgetDialog({
 		resolver: zodResolver(OrcamentoFormSchema),
 	});
 
+	const { toast } = useToast();
+
 	const { categorias } = useContext(DataContext);
 
-	const handleSave = async () => {
-		await orcamentoService.createOrcamento(getValues()).then(() => {
-			toast({
-				title: "Orçamento criado",
-				description: "O orçamento foi criado com sucesso.",
-			});
+  const handleSave = async () => {
+    try {
+      await orcamentoService.createOrcamento(getValues())
 
-			reset();
-		});
-		setBudgets(await orcamentoService.getOrcamentos());
-		onOpenChange(false);
-	};
+      toast({
+        title: "Orçamento criado",
+        description: "O orçamento foi criado com sucesso.",
+      })
+
+      reset()
+      setBudgets(await orcamentoService.getOrcamentos())
+      onOpenChange(false)
+    } catch (error: any) {
+      const status = error?.response?.status
+
+      if (status === 409) {
+        toast({
+          variant: "destructive",
+          title: "Não foi possível criar o orçamento",
+          description: "Já existe um orçamento para essa categoria nesse mês.",
+        })
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao criar orçamento",
+          description: "Ocorreu um erro ao criar o orçamento. Tente novamente.",
+        })
+      }
+    }
+  }
 
 	const handleCancel = () => {
 		reset();

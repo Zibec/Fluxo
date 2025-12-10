@@ -27,7 +27,7 @@ public class AgendamentoTest {
     private LocalDateTime dataTxAgendada;
     private LocalDateTime dataAntesReagendamento;
 
-    private final DateTimeFormatter BR = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter BR = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final TransacaoRepositorio txRepo =  new Repositorio();
     private final ContaRepositorio contaRepo =  new Repositorio();
@@ -89,7 +89,7 @@ public class AgendamentoTest {
 
         //4) se não existir nenhuma, cria agora e retorna
         txService.criarPendenteDeAgendamento(
-                agendamentoId, ag.getDescricao(), ag.getValor(), base, ag.getCategoriaId() ,conta, false, ag.getPerfilId(), ""
+                agendamentoId, ag.getDescricao(), ag.getValor(), base, ag.getCategoriaId() ,conta.getId().getId(), false, ag.getPerfilId(), ""
         );
         return txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, base)
                 .orElseThrow(() -> new AssertionError("Falha ao preparar transação para atualização"));
@@ -104,7 +104,7 @@ public class AgendamentoTest {
                 "Débito do cartão",
                 new BigDecimal("600.00"),
                 Frequencia.MENSAL,
-                LocalDateTime.parse(data, BR),
+                LocalDateTime.parse(data + " 00:00", BR),
                 perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
     }
@@ -112,18 +112,18 @@ public class AgendamentoTest {
     @When("o usuário precisa registrar essa transação para o dia {string}")
     public void whenRegistrarParaDia(String data) {
         Agendamento ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        LocalDateTime d = LocalDateTime.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta, false, ag.getPerfilId(), "");
+        LocalDateTime d = LocalDateTime.parse(data + " 00:00", BR);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta.getId().getId(), false, ag.getPerfilId(), "");
     }
 
     @And("o dia atual é {string}")
     public void andHojeEh(String dataHoje) {
-        hoje = LocalDateTime.parse(dataHoje, BR);
+        hoje = LocalDateTime.parse(dataHoje + " 00:00", BR);
     }
 
     @Then("o usuário verá que o sistema salvou como {string} para o dia {string} uma transferência que será realizada")
     public void thenTransacaoSalvaComo(String statusEsperado, String data) {
-        LocalDateTime d = LocalDateTime.parse(data, BR);
+        LocalDateTime d = LocalDateTime.parse(data + " 00:00", BR);
         Optional<Transacao> txOpt = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d);
         assertTrue(txOpt.isPresent(), "Transação deveria existir para a data agendada");
         assertEquals(mapStatus(statusEsperado), txOpt.get().getStatus());
@@ -137,16 +137,16 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Assinatura Netflix",
-                new BigDecimal("55.00"), Frequencia.MENSAL, LocalDateTime.parse(data, BR), perfilRepository.obterPerfil("0").getId());
+                new BigDecimal("55.00"), Frequencia.MENSAL, LocalDateTime.parse(data + " 00:00", BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
     }
 
     @Given("já existe a transação desse pagamento agendada para o dia {string}")
     public void givenTransacaoJaAgendadaParaDia(String data) {
         perfilRepository.salvarPerfil(perfil);
-        LocalDateTime d = LocalDateTime.parse(data, BR);
+        LocalDateTime d = LocalDateTime.parse(data + " 00:00", BR);
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta, false, ag.getPerfilId(), "");
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta.getId().getId(), false, ag.getPerfilId(), "");
         qtdAntes = (int) txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId())).count();
         assertEquals(1, qtdAntes, "Deveria existir exatamente 1 transação já criada");
@@ -176,18 +176,18 @@ public class AgendamentoTest {
         Agendamento ag = new Agendamento(agendamentoId, "Pagamento avulso",
                 parseValor(valor),
                 Frequencia.MENSAL,
-                LocalDateTime.parse(data, BR),
+                LocalDateTime.parse(data + " 00:00", BR),
                 perfilRepository.obterPerfil("0").getId());
 
         agService.salvar(ag);
-        dataTransacaoCriada = LocalDateTime.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada,ag.getCategoriaId() , conta, false, ag.getPerfilId(), "");
+        dataTransacaoCriada = LocalDateTime.parse(data + " 00:00", BR);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataTransacaoCriada,ag.getCategoriaId() , conta.getId().getId(), false, ag.getPerfilId(), "");
         assertTrue(txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataTransacaoCriada).isPresent());
     }
 
     @When("o usuário quer cancelar essa transação que iria ser paga no dia {string}")
     public void whenCancelarTransacaoDoDia(String data) {
-        Transacao tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDateTime.parse(data, BR)).orElseThrow();
+        Transacao tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDateTime.parse(data + " 00:00", BR)).orElseThrow();
         tx.cancelar();
     }
 
@@ -205,16 +205,16 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Transferência programada",
-                parseValor(valor), Frequencia.MENSAL, LocalDateTime.parse(data, BR), perfilRepository.obterPerfil("0").getId());
+                parseValor(valor), Frequencia.MENSAL, LocalDateTime.parse(data + " 00:00", BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
-        dataOriginal = LocalDateTime.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal,ag.getCategoriaId() , conta, false, ag.getPerfilId(), "");
+        dataOriginal = LocalDateTime.parse(data + " 00:00", BR);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), dataOriginal,ag.getCategoriaId() , conta.getId().getId(), false, ag.getPerfilId(), "");
         assertTrue(txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal).isPresent());
     }
 
     @When("o usuario tem essa transação que será paga no dia {string} no valor de {string}")
     public void whenUsuarioTemTransacaoNoDiaValor(String data, String valor) {
-        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDateTime.parse(data, BR));
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDateTime.parse(data + " 00:00", BR));
         assertTrue(tx.isPresent(), "Transação esperada não encontrada");
         assertEquals(parseValor(valor), tx.get().getValor());
     }
@@ -224,9 +224,9 @@ public class AgendamentoTest {
         var txAntiga = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, dataOriginal)
                 .orElseThrow(() -> new AssertionError("Transação original não encontrada"));
         txAntiga.cancelar();
-        LocalDateTime dNova = LocalDateTime.parse(novaData, BR);
+        LocalDateTime dNova = LocalDateTime.parse(novaData + " 00:00", BR);
         var vNovo = parseValor(novoValor);
-        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova,txAntiga.getCategoriaId() , conta, false, "0", "");
+        txService.criarPendenteDeAgendamento(agendamentoId, txAntiga.getDescricao(), vNovo, dNova,txAntiga.getCategoriaId() , conta.getId().getId(), false, "0", "");
         dataOriginal = dNova;
     }
 
@@ -243,14 +243,14 @@ public class AgendamentoTest {
     @Given("que a data atual é {string}")
     public void givenDataAtual(String hojeStr) {
         perfilRepository.salvarPerfil(perfil);
-        hoje = LocalDateTime.parse(hojeStr, BR);
+        hoje = LocalDateTime.parse(hojeStr + " 00:00", BR);
     }
 
     @When("o usuário cria uma assinatura mensal {string} para o dia {string} iniciando em {string}")
     public void whenCriaAssinaturaMensal(String nomePlano, String diaStr, String inicioStr) {
         agendamentoId = UUID.randomUUID().toString();
         BigDecimal valorPadrao = new BigDecimal("100.00");
-        LocalDateTime inicio = LocalDateTime.parse(inicioStr, BR);
+        LocalDateTime inicio = LocalDateTime.parse(inicioStr + " 00:00", BR);
         var ag = new Agendamento(agendamentoId, nomePlano, valorPadrao, Frequencia.MENSAL, inicio, perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
         agService.executarSeHoje(ag, inicio);
@@ -259,7 +259,7 @@ public class AgendamentoTest {
 
     @Then("deve ser criada uma data de transação no dia {string}")
     public void thenCriaTransacaoNaData(String dataEsperada) {
-        LocalDateTime d = LocalDateTime.parse(dataEsperada, BR);
+        LocalDateTime d = LocalDateTime.parse(dataEsperada + " 00:00", BR);
         var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d);
         assertTrue(tx.isPresent(), "Deveria existir a transação da data inicial");
     }
@@ -267,7 +267,7 @@ public class AgendamentoTest {
     @Then("a próxima data de transação deve ser {string}")
     public void thenProximaDataDeveSer(String proximaEsperada) {
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        assertEquals(LocalDateTime.parse(proximaEsperada, BR), ag.getProximaData());
+        assertEquals(LocalDateTime.parse(proximaEsperada + " 00:00", BR), ag.getProximaData());
     }
 
     //Assinatura em mãos
@@ -276,20 +276,20 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Assinatura Serviço",
-                new BigDecimal("100.00"), Frequencia.MENSAL, LocalDateTime.parse(vencimento, BR), perfilRepository.obterPerfil("0").getId());
+                new BigDecimal("100.00"), Frequencia.MENSAL, LocalDateTime.parse(vencimento + " 00:00", BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
     }
 
     @When("o usuário tem essa assinatura para pagar no dia {string}")
     public void whenTemAssinaturaParaDia(String dia) {
-        hoje = LocalDateTime.parse(dia, BR);
+        hoje = LocalDateTime.parse(dia + " 00:00", BR);
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
         agService.executarSeHoje(ag, hoje);
     }
 
     @Then("o sistema botará o pagamento agendado para o dia {string}")
     public void thenAgendaPagamentoParaDia(String dia) {
-        LocalDateTime d = LocalDateTime.parse(dia, BR);
+        LocalDateTime d = LocalDateTime.parse(dia + " 00:00", BR);
         assertTrue(
                 txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, d).isPresent(),
                 "Deveria existir transação agendada para " + dia
@@ -335,7 +335,7 @@ public class AgendamentoTest {
 
     @When("o usuário tenta agendar uma transação para o dia {string}")
     public void usuarioTentaAgendarTransacaoParaODia(String dataStr) {
-        LocalDateTime data = LocalDateTime.parse(dataStr, BR);
+        LocalDateTime data = LocalDateTime.parse(dataStr + " 00:00", BR);
         try {
             this.agendamentoId = UUID.randomUUID().toString();
             Agendamento ag = new Agendamento(
@@ -366,20 +366,20 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Transação teste",
-                parseValor(valor), Frequencia.MENSAL, LocalDateTime.parse(data, BR), perfilRepository.obterPerfil("0").getId());
+                parseValor(valor), Frequencia.MENSAL, LocalDateTime.parse(data + " 00:00", BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
     }
 
     @Given("a data atual é {string}")
     public void givenDataAtualGenerica(String dataHoje) {
         perfilRepository.salvarPerfil(perfil);
-        hoje = LocalDateTime.parse(dataHoje, BR);
+        hoje = LocalDateTime.parse(dataHoje + " 00:00", BR);
     }
 
     @When("o usuário tenta atualizar a data dessa transação para {string}")
     public void whenUsuarioTentaAtualizarData(String novaDataStr) {
         LocalDateTime hojeRef = (this.hoje != null ? this.hoje : LocalDateTime.now());
-        LocalDateTime novaData = LocalDateTime.parse(novaDataStr, BR);
+        LocalDateTime novaData = LocalDateTime.parse(novaDataStr + " 00:00", BR);
 
         Transacao tx = ensureTransacaoParaAtualizar();
         this.dataAntesReagendamento = tx.getData();
@@ -423,12 +423,12 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, "Transação executada",
-                new BigDecimal("200.00"), Frequencia.MENSAL, LocalDateTime.parse(data, BR), perfilRepository.obterPerfil("0").getId());
+                new BigDecimal("200.00"), Frequencia.MENSAL, LocalDateTime.parse(data + " 00:00", BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
 
         //cria a pendente vinculada à conta usada nos testes
-        LocalDateTime d = LocalDateTime.parse(data, BR);
-        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta, false, ag.getPerfilId(), "");
+        LocalDateTime d = LocalDateTime.parse(data + " 00:00", BR);
+        txService.criarPendenteDeAgendamento(agendamentoId, ag.getDescricao(), ag.getValor(), d,ag.getCategoriaId() , conta.getId().getId(), false, ag.getPerfilId(), "");
 
 
         // aqui credito um valor maior que o débito da transação:
@@ -465,7 +465,7 @@ public class AgendamentoTest {
         perfilRepository.salvarPerfil(perfil);
         agendamentoId = UUID.randomUUID().toString();
         var ag = new Agendamento(agendamentoId, nome, new BigDecimal("50.00"),
-                Frequencia.MENSAL, LocalDateTime.parse(prox, BR), perfilRepository.obterPerfil("0").getId());
+                Frequencia.MENSAL, LocalDateTime.parse(prox + " 00:00", BR), perfilRepository.obterPerfil("0").getId());
         agService.salvar(ag);
     }
 
@@ -473,20 +473,20 @@ public class AgendamentoTest {
     public void givenProximaData(String data) {
         perfilRepository.salvarPerfil(perfil);
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        assertEquals(LocalDateTime.parse(data, BR), ag.getProximaData());
+        assertEquals(LocalDateTime.parse(data + " 00:00", BR), ag.getProximaData());
     }
 
     @When("o sistema executa a cobrança no dia {string}")
     public void whenExecutaCobranca(String data) {
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        agService.executarSeHoje(ag, LocalDateTime.parse(data, BR));
+        agService.executarSeHoje(ag, LocalDateTime.parse(data + " 00:00", BR));
     }
 
     @Then("a próxima data de transação deve ser {string}  # ou {int}\\/{int} em ano bissexto")
     public void thenProximaDataDeveSerOu(String esperado, Integer dia, Integer mes) {
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
 
-        LocalDateTime esperado1 = LocalDateTime.parse(esperado, BR);
+        LocalDateTime esperado1 = LocalDateTime.parse(esperado + " 00:00", BR);
 
         //tenta montar a alternativa usando o MESMO ano de 'esperado1'
         LocalDateTime esperado2 = null;
@@ -531,19 +531,19 @@ public class AgendamentoTest {
     @Given("não existe transação agendada para o dia {string}")
     public void givenNaoExisteTransacao(String data) {
         perfilRepository.salvarPerfil(perfil);
-        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDateTime.parse(data, BR));
+        var tx = txService.encontrarTransacaoPorAgendamentoEData(agendamentoId, LocalDateTime.parse(data + " 00:00", BR));
         assertTrue(tx.isEmpty(), "Não deveria existir transação na data " + data);
     }
 
     @When("o agendamento executar em {string}")
     public void whenAgendamentoExecutar(String data) {
         var ag = agService.obterAgendamento(agendamentoId).orElseThrow();
-        agService.executarSeHoje(ag, LocalDateTime.parse(data, BR));
+        agService.executarSeHoje(ag, LocalDateTime.parse(data + " 00:00", BR));
     }
 
     @Then("deve ser criada exatamente uma transação para o dia {string}")
     public void thenCriaExatamenteUma(String data) {
-        LocalDateTime d = LocalDateTime.parse(data, BR);
+        LocalDateTime d = LocalDateTime.parse(data + " 00:00", BR);
         var txs = txService.listarTodasTransacoes().stream()
                 .filter(t -> agendamentoId.equals(t.getOrigemAgendamentoId()) && d.equals(t.getData()))
                 .toList();
@@ -623,7 +623,7 @@ public class AgendamentoTest {
     public void existeUmaAssinaturaMensalConfiguradaParaODiaComProximaData(String diaStr, String proxStr) {
         //a próxima data do cenário é a que manda
         perfilRepository.salvarPerfil(perfil);
-        LocalDateTime proxima = LocalDateTime.parse(proxStr, BR);
+        LocalDateTime proxima = LocalDateTime.parse(proxStr + " 00:00", BR);
 
         agendamentoId = UUID.randomUUID().toString();
         BigDecimal valorPadrao = new BigDecimal("50.00");
