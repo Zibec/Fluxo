@@ -111,6 +111,11 @@ public class AgendamentoService {
     }
 
     public String executarQuandoHoje(Agendamento agendamento, LocalDateTime hoje, String contaId) {
+        if(hoje.isBefore(LocalDateTime.now().minusHours(3))) {
+            System.out.println("não executou");
+            return null;
+        }
+
         System.out.println("hoje, executou");
 
         Transacao t = transacaoService.criarPendenteDeAgendamento(

@@ -144,8 +144,9 @@ public class AgendadorTarefas {
 
     public void buildJobs(JobAgendado job) {
         try {
-            // Não agenda jobs atrasados
-            if (job.getData().isBefore(LocalDateTime.now().minusHours(3))) {
+            System.out.println(job.getData());
+            System.out.println(LocalDateTime.now().minusHours(3));
+            if (job.getData().isBefore(LocalDateTime.now())) {
                 System.out.println("Ignorando job atrasado: " + job.getId());
                 return;
             }
