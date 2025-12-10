@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import persistencia.jpa.jobs.job.TipoJob;
 import usuario.Usuario;
 import usuario.UsuarioService;
 
@@ -124,6 +125,8 @@ public class CartaoController {
             service.salvar(newCartao);
 
             CartaoDTO cartaoDTO = mapper.map(newCartao, CartaoDTO.class);
+            agendador.atualizarFatura(newCartao);
+            agendador.atualizarFatura(newCartao);
             return ResponseEntity.ok(cartaoDTO);
     }
 
@@ -134,7 +137,7 @@ public class CartaoController {
         }
 
         service.deletarCartao(id);
-
+        agendador.deletarFatura(id);
         return ResponseEntity.ok().build();
     }
 

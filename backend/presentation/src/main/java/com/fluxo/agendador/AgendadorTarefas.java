@@ -8,6 +8,7 @@ import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import persistencia.jpa.jobs.JobsRepository;
+import transacao.Tipo;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -24,16 +25,18 @@ public class AgendadorTarefas {
     public void agendarFechamentoFatura(Cartao cartao) {
         try {
             JobDetail  job = JobBuilder.newJob(AgendarFechamentoFaturaJob.class)
-                    .withIdentity("job-" + cartao.getId().getId())
+                    .withIdentity("job-fechamento-" + cartao.getId().getId())
                     .usingJobData("id", cartao.getId().getId())
                     .build();
 
             Trigger trigger = TriggerBuilder.newTrigger()
-                    .withIdentity("trigger-" + cartao.getId().getId())
+                    .withIdentity("trigger-fechamento-" + cartao.getId().getId())
                     .startAt(Timestamp.valueOf(cartao.getDataFechamentoFatura().atStartOfDay()))
                     .build();
 
             scheduler.scheduleJob(job, trigger);
+            jobsRepository.save(new JobAgendado(cartao.getId().getId() + "-fechamento", cartao.getDataFechamentoFatura().atStartOfDay(), TipoJob.FECHAMENTOFATURA, ""));
+
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -42,16 +45,17 @@ public class AgendadorTarefas {
     public void agendarVencimentoFatura(Cartao cartao) {
         try {
             JobDetail  job = JobBuilder.newJob(AgendarVencimentoFaturaJob.class)
-                    .withIdentity("job-" + cartao.getId().getId())
+                    .withIdentity("job-vencimento-" + cartao.getId().getId())
                     .usingJobData("id", cartao.getId().getId())
                     .build();
 
             Trigger trigger = TriggerBuilder.newTrigger()
-                    .withIdentity("trigger-" + cartao.getId().getId())
+                    .withIdentity("trigger-vencimento-" + cartao.getId().getId())
                     .startAt(Timestamp.valueOf(cartao.getDataVencimentoFatura().atStartOfDay()))
                     .build();
 
             scheduler.scheduleJob(job, trigger);
+            jobsRepository.save(new JobAgendado(cartao.getId().getId() + "-vencimento", cartao.getDataVencimentoFatura().atStartOfDay(), TipoJob.VENCIMENTOFATURA, ""));
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
@@ -92,11 +96,47 @@ public class AgendadorTarefas {
             e.printStackTrace();
         }
     }
+    
+    public void atualizarFatura(Cartao cartao) {
+        try {
+
+            Trigger trigger1 = TriggerBuilder.newTrigger()
+                    .withIdentity("trigger-vencimento-" + cartao.getId().getId())
+                    .startAt(Timestamp.valueOf(cartao.getDataVencimentoFatura().atStartOfDay()))
+                    .build();
+            System.out.println("atualizou");
+            scheduler.rescheduleJob(trigger1.getKey(), trigger1);
+            jobsRepository.save(new JobAgendado(cartao.getId().getId() + "-vencimento", cartao.getDataVencimentoFatura().atStartOfDay(), TipoJob.VENCIMENTOFATURA, ""));
+
+            Trigger trigger2 = TriggerBuilder.newTrigger()
+                    .withIdentity("trigger-fechamento-" + cartao.getId().getId())
+                    .startAt(Timestamp.valueOf(cartao.getDataFechamentoFatura().atStartOfDay()))
+                    .build();
+            System.out.println("atualizou");
+            scheduler.rescheduleJob(trigger2.getKey(), trigger2);
+            jobsRepository.save(new JobAgendado(cartao.getId().getId() + "-fechamento", cartao.getDataFechamentoFatura().atStartOfDay(), TipoJob.FECHAMENTOFATURA, ""));
+
+        } catch(SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void deletarAgendamento(String id) {
         try {
             System.out.println("deletou");
             scheduler.deleteJob(new JobKey("job-"+id));
+            jobsRepository.deleteById(id);
+        } catch(SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deletarFatura(String id) {
+        try {
+            System.out.println("deletou");
+            scheduler.deleteJob(new JobKey("job-vencimento-" + id));
+            scheduler.deleteJob(new JobKey("job-fechamento-" + id));
+            jobsRepository.deleteById(id);
         } catch(SchedulerException e) {
             e.printStackTrace();
         }
