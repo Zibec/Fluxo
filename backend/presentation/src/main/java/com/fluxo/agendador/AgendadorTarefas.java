@@ -168,6 +168,31 @@ public class AgendadorTarefas {
                         .build();
             }
 
+            if (job.getTipo() == TipoJob.FECHAMENTOFATURA) {
+
+                jobDetail = JobBuilder.newJob(AgendarFechamentoFaturaJob.class)
+                        .withIdentity("job-fechamento-" + job.getId())
+                        .usingJobData("id", job.getId())
+                        .build();
+
+                trigger = TriggerBuilder.newTrigger()
+                        .withIdentity("trigger-fechamento-" + job.getId())
+                        .startAt(Timestamp.valueOf(job.getData()))
+                        .build();
+            }
+
+            if(job.getTipo() == TipoJob.VENCIMENTOFATURA) {
+                jobDetail = JobBuilder.newJob(AgendarFechamentoFaturaJob.class)
+                        .withIdentity("job-vencimento-" + job.getId())
+                        .usingJobData("id", job.getId())
+                        .build();
+
+                trigger = TriggerBuilder.newTrigger()
+                        .withIdentity("trigger-vencimento-" + job.getId())
+                        .startAt(Timestamp.valueOf(job.getData()))
+                        .build();
+            }
+
             if (jobDetail == null || trigger == null) {
                 System.out.println("Tipo de job não reconhecido: " + job.getTipo());
                 return;
