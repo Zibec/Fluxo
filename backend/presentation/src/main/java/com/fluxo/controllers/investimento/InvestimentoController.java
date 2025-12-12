@@ -10,8 +10,12 @@ import investimento.InvestimentoService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import taxaSelic.TaxaSelic;
 import taxaSelic.TaxaSelicService;
@@ -43,6 +47,9 @@ public class InvestimentoController {
 
     @Autowired
     private SecurityFilter securityFilter;
+
+    @Autowired
+    private Scheduler scheduler;
 
     @PostConstruct
     public void initialize() {
@@ -93,6 +100,15 @@ public class InvestimentoController {
     public ResponseEntity<Object> resgateTotal(@PathVariable String id){
         investimentoService.resgateTotal(id);
         return ResponseEntity.ok().build();
+    }
+
+    //Para executar atualização manual (bash): POST http://localhost:8080/api/investimentos/forcar-atualizacao
+    @PostMapping("/forcar-atualizacao")
+    public String dispararManual() throws SchedulerException {
+        JobKey jobKey = new JobKey("jobAtualizarTaxaSelic");
+        scheduler.triggerJob(jobKey);
+
+        return "Atualização de Taxa Selic executada manualmente.";
     }
 
     @PutMapping("/resgate-parcial/{id}")
