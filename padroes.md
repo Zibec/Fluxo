@@ -17,9 +17,16 @@
         - AgendamentoRepositorio
         - AgendamentoService
 
+        - MetaInversaService (método obterPorUsuario())
+        
+
     Classes criadas:
         - PagedAgendamentosIterator
         - agendamentoIterable
+
+        - ColecaoMetaInversa
+        - MetaInversaIteratorOrdenado
+
 
 ### Proxy:
 
