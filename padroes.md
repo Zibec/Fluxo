@@ -18,7 +18,8 @@
         - AgendamentoService
 
         - MetaInversaService (método obterPorUsuario())
-        
+
+        - TransacaoController
 
     Classes criadas:
         - PagedAgendamentosIterator
@@ -26,6 +27,9 @@
 
         - ColecaoMetaInversa
         - MetaInversaIteratorOrdenado
+
+        - PatrimonioController
+        - DividaController
 
 
 ### Proxy:
