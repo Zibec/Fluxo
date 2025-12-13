@@ -2,10 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import {
-	createHistoricoInvestimentoData,
-	createInvestimentoFormData,
-} from "@/lib/service/investimentos/investimento-schema";
 import { investimentoService } from "@/lib/service/investimentos/investimento-service";
 import { redirect, useParams } from "next/navigation";
 import { createCartaoFormData } from "@/lib/service/contas-cartoes/contas-cartoes-schemas";
@@ -101,7 +97,7 @@ export default function Page() {
 										Saldo:
 									</p>
 									<div className="text-3xl font-bold text-foreground">
-										{getCurrencySymbol()}{" "}
+										{"R$"}{" "}
 										{cartao.saldo.toLocaleString("pt-BR", {
 											minimumFractionDigits: 2,
 											maximumFractionDigits: 2,
@@ -114,7 +110,7 @@ export default function Page() {
 										Limite:
 									</label>
 									<div className="text-3xl font-bold text-foreground">
-										{getCurrencySymbol()}{" "}
+										{"R$"}{" "}
 										{cartao.limite.toLocaleString("pt-BR", {
 											minimumFractionDigits: 2,
 											maximumFractionDigits: 2,

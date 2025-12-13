@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useEffect, useState } from "react";
+import { usuarioService } from "./service/usuario/usuario-service";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -15,13 +16,12 @@ export function getCurrencySymbol(): string {
 	const [currencyCode, setCurrencyCode] = useState("");
 
 	useEffect(() => {
-		if (typeof localStorage !== "undefined") {
-			setFluxoUser(localStorage.getItem("fluxo_user"));
-			setCurrencyCode("BRL");
-		}
+		const usuario = JSON.parse(localStorage.getItem("fluxo_user"))
 
-		if (fluxoUser) {
-			setCurrencyCode(fluxoUser.moedaPreferida || "BRL");
+		if (typeof localStorage !== "undefined") {
+			setFluxoUser(usuario);
+			console.log(usuario)
+			setCurrencyCode(usuario.moedaPreferida);
 		}
 	}, []);
 
@@ -30,7 +30,6 @@ export function getCurrencySymbol(): string {
 		EUR: "€",
 		BRL: "R$",
 	};
-
 	return symbols[currencyCode];
 }
 
@@ -40,7 +39,7 @@ export function formatDateByUserPreference(date: Date | string): string {
 
 	if (fluxoUser) {
 		const user = JSON.parse(fluxoUser);
-		dateFormat = user.dataPreferida || "dd-MM-yyyy";
+		dateFormat = user.formatoDataPreferido
 	}
 
 	const data = dateFormat.replaceAll("-", "/");

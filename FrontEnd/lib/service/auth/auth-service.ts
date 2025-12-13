@@ -49,9 +49,7 @@ class AuthService {
 	}
 
 	private setUserInfo(userInfo: UserInfo): void {
-		if (typeof window !== "undefined") {
-			localStorage.setItem("fluxo_user", JSON.stringify(userInfo));
-		}
+		localStorage.setItem("fluxo_user", JSON.stringify(userInfo));
 	}
 
 	getUserInfo(): UserInfo | null {
