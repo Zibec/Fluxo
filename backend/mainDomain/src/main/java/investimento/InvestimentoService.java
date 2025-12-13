@@ -76,6 +76,7 @@ public class InvestimentoService implements Observer {
                 LocalDate.now()
         );
 
+        investimentoRepositorio.atualizarInvestimento(investimento.getId(), investimento);
         historicoInvestimentoRepositorio.salvar(historicoInvestimento);
     }
 

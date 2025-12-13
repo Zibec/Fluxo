@@ -17,12 +17,11 @@ public class TaxaSelicService {
 
         BigDecimal valor = new BigDecimal(selicApiClient.buscarTaxaSelicDiaria());
 
-        TaxaSelic novaTaxaSelic = new TaxaSelic(valor);
+        TaxaSelic novaTaxaSelic = new TaxaSelic("jdcfsfhjsdfhjk", valor);
 
         taxaSelicRepository.salvar(novaTaxaSelic);
 
         notifyObservers();
-
     }
 
     public TaxaSelicService(SelicApiClient selicApiClient, TaxaSelicRepository taxaSelicRepository) {

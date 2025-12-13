@@ -102,7 +102,7 @@ public class InvestimentoController {
         return ResponseEntity.ok().build();
     }
 
-    //Para executar atualização manual (bash): POST http://localhost:8080/api/investimentos/forcar-atualizacao
+    //Para executar atualização manual (bash): Invoke-WebRequest -Method POST -Uri http://localhost:8080/api/investimentos/forcar-atualizacao
     @PostMapping("/forcar-atualizacao")
     public String dispararManual() throws SchedulerException {
         JobKey jobKey = new JobKey("jobAtualizarTaxaSelic");
