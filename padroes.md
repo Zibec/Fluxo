@@ -38,3 +38,16 @@
     
     Classes criadas:
         - CategoriaRepositorioProxy
+
+### Template Method:
+
+    Classes Modificadas: 
+
+        - FormaPagamento
+            - Classe Abstrata que possui o método realizarTransacao()
+        - Cartão
+            - Extende a classe FormaPagamento;
+            - Em vez de debitar transações automaticamente, cria faturas e utiliza o super.realizarTransacao() apenas quando a fatura for paga. 
+        - Conta
+            - Extende a classe FormaPagamento;
+            - Verifica o saldo antes de realizar a transação com o super.realizarTransacao()
