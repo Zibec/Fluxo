@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>Status:</strong> ⚠️ Projeto Acadêmico em Desenvolvimento ⚠️
+  <strong>Status:</strong> Projeto Acadêmico Desenvolvido
 </p>
 <p align="center">
   Projeto desenvolvido para a disciplina de Requisitos, Projeto de software e Validação - Cesar School.
